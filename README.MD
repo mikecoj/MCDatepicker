@@ -16,10 +16,12 @@ The package also includes pre-built js/css files for those who like to use it di
 
 ## Usage
 
+> Initiating new Datepicker object
 ```
-let picker = new Dateicker();
-		picker.init({
-			el: '#box',
-		});
+const picker = new Dateicker();
+
+    picker.init({
+        el: '#box',
+    });
 ```
 
