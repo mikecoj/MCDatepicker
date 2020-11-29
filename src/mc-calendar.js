@@ -83,6 +83,13 @@ class Datepicker {
 		document.querySelector('body').innerHTML += this.template;
 		const parent = document.querySelector('#mc-calendar');
 		this.setParentNode = parent;
+		parent.addEventListener('datepicker-show', function (e) {
+			this.classList.toggle('mc-calendar__box--opened');
+		});
+		parent.addEventListener('datepicker-hide', function (e) {
+			this.classList.toggle('mc-calendar__box--opened');
+		});
+
 		this.writeCalendar(this.date);
 		this.changeMonth();
 		this.changeYear();
@@ -180,6 +187,7 @@ class Datepicker {
 		dates.forEach((elem) => {
 			elem.addEventListener('click', (e) => {
 				let target = e.currentTarget;
+				// ! add the event here
 				if (!target.classList.contains('mc-date--picked')) {
 					target.classList.add('mc-date--picked');
 					_this.setPicker = new Date(target.getAttribute('data-val-date'));
@@ -327,7 +335,7 @@ class Datepicker {
 		};
 
 		cancelButton.onclick = (e) => {
-			_this.close();
+			datepickerHide(_this.parentNode);
 		};
 
 		clearButton.onclick = (e) => {
@@ -435,7 +443,7 @@ class Datepicker {
 	}
 }
 
-const options = {
+const mcOptions = {
 	el: null,
 	type: 'popup',
 	autoShow: true,
@@ -480,9 +488,9 @@ function yearChange(elem, direction, data) {
 
 function datepickerShow(elem) {
 	const event = new Event('datepicker-show', {
-		detail: {
-			node: node,
-		},
+		// detail: {
+		// 	node: node,
+		// },
 		bubbles: true,
 	});
 	elem.dispatchEvent(event);
@@ -490,18 +498,23 @@ function datepickerShow(elem) {
 
 function datepickerHide(elem) {
 	const event = new Event('datepicker-hide', {
-		detail: {
-			node: node,
-		},
+		// detail: {
+		// 	node: node,
+		// },
 		bubbles: true,
 	});
 	elem.dispatchEvent(event);
 }
 
-function datepickerPick(elem) {
+function datepickerPick(elem, date) {
 	const event = new Event('datepicker-pick', {
 		detail: {
-			node: node,
+			date: {
+				weekDay: date.getDay(),
+				dateNumb: date.getDate(),
+				month: date.getMonth(),
+				year: date.getFullYear(),
+			},
 		},
 		bubbles: true,
 	});
