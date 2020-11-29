@@ -1,17 +1,35 @@
 class Datepicker {
-	template = `
+	defaultOptions = {
+		el: null,
+		type: 'popup',
+		dateFormat: 'dd/mm/yy',
+		autoShow: true,
+		autoHide: false,
+		multiselect: false,
+	};
+	constructor() {
+		(this.wDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']),
+			(this.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']),
+			(this.date = new Date()),
+			(this.today = new Date()),
+			(this.pickedDate = this.today),
+			(this.linkedNode = null),
+			(this.parentNode = null);
+	}
+	get template() {
+		return `
     <div id="mc-calendar" class="mc-calendar__box row">
         <div class="mc-calendar__display row">
             <div class="mc-display__header">
-                <h3 class="mc-display__day">Thursday</h3>
+                <h3 class="mc-display__day">${this.wDays[this.pickedDate.getDay()]}</h3>
             </div>
             <div class="mc-display__body row">
                 <div class="mc-display__data mc-display__data--primary row">
-                    <h1 class="mc-display__date">20</h1>
+                    <h1 class="mc-display__date">${this.pickedDate.getDate()}</h1>
                 </div>
                 <div class="mc-display__data mc-display__data--secondary row">
-                    <h3 class="mc-display__month">September</h3>
-                    <h2 class="mc-display__year">2020</h2>
+                    <h3 class="mc-display__month">${this.months[this.pickedDate.getMonth()]}</h3>
+                    <h2 class="mc-display__year">${this.pickedDate.getFullYear()}</h2>
                 </div>
             </div>
         </div>
@@ -62,24 +80,11 @@ class Datepicker {
                 </div>
             </div>
         </div>
-    </div>`;
-
-	constructor() {
-		(this.wDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']),
-			(this.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']),
-			(this.date = new Date()),
-			(this.today = new Date()),
-			(this.pickedDate = this.today),
-			(this.linkedNode = null),
-			(this.parentNode = null);
+	</div>`;
 	}
 
-	init(
-		options = {
-			el: '#m-calendar',
-		}
-	) {
-		const linkedNode = document.querySelector(options.el);
+	init(options = {}) {
+		// const linkedNode = document.querySelector(options.el);
 		document.querySelector('body').innerHTML += this.template;
 		const parent = document.querySelector('#mc-calendar');
 		this.setParentNode = parent;
@@ -91,10 +96,12 @@ class Datepicker {
 		});
 
 		this.writeCalendar(this.date);
-		this.changeMonth();
-		this.changeYear();
-		this.writeDisplay(new Date());
+		// this.changeMonth();
+		// this.changeYear();
+		this.updateDisplay();
 		this.onButton();
+		this.monthYearChangeHandler();
+
 		// this.setColorScheme();
 		// this.setColorScheme('#ad415e');
 		// this.setColorScheme('#f37c88');
@@ -157,25 +164,21 @@ class Datepicker {
 					</tr>`;
 			})
 			.join('');
-		pickedMonth.innerHTML = activeMonth;
-		pickedYear.innerHTML = activeYear;
+		// pickedMonth.innerHTML = activeMonth;
+		// pickedYear.innerHTML = activeYear;
 		calBody.innerHTML = calData;
 
 		this.clickedDate();
 	}
 
-	writeDisplay(date) {
+	updateDisplay() {
 		const _this = this;
-		const parentNode = _this.parentNode;
-		const display = parentNode.querySelector('.mc-calendar__display');
-		const weekDay = display.querySelector('.mc-display__day');
-		const dateNumb = display.querySelector('.mc-display__date');
-		const month = display.querySelector('.mc-display__month');
-		const year = display.querySelector('.mc-display__year');
-		month.innerText = _this.months[date.getMonth()];
-		year.innerText = date.getFullYear();
-		dateNumb.innerText = date.getDate();
-		weekDay.innerText = _this.wDays[date.getDay()];
+		_this.parentNode.addEventListener('datepicker-pick', function (e) {
+			_this.parentNode.querySelector('.mc-display__day').innerText = _this.wDays[e.detail.date.getDay()];
+			_this.parentNode.querySelector('.mc-display__date').innerText = e.detail.date.getDate();
+			_this.parentNode.querySelector('.mc-display__month').innerText = _this.months[e.detail.date.getMonth()];
+			_this.parentNode.querySelector('.mc-display__year').innerText = e.detail.date.getFullYear();
+		});
 	}
 
 	clickedDate() {
@@ -187,11 +190,11 @@ class Datepicker {
 		dates.forEach((elem) => {
 			elem.addEventListener('click', (e) => {
 				let target = e.currentTarget;
-				// ! add the event here
+				datepickerPick(target, new Date(target.getAttribute('data-val-date')));
 				if (!target.classList.contains('mc-date--picked')) {
 					target.classList.add('mc-date--picked');
 					_this.setPicker = new Date(target.getAttribute('data-val-date'));
-					_this.writeDisplay(_this.pickedDate);
+					// _this.writeDisplay(_this.pickedDate);
 				}
 				prevPicked.forEach((elem) => {
 					if (elem != target && elem.classList.contains('mc-date--picked')) {
@@ -199,6 +202,32 @@ class Datepicker {
 					}
 				});
 			});
+		});
+	}
+
+	monthYearChangeHandler() {
+		const _this = this;
+		const currentMonth = _this.parentNode.querySelector('#mc-current--month');
+		const currentYear = _this.parentNode.querySelector('#mc-current--year');
+
+		currentMonth.addEventListener('month-change', function (e) {
+			console.log('Month', e.detail.direction);
+		});
+		currentYear.addEventListener('year-change', function (e) {
+			console.log('Year', e.detail.direction);
+		});
+
+		_this.parentNode.querySelector('#mc-picker__month--prev').addEventListener('click', function (e) {
+			monthChange(currentMonth, 'prev');
+		});
+		_this.parentNode.querySelector('#mc-picker__month--next').addEventListener('click', function (e) {
+			monthChange(currentMonth, 'next');
+		});
+		_this.parentNode.querySelector('#mc-picker__year--prev').addEventListener('click', function (e) {
+			yearChange(currentYear, 'prev');
+		});
+		_this.parentNode.querySelector('#mc-picker__year--next').addEventListener('click', function (e) {
+			yearChange(currentYear, 'next');
 		});
 	}
 
@@ -344,7 +373,7 @@ class Datepicker {
 				elem.classList.contains('mc-date--picked') ? elem.classList.remove('mc-date--picked') : null;
 			});
 			_this.setPicker = null;
-			_this.writeDisplay(_this.today);
+			// _this.writeDisplay(_this.today);
 		};
 	}
 
@@ -443,14 +472,6 @@ class Datepicker {
 	}
 }
 
-const mcOptions = {
-	el: null,
-	type: 'popup',
-	autoShow: true,
-	autoHide: false,
-	multiselect: false,
-};
-
 const methods = {
 	open() {},
 	close() {},
@@ -464,59 +485,43 @@ const methods = {
 	getFullDate() {},
 };
 
-function monthChange(elem, direction, data) {
-	const event = new Event('monthChange', {
-		detail: {
-			direction: direction,
-			data: data,
-		},
-		bubbles: true,
-	});
-	elem.dispatchEvent(event);
+function monthChange(elem, direction, month) {
+	elem.dispatchEvent(
+		new CustomEvent('month-change', {
+			bubbles: true,
+			detail: {
+				direction: direction,
+			},
+		})
+	);
 }
 
-function yearChange(elem, direction, data) {
-	const event = new Event('yearChange', {
-		detail: {
-			direction: direction,
-			data: data,
-		},
-		bubbles: true,
-	});
-	elem.dispatchEvent(event);
+function yearChange(elem, direction, year) {
+	elem.dispatchEvent(
+		new CustomEvent('year-change', {
+			bubbles: true,
+			detail: {
+				direction: direction,
+			},
+		})
+	);
 }
 
 function datepickerShow(elem) {
-	const event = new Event('datepicker-show', {
-		// detail: {
-		// 	node: node,
-		// },
-		bubbles: true,
-	});
-	elem.dispatchEvent(event);
+	elem.dispatchEvent(new CustomEvent('datepicker-show', { bubbles: true }));
 }
 
 function datepickerHide(elem) {
-	const event = new Event('datepicker-hide', {
-		// detail: {
-		// 	node: node,
-		// },
-		bubbles: true,
-	});
-	elem.dispatchEvent(event);
+	elem.dispatchEvent(new CustomEvent('datepicker-hide', { bubbles: true }));
 }
 
 function datepickerPick(elem, date) {
-	const event = new Event('datepicker-pick', {
-		detail: {
-			date: {
-				weekDay: date.getDay(),
-				dateNumb: date.getDate(),
-				month: date.getMonth(),
-				year: date.getFullYear(),
+	elem.dispatchEvent(
+		new CustomEvent('datepicker-pick', {
+			bubbles: true,
+			detail: {
+				date: date,
 			},
-		},
-		bubbles: true,
-	});
-	elem.dispatchEvent(event);
+		})
+	);
 }
