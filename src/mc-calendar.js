@@ -507,5 +507,3 @@ function datepickerPick(elem) {
 	});
 	elem.dispatchEvent(event);
 }
-
-const events = ['datepicker-show', 'datepicker-hide', 'datepicker-pick'];
