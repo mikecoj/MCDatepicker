@@ -1,0 +1,367 @@
+/* ---------------------------------------------------------- */
+/* --------------------ITCSS Architecture-------------------- */
+/* ---------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700;800;900&display=swap');
+
+/* =========================SETTINGS========================= */
+
+:root {
+	--main-bg-color: #f5f5f6;
+	--main-theme-color: #38ada9;
+	/* --dark-bg-color: #007d7a; */
+	--dark-bg-color: rgba(0, 0, 0, 0.2);
+	--month-year-piker: #818181;
+	--inactive-white-color: rgba(255, 255, 255, 0.8);
+	--active-white-color: rgba(255, 255, 255);
+	--inactive-black-color: rgba(0, 0, 0, 0.8);
+	--active-black-color: rgba(0, 0, 0);
+	--inactive-date-color: rgb(190, 190, 190);
+	--danger-button-color: #e65151;
+}
+
+/* ==========================TOOLS=========================== */
+
+/* Globally used mixins and functions. 
+This layer is only used if we use a preprocessor as SASS. */
+
+/* =========================GENERIC========================== */
+/* Reset and/or normalize styles, box-sizing definition, etc. */
+.mc-calendar__box,
+.mc-calendar__box *,
+.mc-calendar__box *::before,
+.mc-calendar__box *::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+/* =========================ELEMENTS========================= */
+/* Styling for bare HTML elements (like H1, A, header, footer, …). 
+These come with default styling from the browser so we must to redefine them here. */
+.mc-calendar__box h1,
+.mc-calendar__box h2,
+.mc-calendar__box h3 {
+	font-weight: 500;
+}
+
+/* =========================OBJECTS========================== */
+/* Class-based selectors which define undecorated design patterns, 
+for example media object known from OOCSS such as list, radio-button. */
+
+/* -----------Calendar Box------------ */
+
+.row {
+	display: flex;
+}
+
+.container-m {
+	position: relative;
+	width: 80%;
+	margin: 0 auto;
+}
+
+.container-s {
+	position: relative;
+	width: 90%;
+	margin: 0 auto;
+}
+
+.mc-calendar__box {
+	flex-direction: column;
+	position: absolute;
+	top: -100%;
+	left: 50%;
+	font-family: 'Maven Pro', sans-serif;
+	font-weight: 500;
+	width: min(100%, 425px);
+	background-color: var(--main-theme-color);
+	border-radius: 0 0 30px 30px;
+	box-shadow: 0 10px 10px 5px rgba(0, 0, 0, 0.25);
+	overflow: hidden;
+	z-index: 1002;
+	transform: translate(-50%, min(-400px, -65vh));
+	/* transform: translateX(-50%); */
+	transition: transform 0.3s linear 0.3s, visibility 0s linear 0.5s, top 0s linear 0.5s;
+}
+
+.mc-calendar__box--opened {
+	top: 0;
+	visibility: visible;
+	transform: translate(-50%, 0);
+	transition: transform 0.3s linear 0.3s, visibility 0s, top 0s;
+}
+
+/* --------------Calendar Display------------ */
+
+.mc-calendar__display {
+	flex-direction: column;
+	background-color: var(--main-theme-color);
+	color: var(--inactive-white-color);
+	max-height: 0;
+	/* transition: <property> <duration> <timing-function> <delay>; */
+	transition: max-height 0.3s linear;
+}
+
+.mc-calendar__box--opened .mc-calendar__display {
+	max-height: 175px;
+	transition-delay: 0.5s;
+}
+
+.mc-display__day {
+	text-align: center;
+	background-color: var(--dark-bg-color);
+	font-size: 1.375rem;
+	font-size: clamp(1.2rem, 9vw, 1.375rem);
+	line-height: 1;
+	padding: 0.5em 0;
+}
+
+.mc-display__body {
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.5em 0;
+}
+
+.mc-display__data {
+	width: 50%;
+}
+.mc-display__data--primary {
+	justify-content: flex-end;
+}
+.mc-display__data--secondary {
+	flex-direction: column;
+}
+
+.mc-display__date {
+	font-size: clamp(5rem, 40vw, 7rem);
+	line-height: 1;
+}
+
+.mc-display__month {
+	font-size: clamp(1.2rem, 9vw, 1.5rem);
+}
+
+.mc-display__year {
+	font-size: clamp(2.4rem, 18vw, 3rem);
+	line-height: 0.8;
+}
+
+/* ------------Calendar Picker---------- */
+
+.mc-calendar__picker {
+	flex-direction: column;
+	height: min(65vh, 400px);
+	background-color: var(--main-bg-color);
+	border-radius: 30px;
+}
+
+.mc-picker__header {
+	font-size: 1.25rem;
+	justify-content: center;
+	padding: 1em 0;
+	color: var(--month-year-piker);
+}
+
+.mc-picker__select-month,
+.mc-picker__select-year {
+	padding: 0 0.2em;
+}
+
+.mc-picker__select-month {
+	justify-content: flex-end;
+}
+.mc-picker__nav {
+	position: absolute;
+	text-decoration: none;
+	color: var(--month-year-piker);
+}
+.mc-select__data {
+	font-size: clamp(1rem, 8vw, 1.25rem);
+}
+.mc-picker__nav--prev,
+.mc-picker__nav--next {
+	transition: transform 0.2s ease-in-out;
+}
+.mc-picker__select-month .mc-picker__nav--prev {
+	left: 0;
+}
+.mc-picker__select-month .mc-picker__nav--next {
+	right: 0;
+}
+
+.mc-picker__select-year .mc-picker__nav {
+	display: none;
+}
+
+.mc-picker__nav--prev:active {
+	transform: translateX(-0.8em);
+	/* animation-name: btn-animate;
+	animation-duration: 0.5s; */
+}
+
+.mc-picker__nav--next:active {
+	transform: translateX(0.8em);
+}
+
+.mc-picker__body,
+.mc-picker__table {
+	height: 100%;
+}
+.mc-table__weekday {
+	padding: 0.5em 0;
+	color: var(--main-theme-color);
+}
+
+.mc-date {
+	text-align: center;
+	border-radius: 5px;
+	font-weight: 300;
+}
+
+.mc-date--active {
+	cursor: pointer;
+}
+
+.mc-date--today {
+	background-color: var(--dark-bg-color);
+}
+
+.mc-date--picked {
+	color: #fff;
+	background-color: var(--main-theme-color);
+	box-shadow: 0 0 10px rgba(124, 124, 124, 0.5);
+}
+
+.mc-date--inactive {
+	color: var(--inactive-date-color);
+	cursor: default;
+}
+
+.mc-date--inactive.mc-date--picked {
+	color: rgba(255, 255, 255, 0.8);
+	background-color: #0799924b;
+	box-shadow: none;
+}
+
+.mc-date--inactive.mc-date--today {
+	color: rgba(255, 255, 255, 0.8);
+	opacity: 0.5;
+	box-shadow: none;
+}
+
+.mc-picker__footer {
+	justify-content: space-between;
+	padding: 1em 0 2em;
+}
+.mc-btn {
+	display: inline-block;
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.mc-btn--success {
+	color: var(--main-theme-color);
+	margin-left: 1em;
+}
+.mc-btn--danger {
+	color: var(--danger-button-color);
+	margin-right: 1em;
+}
+
+.mc-btn:active {
+	transform: scale3d(0.95, 0.95, 0.95);
+}
+
+@media (min-width: 625px) {
+	.mc-calendar__box {
+		flex-direction: row;
+		top: -100%;
+		visibility: hidden;
+		width: auto;
+		height: 400px;
+		border-radius: 10px;
+		background-color: unset;
+		box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(0.9);
+		transition: transform 0.3s, opacity 0.3s, visibility 0s linear 0.3s, top 0s linear 0.3s;
+	}
+
+	.mc-calendar__box--opened {
+		top: 50%;
+		opacity: 1;
+		visibility: visible;
+		transform: translate(-50%, -50%) scale(1);
+		transition: transform 0.3s, opacity 0.3s, visibility 0s, top 0s linear 0s;
+	}
+
+	.mc-calendar__display {
+		width: 200px;
+		height: 100%;
+		max-height: unset;
+		background-color: var(--main-theme-color);
+	}
+	.mc-calendar__box--opened .mc-calendar__display {
+		max-height: unset;
+		transition: unset;
+	}
+
+	.mc-display__day {
+		padding: 1em 0;
+	}
+
+	.mc-display__body {
+		flex-direction: column;
+		height: 100%;
+		padding: 0;
+	}
+
+	.mc-display__data {
+		width: 100%;
+		height: 50%;
+		text-align: center;
+	}
+
+	.mc-display__data--primary {
+		justify-content: center;
+		align-items: flex-end;
+	}
+
+	.mc-display__data--secondary {
+		justify-content: space-between;
+	}
+
+	.mc-display__month,
+	.mc-display__year {
+		height: auto;
+	}
+
+	.mc-display__year {
+		padding: 0.5em 0;
+	}
+
+	.mc-calendar__picker {
+		height: 100%;
+		width: 425px;
+		border-radius: 0;
+	}
+	.mc-picker__nav {
+		position: relative;
+		padding: 0 1em;
+	}
+
+	.mc-picker__select-year .mc-picker__nav {
+		display: inline-block;
+	}
+
+	.mc-picker__table {
+		border-top: 2px solid rgb(204, 204, 204);
+	}
+}
+
+/* ========================COMPONENTS======================== */
+/* specific UI components. 
+The components of our page, for example button, card, concrete-list, etc.. */
+
+/* =========================UTILITIES======================== */
+/* Utilities and helper classes with ability to override anything which goes before in the triangle. */

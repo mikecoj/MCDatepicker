@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/8149c307dc.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="mc-calendar.css">
+    <title>Calendar</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        #box {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #open-btn {
+            padding: 1em 2em;
+            margin: 2em;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box">
+        <button id="open-btn" onclick="shoeCalendar()">Open</button>
+        <!-- <div class="mc-calendar"> -->
+        <div class="mc-calendar__box row">
+            <div class="mc-calendar__display row">
+                <div class="mc-display__header">
+                    <h3 class="mc-display__day">Thursday</h3>
+                </div>
+                <div class="mc-display__body row">
+                    <div class="mc-display__data mc-display__data--primary row">
+                        <h1 class="mc-display__date">20</h1>
+                    </div>
+                    <div class="mc-display__data mc-display__data--secondary row">
+                        <h3 class="mc-display__month">September</h3>
+                        <h2 class="mc-display__year">2020</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="mc-calendar__picker row">
+                <div class="mc-picker__header row container-m">
+                    <div class="mc-picker__select-month row">
+                        <a id="mc-picker__month--prev" class="mc-picker__nav mc-picker__nav--prev" href="#">
+                            <i class="fas fa-angle-left" aria-hidden="true"></i>
+                        </a>
+                        <div id="mc-current--month" class="mc-select__data"><span>November</span></div>
+                        <a id="mc-picker__month--next" id="mc-current--month"
+                            class="mc-picker__nav mc-picker__nav--next" href="#">
+                            <i class="fas fa-angle-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    <div class="mc-picker__select-year row">
+                        <a id="mc-picker__year--prev" class="mc-picker__nav mc-picker__nav--prev" href="#">
+                            <i class="fas fa-angle-left" aria-hidden="true"></i>
+                        </a>
+                        <div id="mc-current--year" class="mc-select__data"><span>2020</span></div>
+                        <a id="mc-picker__year--next" class="mc-picker__nav mc-picker__nav--next" href="#">
+                            <i class="fas fa-angle-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="mc-picker__body">
+                    <table class="mc-picker__table container-s">
+                        <thead class="mc-table__header">
+                            <tr>
+                                <th class="mc-table__weekday">S</th>
+                                <th class="mc-table__weekday">M</th>
+                                <th class="mc-table__weekday">T</th>
+                                <th class="mc-table__weekday">W</th>
+                                <th class="mc-table__weekday">T</th>
+                                <th class="mc-table__weekday">F</th>
+                                <th class="mc-table__weekday">S</th>
+                            </tr>
+                        </thead>
+                        <tbody class="mc-table__body">
+                            <tr class="mc-table__week">
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Sun Nov 01 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    1
+                                </td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Mon Nov 02 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    2
+                                </td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Tue Nov 03 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    3
+                                </td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Wed Nov 04 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    4
+                                </td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Thu Nov 05 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    5
+                                </td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Fri Nov 06 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    6
+                                </td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Sat Nov 07 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    7
+                                </td>
+                            </tr>
+                            <tr class="mc-table__week">
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Sun Nov 08 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    8
+                                </td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Mon Nov 09 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    9
+                                </td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Tue Nov 10 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    10</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Wed Nov 11 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    11</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Thu Nov 12 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    12</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Fri Nov 13 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    13</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Sat Nov 14 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    14</td>
+                            </tr>
+                            <tr class="mc-table__week">
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Sun Nov 15 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    15</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Mon Nov 16 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    16</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Tue Nov 17 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    17</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Wed Nov 18 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    18</td>
+                                <td class="mc-date mc-date--active mc-date--picked"
+                                    data-val-date="Thu Nov 19 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    19</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Fri Nov 20 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    20</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Sat Nov 21 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    21</td>
+                            </tr>
+                            <tr class="mc-table__week">
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Sun Nov 22 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    22</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Mon Nov 23 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    23</td>
+                                <td class="mc-date mc-date--active mc-date--today"
+                                    data-val-date="Tue Nov 24 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    24</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Wed Nov 25 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    25</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Thu Nov 26 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    26</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Fri Nov 27 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    27</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Sat Nov 28 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    28</td>
+                            </tr>
+                            <tr class="mc-table__week">
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Sun Nov 29 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    29</td>
+                                <td class="mc-date mc-date--active"
+                                    data-val-date="Mon Nov 30 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    30</td>
+                                <td class="mc-date mc-date--inactive"
+                                    data-val-date="Tue Dec 01 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    1
+                                </td>
+                                <td class="mc-date mc-date--inactive"
+                                    data-val-date="Wed Dec 02 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    2
+                                </td>
+                                <td class="mc-date mc-date--inactive"
+                                    data-val-date="Thu Dec 03 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    3
+                                </td>
+                                <td class="mc-date mc-date--inactive"
+                                    data-val-date="Fri Dec 04 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    4
+                                </td>
+                                <td class="mc-date mc-date--inactive"
+                                    data-val-date="Sat Dec 05 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    5
+                                </td>
+                            </tr>
+                            <tr class="mc-table__week">
+                                <td class="mc-date mc-date--inactive"
+                                    data-val-date="Sun Dec 06 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    6
+                                </td>
+                                <td class="mc-date mc-date--inactive"
+                                    data-val-date="Mon Dec 07 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    7
+                                </td>
+                                <td class="mc-date mc-date--inactive"
+                                    data-val-date="Tue Dec 08 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    8
+                                </td>
+                                <td class="mc-date mc-date--inactive"
+                                    data-val-date="Wed Dec 09 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    9
+                                </td>
+                                <td class="mc-date mc-date--inactive"
+                                    data-val-date="Thu Dec 10 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    10</td>
+                                <td class="mc-date mc-date--inactive"
+                                    data-val-date="Fri Dec 11 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    11</td>
+                                <td class="mc-date mc-date--inactive"
+                                    data-val-date="Sat Dec 12 2020 00:00:00 GMT+0200 (Eastern European Standard Time)">
+                                    12</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mc-picker__footer row container-m">
+                    <div class="mc-footer__section mc-footer__section--primary">
+                        <a id="mc-btn__clear" class="mc-btn mc-btn--danger" href="#">Clear</a>
+                    </div>
+                    <div class="mc-footer__section mc-footer__section--secondary">
+                        <a id="mc-btn__cancel" class="mc-btn mc-btn--success" onclick="shoeCalendar()"
+                            href="#">CANCEL</a>
+                        <a id="mc-btn__ok" class="mc-btn mc-btn--success" onclick="shoeCalendar()" href="#">OK</a>
+                    </div>
+                </div>
+            </div>
+            <!-- </div> -->
+        </div>
+    </div>
+
+
+    <div class="mc-calendar__box row">
+        <div class="mc-calendar__display row">
+            <div class="mc-display__header">
+                <h3 class="mc-display__day">Thursday</h3>
+            </div>
+            <div class="mc-display__body row">
+                <div class="mc-display__data mc-display__data--primary row">
+                    <h1 class="mc-display__date">20</h1>
+                </div>
+                <div class="mc-display__data mc-display__data--secondary row">
+                    <h3 class="mc-display__month">September</h3>
+                    <h2 class="mc-display__year">2020</h2>
+                </div>
+            </div>
+        </div>
+        <div class="mc-calendar__picker row">
+            <div class="mc-picker__header row container-m">
+                <div class="mc-picker__select-month row">
+                    <a id="mc-picker__month--prev" class="mc-picker__nav mc-picker__nav--prev" href="#">
+                        <i class="fas fa-angle-left" aria-hidden="true"></i>
+                    </a>
+                    <div id="mc-current--month" class="mc-select__data"><span>November</span></div>
+                    <a id="mc-picker__month--next" class="mc-picker__nav mc-picker__nav--next" href="#">
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <div class="mc-picker__select-year row">
+                    <a id="mc-picker__year--prev" class="mc-picker__nav mc-picker__nav--prev" href="#">
+                        <i class="fas fa-angle-left" aria-hidden="true"></i>
+                    </a>
+                    <div id="mc-current--year" class="mc-select__data"><span>2020</span></div>
+                    <a id="mc-picker__year--next" class="mc-picker__nav mc-picker__nav--next" href="#">
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="mc-picker__body">
+                <table class="mc-picker__table container-s">
+                    <thead class="mc-table__header">
+                        <tr>
+                            <th class="mc-table__weekday">S</th>
+                            <th class="mc-table__weekday">M</th>
+                            <th class="mc-table__weekday">T</th>
+                            <th class="mc-table__weekday">W</th>
+                            <th class="mc-table__weekday">T</th>
+                            <th class="mc-table__weekday">F</th>
+                            <th class="mc-table__weekday">S</th>
+                        </tr>
+                    </thead>
+                    <tbody class="mc-table__body"></tbody>
+                </table>
+            </div>
+            <div class="mc-picker__footer row container-m">
+                <div class="mc-footer__section mc-footer__section--primary">
+                    <a id="mc-btn__clear" class="mc-btn mc-btn--danger" href="#">Clear</a>
+                </div>
+                <div class="mc-footer__section mc-footer__section--secondary">
+                    <a id="mc-btn__cancel" class="mc-btn mc-btn--success" onclick="shoeCalendar()" href="#">CANCEL</a>
+                    <a id="mc-btn__ok" class="mc-btn mc-btn--success" onclick="shoeCalendar()" href="#">OK</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // show-calendar
+
+        function shoeCalendar() {
+            // const calendar = document.querySelector('.mc-calendar');
+            const calendarBox = document.querySelector('.mc-calendar__box');
+            calendarBox.classList.toggle('mc-calendar__box--opened');
+
+            // if (!calendarBox.classList.contains('mc-calendar__box--opened') && !calendarBox.classList.contains('mc-calendar__box--closed')) {
+            //     console.log('there is no such class');
+            //     calendarBox.classList.add('mc-calendar__box--opened');
+            //     return;
+            // }
+            // if (calendarBox.classList.contains('mc-calendar__box--opened')) {
+            //     calendarBox.classList.replace('mc-calendar__box--opened', 'mc-calendar__box--closed');
+            //     return;
+            // }
+            // if (calendarBox.classList.contains('mc-calendar__box--closed')) {
+            //     calendarBox.classList.replace('mc-calendar__box--closed', 'mc-calendar__box--opened');
+            //     return;
+            // }
+
+        }
+
+    </script>
+</body>
+
+</html>

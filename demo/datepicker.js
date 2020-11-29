@@ -31,8 +31,6 @@ class Datepicker {
 							</div>
 							<i class="fas fa-angle-right"></i>
 						</div>
-						<ul class="mch-picker-option">
-						</ul>
 					</div>
 				</div>
 				<div class="m-cal-body">
@@ -64,20 +62,7 @@ class Datepicker {
 		</div>`;
 	constructor() {
 		(this.wDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']),
-			(this.months = [
-				'January',
-				'Febuary',
-				'March',
-				'April',
-				'May',
-				'June',
-				'July',
-				'August',
-				'September',
-				'October',
-				'November',
-				'December',
-			]),
+			(this.months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']),
 			(this.date = new Date()),
 			(this.today = new Date()),
 			(this.pickedDate = this.today),
@@ -143,23 +128,15 @@ class Datepicker {
 							let newDate = new Date(fstDate);
 							let thisDate = new Date(newDate.setDate(d));
 							let classlist = ['m-cal-date'];
-							thisDate.getMonth() != fstDate.getMonth()
-								? classlist.push('inactive-date')
-								: classlist.push('active-date');
+							thisDate.getMonth() != fstDate.getMonth() ? classlist.push('inactive-date') : classlist.push('active-date');
 
-							_this.pickedDate != null &&
-							thisDate.setHours(0, 0, 0, 0).valueOf() ==
-								_this.pickedDate.setHours(0, 0, 0, 0).valueOf()
+							_this.pickedDate != null && thisDate.setHours(0, 0, 0, 0).valueOf() == _this.pickedDate.setHours(0, 0, 0, 0).valueOf()
 								? classlist.push('picked-date')
 								: null;
 
-							thisDate.setHours(0, 0, 0, 0).valueOf() == new Date().setHours(0, 0, 0, 0).valueOf()
-								? classlist.push('today-date')
-								: null;
+							thisDate.setHours(0, 0, 0, 0).valueOf() == new Date().setHours(0, 0, 0, 0).valueOf() ? classlist.push('today-date') : null;
 
-							dayTemplate = `<td class="${classlist.join(
-								' '
-							)}" data-val-date="${thisDate}">${thisDate.getDate()}</td>`;
+							dayTemplate = `<td class="${classlist.join(' ')}" data-val-date="${thisDate}">${thisDate.getDate()}</td>`;
 							return dayTemplate;
 						})
 						.join('')}
@@ -238,6 +215,8 @@ class Datepicker {
 				const monthID = _this.months.indexOf(pickedMonth.textContent);
 				let newMonthID;
 
+				//TODO: needs to do a universal function for looping through array (carousel)
+
 				monthID == 0 ? ((newMonthID = 11), yearNumb--) : (newMonthID = monthID - 1);
 				monthID == 11 ? ((newMonthID = 0), yearNumb++) : (newMonthID = monthID + 1);
 
@@ -249,16 +228,7 @@ class Datepicker {
 				clickable = true;
 			}
 		};
-		// monthCell.onclick = (e) => {
-		// 	let option = parentNode.querySelector('.mch-picker-option');
-		// 	option.innerHTML = `${_this.months
-		// 		.map((elem) => {
-		// 			return `<li>${elem}</li>`;
-		// 		})
-		// 		.join('')}`;
-		// 	option.style.display = 'block';
-		// 	console.log(e.target);
-		// };
+
 		prevMonthRow.addEventListener('click', async () => {
 			if (clickable) {
 				clickable = false;
@@ -391,29 +361,8 @@ class Datepicker {
 			let mDate = date.getDate();
 			let month = date.getMonth();
 			let year = date.getFullYear();
-			const months = [
-				'January',
-				'Febuary',
-				'March',
-				'April',
-				'May',
-				'June',
-				'July',
-				'August',
-				'September',
-				'October',
-				'November',
-				'December',
-			];
-			const weekDays = [
-				'Sunday',
-				'Monday',
-				'Tuesday',
-				'Wednesday',
-				'Thursday',
-				'Friday',
-				'Saturday',
-			];
+			const months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+			const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 			let flags = {
 				d: mDate.toString(),
 				dd: mDate.toString().padStart(2, '0'),
@@ -449,71 +398,6 @@ class Datepicker {
 
 		return result;
 	}
-
-	// setColorScheme(H = '#38ada9') {
-	// 	let rootCSS = document.documentElement;
-	// 	// Convert hex to RGB first
-	// 	let r = 0,
-	// 		g = 0,
-	// 		b = 0;
-	// 	if (H.length == 4) {
-	// 		r = '0x' + H[1] + H[1];
-	// 		g = '0x' + H[2] + H[2];
-	// 		b = '0x' + H[3] + H[3];
-	// 	} else if (H.length == 7) {
-	// 		r = '0x' + H[1] + H[2];
-	// 		g = '0x' + H[3] + H[4];
-	// 		b = '0x' + H[5] + H[6];
-	// 	}
-	// 	// Then to HSL
-	// 	r /= 255;
-	// 	g /= 255;
-	// 	b /= 255;
-	// 	let cmin = Math.min(r, g, b),
-	// 		cmax = Math.max(r, g, b),
-	// 		delta = cmax - cmin,
-	// 		h = 0,
-	// 		s = 0,
-	// 		l = 0;
-
-	// 	if (delta == 0) h = 0;
-	// 	else if (cmax == r) h = ((g - b) / delta) % 6;
-	// 	else if (cmax == g) h = (b - r) / delta + 2;
-	// 	else h = (r - g) / delta + 4;
-
-	// 	h = Math.round(h * 60);
-
-	// 	if (h < 0) h += 360;
-
-	// 	l = (cmax + cmin) / 2;
-	// 	s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-	// 	s = +(s * 100).toFixed(1);
-	// 	l = +(l * 100).toFixed(1);
-
-	// 	let colors = {
-	// 		main_bg_color: `hsl(${h},0%,96%)`,
-	// 		light_bg_color: `hsl(${h},${Math.round(s)}%,${Math.round(l)}%)`,
-	// 		dark_bg_color: `hsl(${h},${Math.round(s + 49) < 100 ? Math.round(s + 49) : 100}%,${
-	// 			Math.round(l - 20) > 0 ? Math.round(l - 20) : 0
-	// 		}%)`,
-	// 		year_color: `hsl(${h},${Math.round(s - 10) > 0 ? Math.round(s - 10) : 0}%,${
-	// 			Math.round(l + 34) < 100 ? Math.round(l + 34) < 100 : 100
-	// 		}%)`,
-	// 		inactive_white_color: `hsl(${h},0%,75%)`,
-	// 		active_white_color: `hsl(0,100%,0%)`,
-	// 		inactive_black_color: `hsla(${h}, 0%, 0%, 0.8)`,
-	// 		active_black_color: `hsl(0,0%,0%)`,
-	// 	};
-	// 	console.log(colors);
-	// 	rootCSS.style.setProperty('--main-bg-color', colors.main_bg_color);
-	// 	rootCSS.style.setProperty('--light-bg-color', colors.light_bg_color);
-	// 	rootCSS.style.setProperty('--dark-bg-color', colors.dark_bg_color);
-	// 	rootCSS.style.setProperty('--year-color', colors.year_color);
-	// 	rootCSS.style.setProperty('--inactive-white-color', colors.inactive_white_color);
-	// 	rootCSS.style.setProperty('--active-white-color', colors.active_white_color);
-	// 	rootCSS.style.setProperty('--inactive-black-color', colors.inactive_black_color);
-	// 	rootCSS.style.setProperty('--active-black-color', colors.active_black_color);
-	// }
 
 	async slide(activElem, newElem, dir) {
 		let value = activElem.offsetWidth;

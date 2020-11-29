@@ -217,6 +217,7 @@
 	position: absolute;
 }
 
+/*!these stiles is used for month popup list 
 .mch-month-yar-picker .mch-picker-option {
 	display: none;
 	position: absolute;
@@ -234,7 +235,7 @@
 	list-style: none;
 	display: inline-block;
 	padding: 5px 10px;
-}
+} */
 
 .m-cal-body {
 	width: 100%;
