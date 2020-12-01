@@ -1,0 +1,20 @@
+{
+  "name": "JS-Calendar",
+  "version": "1.0.0",
+  "description": "This package is written from scratch as ECMAScript modules/[Sass](https://sass-lang.com) stylesheets to reproduce similar usability to bootstrap-datepicker.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikecoj/Datepicker.git"
+  },
+  "keywords": [],
+  "author": "Mike Cojocari",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mikecoj/Datepicker/issues"
+  },
+  "homepage": "https://github.com/mikecoj/Datepicker#readme"
+}

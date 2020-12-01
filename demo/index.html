@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Calendar</title>
+	<link rel="stylesheet" href="style.css" />
+	<link rel="stylesheet" href="../src/mc-calendar.css" />
+	<script src="https://kit.fontawesome.com/8149c307dc.js" crossorigin="anonymous"></script>
+	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+	<script src="../src/mc-calendar.js"></script>
+</head>
+
+<body>
+	<div id="box"></div>
+	<button id="calendar-btn">calendar</button>
+
+
+	<script>
+		let picker = new Datepicker();
+		const options = { el: '#box', };
+		picker.init(options);
+		let btn = document.querySelector('#calendar-btn');
+		btn.onclick = () => {
+			picker.open();
+		}
+	</script>
+</body>
+
+</html>

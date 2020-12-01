@@ -1,4 +1,3 @@
+node_modules
 assets
-index.html
-style.css
-tints-and-shades.js
+.vscode

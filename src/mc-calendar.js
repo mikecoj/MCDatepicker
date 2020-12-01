@@ -5,15 +5,15 @@ class Datepicker {
 		dateFormat: 'dd/mm/yy',
 		autoShow: true,
 		autoHide: false,
-		multiselect: false,
+		multiSelect: false
 	};
 	constructor() {
 		(this.wDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']),
 			(this.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']),
 			(this.today = new Date()),
-			(this.pickedDate = new Date(this.today)),
 			(this.linkedNode = null),
 			(this.parentNode = null),
+			(this.pickedDate = new Date(this.today)),
 			(this.currentMonth = this.months[this.pickedDate.getMonth()]),
 			(this.currentYear = this.pickedDate.getFullYear());
 	}
@@ -107,9 +107,9 @@ class Datepicker {
 			e.target.classList.add('mc-date--picked');
 		});
 
-		this.writeCalendar(this.today);
-		this.onButton();
-		this.navMonthYearHandler();
+		_this.writeCalendar(this.today);
+		_this.onButton();
+		_this.navMonthYearHandler();
 	}
 
 	set setPicker(date) {
@@ -138,12 +138,12 @@ class Datepicker {
 		// const weekDay = firstMonthDate.getDay();
 		let calendarArray = [];
 		let firstCalendarDate = (firstMonthDate.getDay() - 1) * -1;
+
 		while (calendarArray.length < 6) {
 			let week = [];
 			while (week.length < 7) week.push(firstCalendarDate++);
 			calendarArray.push(week);
 		}
-
 		_this.parentNode.querySelector('.mc-table__body').innerHTML = calendarArray
 			.map((w) => {
 				return `<tr class="mc-table__week">
@@ -225,12 +225,12 @@ class Datepicker {
 				prev: {
 					dir: 'left',
 					translVar: -100,
-					mthID: function (monthID, newMonthID, yearNumb) {},
+					mthID: function (monthID, newMonthID, yearNumb) {}
 				},
 				next: {
 					dir: 'right',
-					translVar: 100,
-				},
+					translVar: 100
+				}
 			};
 			if (clickable) {
 				clickable = false;
@@ -356,14 +356,12 @@ class Datepicker {
 	}
 
 	open() {
-		const _this = this;
-		// this.setPicker = new Date();
-		// this.writeCalendar(new Date());
-		_this.parentNode.classList.toggle('mc-calendar__box--opened');
+		// const _this = this;
+		this.parentNode.classList.toggle('mc-calendar__box--opened');
 	}
 	close() {
-		const _this = this;
-		_this.parentNode.classList.toggle('mc-calendar__box--opened');
+		// const _this = this;
+		this.parentNode.classList.toggle('mc-calendar__box--opened');
 	}
 
 	dateFormatString(date = new Date(), format = 'dd-mmm-yyyy') {
@@ -387,17 +385,15 @@ class Datepicker {
 				mmm: months[month].substr(0, 3),
 				mmmm: months[month],
 				yy: year.toString().substr(2),
-				yyyy: year.toString(),
+				yyyy: year.toString()
 			};
 			if (!unsupportedChar) {
 				result = format.replace(wordReg, (match) => {
 					if (match === 'yyy') {
-						err = new TypeError(match + ' Is not a supported format!');
-						console.error(err);
+						console.error(new TypeError(match + ' Is not a supported format!'));
 						return flags['yy'];
 					} else if (match.match(/d{5,}/) || match.match(/m{5,}/) || match.match(/y{5,}/)) {
-						err = new TypeError(match + ' Is not a supported format!');
-						console.error(err);
+						console.error(new TypeError(match + ' Is not a supported format!'));
 
 						return flags[match.substring(0, 2)];
 					} else {
@@ -405,8 +401,7 @@ class Datepicker {
 					}
 				});
 			} else {
-				err = new TypeError(format + ' Is not a supported format!');
-				console.error(err);
+				console.error(new TypeError(format + ' Is not a supported format!'));
 			}
 		}
 
@@ -424,14 +419,14 @@ class Datepicker {
 		let animationOptions = {
 			// timing options
 			duration: 200,
-			easing: 'ease-in-out',
+			easing: 'ease-in-out'
 		};
 		await Promise.all([
 			activeElem.animate(
 				[
 					// keyframes
 					{ transform: 'translateX(0px)' },
-					{ transform: `translateX(${value}px)` },
+					{ transform: `translateX(${value}px)` }
 				],
 				animationOptions
 			).finished,
@@ -439,10 +434,10 @@ class Datepicker {
 				[
 					// keyframes
 					{ transform: `translateX(${-1 * value}px)` },
-					{ transform: 'translateX(0px)' },
+					{ transform: 'translateX(0px)' }
 				],
 				animationOptions
-			).finished,
+			).finished
 		]);
 		activeElem.style.transform = 'translateX(100px)';
 		newElem.style.transform = 'translateX(0)';
@@ -460,7 +455,7 @@ const methods = {
 	getDate() {},
 	getMonth() {},
 	getYear() {},
-	getFullDate() {},
+	getFullDate() {}
 };
 
 function monthChange(elem, direction, month) {
@@ -468,8 +463,8 @@ function monthChange(elem, direction, month) {
 		new CustomEvent('month-change', {
 			bubbles: true,
 			detail: {
-				direction: direction,
-			},
+				direction: direction
+			}
 		})
 	);
 }
@@ -479,8 +474,8 @@ function yearChange(elem, direction, year) {
 		new CustomEvent('year-change', {
 			bubbles: true,
 			detail: {
-				direction: direction,
-			},
+				direction: direction
+			}
 		})
 	);
 }
@@ -498,8 +493,8 @@ function datepickerPick(elem, date) {
 		new CustomEvent('datepicker-pick', {
 			bubbles: true,
 			detail: {
-				date: date,
-			},
+				date: date
+			}
 		})
 	);
 }
@@ -509,8 +504,8 @@ function dispatchPick(elem) {
 		new CustomEvent('datepicker-pick', {
 			bubbles: true,
 			detail: {
-				date: new Date(elem.getAttribute('data-val-date')),
-			},
+				date: new Date(elem.getAttribute('data-val-date'))
+			}
 		})
 	);
 }

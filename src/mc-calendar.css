@@ -82,6 +82,9 @@ for example media object known from OOCSS such as list, radio-button. */
 	transform: translate(-50%, min(-400px, -65vh));
 	/* transform: translateX(-50%); */
 	transition: transform 0.3s linear 0.3s, visibility 0s linear 0.5s, top 0s linear 0.5s;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 }
 
