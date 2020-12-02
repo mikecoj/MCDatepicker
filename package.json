@@ -1,20 +1,33 @@
 {
-  "name": "JS-Calendar",
-  "version": "1.0.0",
-  "description": "This package is written from scratch as ECMAScript modules/[Sass](https://sass-lang.com) stylesheets to reproduce similar usability to bootstrap-datepicker.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mikecoj/Datepicker.git"
-  },
-  "keywords": [],
-  "author": "Mike Cojocari",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mikecoj/Datepicker/issues"
-  },
-  "homepage": "https://github.com/mikecoj/Datepicker#readme"
+	"name": "js-calendar",
+	"version": "1.0.0",
+	"description": "This package is written from scratch as ECMAScript modules/[Sass](https://sass-lang.com) stylesheets to reproduce similar usability to bootstrap-datepicker.",
+	"main": "src/mc-calendar.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mikecoj/Datepicker.git"
+	},
+	"keywords": [],
+	"author": "Mike Cojocari",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/mikecoj/Datepicker/issues"
+	},
+	"homepage": "https://github.com/mikecoj/Datepicker#readme",
+	"devDependencies": {
+		"eslint": "^7.14.0",
+		"eslint-config-airbnb": "^18.2.1",
+		"eslint-config-node": "^4.1.0",
+		"eslint-config-prettier": "^6.15.0",
+		"eslint-plugin-import": "^2.22.1",
+		"eslint-plugin-jsx-a11y": "^6.4.1",
+		"eslint-plugin-node": "^11.1.0",
+		"eslint-plugin-prettier": "^3.1.4",
+		"eslint-plugin-react": "^7.21.5",
+		"eslint-plugin-react-hooks": "^4.0.0",
+		"prettier": "^2.2.1"
+	}
 }

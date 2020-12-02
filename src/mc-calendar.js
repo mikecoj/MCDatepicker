@@ -179,15 +179,25 @@ class Datepicker {
 		currentMonthSelect.addEventListener('month-change', function (e) {
 			const oldMonth = e.target.children[0].innerText;
 			const { newElement, overlap } = arrayInfiniteLooper(_this.months, oldMonth, e.detail.direction);
-
+			e.target.innerHTML += `<span style="transform: translateX(${e.detail.direction === 'next' ? '-100' : '100'}px);">${newElement}</span>`;
+			const children = currentYearSelect.getElementsByTagName('span');
+			// _this.slide(children[0], children[1], e.detail.direction);
 			_this.setCurrentMonth = newElement;
+			console.log(children[0]);
+
+			children[0].animate(
+				[
+					{ transform: 'rotate(0) translate3D(-50%, -50%, 0)', color: '#000' },
+					{ color: '#431236', offset: 0.3 },
+					{ transform: 'rotate(360deg) translate3D(-50%, -50%, 0)', color: '#000' }
+				],
+				3000
+			);
 
 			if (overlap != 0) {
 				_this.setCurrentYear = _this.currentYear + overlap;
 				currentYearSelect.innerHTML = `<span>${_this.currentYear}</span>`;
 			}
-
-			e.target.children[0].innerText = _this.currentMonth;
 			_this.writeCalendar(new Date(_this.currentYear, _this.months.indexOf(_this.currentMonth), 1));
 		});
 		currentYearSelect.addEventListener('year-change', function (e) {
@@ -219,41 +229,6 @@ class Datepicker {
 		const parentNode = _this.parentNode;
 		const prevMonthRow = parentNode.querySelector('#mc-picker__month--prev');
 		const nextMonthRow = parentNode.querySelector('#mc-picker__month--next');
-		const monthSlider = async (dir) => {
-			let transVar;
-			const dirObj = {
-				prev: {
-					dir: 'left',
-					translVar: -100,
-					mthID: function (monthID, newMonthID, yearNumb) {}
-				},
-				next: {
-					dir: 'right',
-					translVar: 100
-				}
-			};
-			if (clickable) {
-				clickable = false;
-				const pickedYear = parentNode.querySelector('#mc-current--year span');
-				const monthSlider = parentNode.querySelector('#mc-current--month');
-				const pickedMonth = monthSlider.querySelector('span');
-				let yearNumb = Number(pickedYear.textContent);
-				const monthID = _this.months.indexOf(pickedMonth.textContent);
-				let newMonthID;
-
-				//TODO: needs to do a universal function for looping through array (carousel)
-
-				monthID == 0 ? ((newMonthID = 11), yearNumb--) : (newMonthID = monthID - 1);
-				monthID == 11 ? ((newMonthID = 0), yearNumb++) : (newMonthID = monthID + 1);
-
-				monthSlider.innerHTML += `<span style="transform: translateX(${transVar}px);">${_this.months[newMonthID]}</span>`;
-				let slideMonths = monthSlider.querySelectorAll('span');
-				await _this.slide(slideMonths[0], slideMonths[1], dir);
-				const newDate = new Date(yearNumb, newMonthID, 1);
-				_this.writeCalendar(newDate);
-				clickable = true;
-			}
-		};
 
 		prevMonthRow.addEventListener('click', async () => {
 			if (clickable) {
@@ -408,55 +383,49 @@ class Datepicker {
 		return result;
 	}
 
-	async slide(activeElem, newElem, dir) {
+	slide(activeElem, newElem, dir) {
 		let value = activeElem.offsetWidth;
-		// dir == 'right' ? value : -1 * value;
-		if (dir == 'right') {
-			value;
-		} else if (dir == 'left') {
-			value = -1 * value;
-		}
+		// console.log(value);
+		dir == 'prev' ? -1 * value : null;
+		// if (dir == 'next') {
+		// 	value;
+		// } else if (dir == 'prev') {
+		// 	value = -1 * value;
+		// }
 		let animationOptions = {
 			// timing options
-			duration: 200,
+			duration: 1000,
 			easing: 'ease-in-out'
 		};
-		await Promise.all([
-			activeElem.animate(
-				[
-					// keyframes
-					{ transform: 'translateX(0px)' },
-					{ transform: `translateX(${value}px)` }
-				],
-				animationOptions
-			).finished,
-			newElem.animate(
-				[
-					// keyframes
-					{ transform: `translateX(${-1 * value}px)` },
-					{ transform: 'translateX(0px)' }
-				],
-				animationOptions
-			).finished
-		]);
-		activeElem.style.transform = 'translateX(100px)';
-		newElem.style.transform = 'translateX(0)';
-		activeElem.remove();
+		activeElem.animate(
+			[
+				// keyframes
+				{ transform: 'translateX(0px)' },
+				{ transform: `translateX(${value}px)` }
+			],
+			{
+				// timing options
+				duration: 1000,
+				easing: 'ease-in-out'
+			}
+		);
+		newElem.animate(
+			[
+				// keyframes
+				{ transform: `translateX(${-1 * value}px)` },
+				{ transform: 'translateX(0px)' }
+			],
+			{
+				// timing options
+				duration: 1000,
+				easing: 'ease-in-out'
+			}
+		);
+		// activeElem.style.transform = 'translateX(100px)';
+		// newElem.style.transform = 'translateX(0)';
+		// activeElem.remove();
 	}
 }
-
-const methods = {
-	open() {},
-	close() {},
-	onOpen() {},
-	onClose() {},
-	onSelect() {},
-	getDay() {},
-	getDate() {},
-	getMonth() {},
-	getYear() {},
-	getFullDate() {}
-};
 
 function monthChange(elem, direction, month) {
 	elem.dispatchEvent(
@@ -510,7 +479,6 @@ function dispatchPick(elem) {
 	);
 }
 
-// function arrayInfiniteLooper(month, dir) {
 function arrayInfiniteLooper(array, arrayElement, direction) {
 	let overlap = 0;
 	const currentArrayElementIndex = array.indexOf(arrayElement);
