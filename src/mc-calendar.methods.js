@@ -50,4 +50,3 @@ slide(activeElem, newElem, dir) {
 			activeElem.remove();
 		});
 	}
-}

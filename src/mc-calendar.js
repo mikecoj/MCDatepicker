@@ -40,7 +40,7 @@ class Datepicker {
                     <a id="mc-picker__month--prev" class="mc-picker__nav mc-picker__nav--prev" href="#">
                         <i class="fas fa-angle-left" aria-hidden="true"></i>
                     </a>
-                    <div id="mc-current--month" class="mc-select__data"><span>${this.currentMonth}</span></div>
+                    <div id="mc-current--month" class="mc-select__data mc-select__data--month"><span>${this.currentMonth}</span></div>
                     <a id="mc-picker__month--next" class="mc-picker__nav mc-picker__nav--next" href="#">
                         <i class="fas fa-angle-right" aria-hidden="true"></i>
                     </a>
@@ -49,7 +49,7 @@ class Datepicker {
                     <a id="mc-picker__year--prev" class="mc-picker__nav mc-picker__nav--prev" href="#">
                         <i class="fas fa-angle-left" aria-hidden="true"></i>
                     </a>
-                    <div id="mc-current--year" class="mc-select__data"><span>${this.currentYear}</span></div>
+                    <div id="mc-current--year" class="mc-select__data mc-select__data--year"><span>${this.currentYear}</span></div>
                     <a id="mc-picker__year--next" class="mc-picker__nav mc-picker__nav--next" href="#">
                         <i class="fas fa-angle-right" aria-hidden="true"></i>
                     </a>
@@ -180,19 +180,8 @@ class Datepicker {
 			const oldMonth = e.target.children[0].innerText;
 			const { newElement, overlap } = arrayInfiniteLooper(_this.months, oldMonth, e.detail.direction);
 			e.target.innerHTML += `<span style="transform: translateX(${e.detail.direction === 'next' ? '-100' : '100'}px);">${newElement}</span>`;
-			const children = currentYearSelect.getElementsByTagName('span');
-			// _this.slide(children[0], children[1], e.detail.direction);
+			_this.slide(e.target.children[0], e.target.children[1], e.detail.direction);
 			_this.setCurrentMonth = newElement;
-			console.log(children[0]);
-
-			children[0].animate(
-				[
-					{ transform: 'rotate(0) translate3D(-50%, -50%, 0)', color: '#000' },
-					{ color: '#431236', offset: 0.3 },
-					{ transform: 'rotate(360deg) translate3D(-50%, -50%, 0)', color: '#000' }
-				],
-				3000
-			);
 
 			if (overlap != 0) {
 				_this.setCurrentYear = _this.currentYear + overlap;
@@ -386,44 +375,39 @@ class Datepicker {
 	slide(activeElem, newElem, dir) {
 		let value = activeElem.offsetWidth;
 		// console.log(value);
-		dir == 'prev' ? -1 * value : null;
-		// if (dir == 'next') {
-		// 	value;
-		// } else if (dir == 'prev') {
-		// 	value = -1 * value;
-		// }
+		// dir == 'prev' ? -1 * value : null;
+		if (dir == 'prev') {
+			value;
+		} else if (dir == 'next') {
+			value = -1 * value;
+		}
 		let animationOptions = {
 			// timing options
 			duration: 1000,
 			easing: 'ease-in-out'
 		};
-		activeElem.animate(
-			[
-				// keyframes
-				{ transform: 'translateX(0px)' },
-				{ transform: `translateX(${value}px)` }
-			],
-			{
-				// timing options
-				duration: 1000,
-				easing: 'ease-in-out'
-			}
-		);
-		newElem.animate(
-			[
-				// keyframes
-				{ transform: `translateX(${-1 * value}px)` },
-				{ transform: 'translateX(0px)' }
-			],
-			{
-				// timing options
-				duration: 1000,
-				easing: 'ease-in-out'
-			}
-		);
-		// activeElem.style.transform = 'translateX(100px)';
-		// newElem.style.transform = 'translateX(0)';
-		// activeElem.remove();
+		Promise.all([
+			activeElem.animate(
+				[
+					// keyframes
+					{ transform: 'translateX(0px)' },
+					{ transform: `translateX(${value}px)` }
+				],
+				animationOptions
+			).finished,
+			newElem.animate(
+				[
+					// keyframes
+					{ transform: `translateX(${-1 * value}px)` },
+					{ transform: 'translateX(0px)' }
+				],
+				animationOptions
+			).finished
+		]).then(() => {
+			// activeElem.style.transform = 'translateX(100px)';
+			newElem.style.transform = 'translateX(0)';
+			activeElem.remove();
+		});
 	}
 }
 
