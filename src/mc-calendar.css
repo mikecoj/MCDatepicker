@@ -181,17 +181,18 @@ for example media object known from OOCSS such as list, radio-button. */
 }
 .mc-select__data {
 	font-size: clamp(1rem, 8vw, 1.25rem);
+	height: clamp(1rem, 8vw, 1.25rem);
 	overflow: hidden;
 	/* width: clamp(6.25rem, 50vw, 7.8rem); */
 	position: relative;
 }
 .mc-select__data--month,
 .mc-select__data--month span {
-	width: clamp(6.25rem, 50vw, 6.25rem);
+	width: clamp(5rem, 40vw, 6.25rem);
 }
 .mc-select__data--year,
 .mc-select__data--year span {
-	width: clamp(3.25rem, 25vw, 4.2rem);
+	width: clamp(3rem, 22vw, 3.5rem);
 }
 .mc-select__data span {
 	/* display: inline-block; */
@@ -386,3 +387,5 @@ The components of our page, for example button, card, concrete-list, etc.. */
 
 /* =========================UTILITIES======================== */
 /* Utilities and helper classes with ability to override anything which goes before in the triangle. */
+
+/* Consolas, 'Courier New', monospace */

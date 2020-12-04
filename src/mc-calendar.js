@@ -1,4 +1,7 @@
-class Datepicker {
+import template from './template.js';
+import * as utils from './utils.js';
+
+export default class Datepicker {
 	defaultOptions = {
 		el: null,
 		type: 'popup',
@@ -17,77 +20,16 @@ class Datepicker {
 			(this.currentMonth = this.months[this.pickedDate.getMonth()]),
 			(this.currentYear = this.pickedDate.getFullYear());
 	}
-	get template() {
-		return `
-    <div id="mc-calendar" class="mc-calendar__box row">
-        <div class="mc-calendar__display row">
-            <div class="mc-display__header">
-                <h3 class="mc-display__day">${this.wDays[this.pickedDate.getDay()]}</h3>
-            </div>
-            <div class="mc-display__body row">
-                <div class="mc-display__data mc-display__data--primary row">
-                    <h1 class="mc-display__date">${this.pickedDate.getDate()}</h1>
-                </div>
-                <div class="mc-display__data mc-display__data--secondary row">
-                    <h3 class="mc-display__month">${this.currentMonth}</h3>
-                    <h2 class="mc-display__year">${this.currentYear}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="mc-calendar__picker row">
-            <div class="mc-picker__header row container-m">
-                <div class="mc-picker__select-month row">
-                    <a id="mc-picker__month--prev" class="mc-picker__nav mc-picker__nav--prev" href="#">
-                        <i class="fas fa-angle-left" aria-hidden="true"></i>
-                    </a>
-                    <div id="mc-current--month" class="mc-select__data mc-select__data--month"><span>${this.currentMonth}</span></div>
-                    <a id="mc-picker__month--next" class="mc-picker__nav mc-picker__nav--next" href="#">
-                        <i class="fas fa-angle-right" aria-hidden="true"></i>
-                    </a>
-                </div>
-                <div class="mc-picker__select-year row">
-                    <a id="mc-picker__year--prev" class="mc-picker__nav mc-picker__nav--prev" href="#">
-                        <i class="fas fa-angle-left" aria-hidden="true"></i>
-                    </a>
-                    <div id="mc-current--year" class="mc-select__data mc-select__data--year"><span>${this.currentYear}</span></div>
-                    <a id="mc-picker__year--next" class="mc-picker__nav mc-picker__nav--next" href="#">
-                        <i class="fas fa-angle-right" aria-hidden="true"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="mc-picker__body">
-                <table class="mc-picker__table container-s">
-                    <thead class="mc-table__header">
-                        <tr>
-                            <th class="mc-table__weekday">S</th>
-                            <th class="mc-table__weekday">M</th>
-                            <th class="mc-table__weekday">T</th>
-                            <th class="mc-table__weekday">W</th>
-                            <th class="mc-table__weekday">T</th>
-                            <th class="mc-table__weekday">F</th>
-                            <th class="mc-table__weekday">S</th>
-                        </tr>
-                    </thead>
-                    <tbody class="mc-table__body"></tbody>
-                </table>
-            </div>
-            <div class="mc-picker__footer row container-m">
-                <div class="mc-footer__section mc-footer__section--primary">
-                    <a id="mc-btn__clear" class="mc-btn mc-btn--danger" href="#">Clear</a>
-                </div>
-                <div class="mc-footer__section mc-footer__section--secondary">
-                    <a id="mc-btn__cancel" class="mc-btn mc-btn--success" href="#">CANCEL</a>
-                    <a id="mc-btn__ok" class="mc-btn mc-btn--success" href="#">OK</a>
-                </div>
-            </div>
-        </div>
-	</div>`;
-	}
 
 	init(options = {}) {
 		const _this = this;
-		// const linkedNode = document.querySelector(options.el);
-		document.querySelector('body').innerHTML += this.template;
+		//! const linkedNode = document.querySelector(options.el);
+		document.querySelector('body').innerHTML += template(
+			this.wDays[this.pickedDate.getDay()],
+			this.pickedDate.getDate(),
+			this.currentMonth,
+			this.currentYear
+		);
 		const parent = document.querySelector('#mc-calendar');
 		this.setParentNode = parent;
 		parent.addEventListener('datepicker-show', function (e) {
@@ -155,12 +97,15 @@ class Datepicker {
 							thisDate.getMonth() != firstMonthDate.getMonth() ? classlist.push('mc-date--inactive') : classlist.push('mc-date--active');
 							if (thisDate.setHours(0, 0, 0, 0).valueOf() == _this.pickedDate.setHours(0, 0, 0, 0).valueOf()) classlist.push('mc-date--picked');
 							if (thisDate.setHours(0, 0, 0, 0).valueOf() == new Date().setHours(0, 0, 0, 0).valueOf()) classlist.push('mc-date--today');
-							return `<td class="${classlist.join(' ')}" onclick="dispatchPick(this)" data-val-date="${thisDate}">${thisDate.getDate()}</td>`;
+							return `<td class="${classlist.join(' ')}" data-val-date="${thisDate}">${thisDate.getDate()}</td>`;
 						})
 						.join('')}
 					</tr>`;
 			})
 			.join('');
+		_this.parentNode.querySelectorAll('.mc-date--active').forEach((day) => {
+			day.onclick = (e) => utils.dispatchPick(e.target);
+		});
 	}
 
 	displayHandler(date) {
@@ -173,129 +118,72 @@ class Datepicker {
 
 	navMonthYearHandler() {
 		const _this = this;
+		let clickable = true;
 		const currentMonthSelect = _this.parentNode.querySelector('#mc-current--month');
 		const currentYearSelect = _this.parentNode.querySelector('#mc-current--year');
 
 		currentMonthSelect.addEventListener('month-change', function (e) {
-			const oldMonth = e.target.children[0].innerText;
-			const { newElement, overlap } = arrayInfiniteLooper(_this.months, oldMonth, e.detail.direction);
-			e.target.innerHTML += `<span style="transform: translateX(${e.detail.direction === 'next' ? '-100' : '100'}px);">${newElement}</span>`;
-			_this.slide(e.target.children[0], e.target.children[1], e.detail.direction);
-			_this.setCurrentMonth = newElement;
+			if (clickable) {
+				clickable = !clickable;
+				const oldMonth = e.target.children[0].innerText;
+				const { newElement, overlap } = utils.arrayInfiniteLooper(_this.months, oldMonth, e.detail.direction);
 
-			if (overlap != 0) {
-				_this.setCurrentYear = _this.currentYear + overlap;
-				currentYearSelect.innerHTML = `<span>${_this.currentYear}</span>`;
+				e.target.innerHTML += `<span style="transform: translateX(${e.detail.direction === 'next' ? '-100' : '100'}px);">${newElement}</span>`;
+
+				if (overlap != 0) {
+					_this.setCurrentYear = _this.currentYear + overlap;
+					// currentYearSelect.innerHTML = `<span>${_this.currentYear}</span>`;
+					currentYearSelect.innerHTML += `<span style="transform: translateX(${e.detail.direction === 'next' ? '-100' : '100'}px);">${
+						_this.currentYear
+					}</span>`;
+
+					utils.slide(currentYearSelect.children[0], currentYearSelect.children[1], e.detail.direction).then(() => {
+						currentYearSelect.children[1].style.transform = 'translateX(0)';
+						currentYearSelect.children[0].remove();
+						_this.writeCalendar(new Date(_this.currentYear, _this.months.indexOf(_this.currentMonth), 1));
+						// clickable = !clickable;
+					});
+				}
+
+				utils.slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
+					e.target.children[1].style.transform = 'translateX(0)';
+					e.target.children[0].remove();
+
+					_this.setCurrentMonth = newElement;
+
+					_this.writeCalendar(new Date(_this.currentYear, _this.months.indexOf(_this.currentMonth), 1));
+					clickable = !clickable;
+				});
 			}
-			_this.writeCalendar(new Date(_this.currentYear, _this.months.indexOf(_this.currentMonth), 1));
 		});
 		currentYearSelect.addEventListener('year-change', function (e) {
 			const oldYear = e.target.children[0].innerText;
 
 			_this.setCurrentYear = e.detail.direction === 'next' ? Number(oldYear) + 1 : Number(oldYear) - 1;
 
-			_this.writeCalendar(new Date(_this.currentYear, _this.months.indexOf(_this.currentMonth), 1));
-			e.target.children[0].innerText = _this.currentYear;
+			e.target.innerHTML += `<span style="transform: translateX(${e.detail.direction === 'next' ? '-100' : '100'}px);">${_this.currentYear}</span>`;
+
+			utils.slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
+				e.target.children[1].style.transform = 'translateX(0)';
+				e.target.children[0].remove();
+				_this.writeCalendar(new Date(_this.currentYear, _this.months.indexOf(_this.currentMonth), 1));
+				clickable = !clickable;
+			});
+			// _this.writeCalendar(new Date(_this.currentYear, _this.months.indexOf(_this.currentMonth), 1));
+			// e.target.children[0].innerText = _this.currentYear;
 		});
 
 		_this.parentNode.querySelector('#mc-picker__month--prev').addEventListener('click', function (e) {
-			monthChange(currentMonthSelect, 'prev');
+			utils.monthChange(currentMonthSelect, 'prev');
 		});
 		_this.parentNode.querySelector('#mc-picker__month--next').addEventListener('click', function (e) {
-			monthChange(currentMonthSelect, 'next');
+			utils.monthChange(currentMonthSelect, 'next');
 		});
 		_this.parentNode.querySelector('#mc-picker__year--prev').addEventListener('click', function (e) {
-			yearChange(currentYearSelect, 'prev');
+			utils.yearChange(currentYearSelect, 'prev');
 		});
 		_this.parentNode.querySelector('#mc-picker__year--next').addEventListener('click', function (e) {
-			yearChange(currentYearSelect, 'next');
-		});
-	}
-
-	changeMonth() {
-		let clickable = true;
-		const _this = this;
-		const parentNode = _this.parentNode;
-		const prevMonthRow = parentNode.querySelector('#mc-picker__month--prev');
-		const nextMonthRow = parentNode.querySelector('#mc-picker__month--next');
-
-		prevMonthRow.addEventListener('click', async () => {
-			if (clickable) {
-				clickable = false;
-				const pickedYear = parentNode.querySelector('#mc-current--year span');
-				const monthSlider = parentNode.querySelector('#mc-current--month');
-				const pickedMonth = monthSlider.querySelector('span');
-				let yearNumb = Number(pickedYear.textContent);
-				const monthID = _this.months.indexOf(pickedMonth.textContent);
-				let newMonthID;
-				monthID == 0 ? ((newMonthID = 11), yearNumb--) : (newMonthID = monthID - 1);
-				monthSlider.innerHTML += `<span style="transform: translateX(-100px);">${_this.months[newMonthID]}</span>`;
-				let slideMonths = monthSlider.querySelectorAll('span');
-				await _this.slide(slideMonths[0], slideMonths[1], 'right');
-				const newDate = new Date(yearNumb, newMonthID, 1);
-				_this.writeCalendar(newDate);
-				clickable = true;
-			}
-		});
-		nextMonthRow.addEventListener('click', async () => {
-			if (clickable) {
-				clickable = false;
-				const pickedYear = parentNode.querySelector('#mc-current--year span');
-				const monthSlider = parentNode.querySelector('#mc-current--month');
-				const pickedMonth = monthSlider.querySelector('span');
-				let yearNumb = Number(pickedYear.textContent);
-				const monthID = _this.months.indexOf(pickedMonth.textContent);
-				let newMonthID;
-				monthID == 11 ? ((newMonthID = 0), yearNumb++) : (newMonthID = monthID + 1);
-				monthSlider.innerHTML += `<span style="transform: translateX(100px);">${_this.months[newMonthID]}</span>`;
-				let slideMonths = monthSlider.querySelectorAll('span');
-				await _this.slide(slideMonths[0], slideMonths[1], 'left');
-				const newDate = new Date(yearNumb, newMonthID, 1);
-				_this.writeCalendar(newDate);
-				clickable = true;
-			}
-		});
-	}
-
-	changeYear() {
-		let clickable = true;
-		const _this = this;
-		const parentNode = _this.parentNode;
-		const prevYearRow = parentNode.querySelector('#mc-picker__year--prev');
-		const nextYearRow = parentNode.querySelector('#mc-picker__year--next');
-
-		const monthSlider = () => {};
-
-		prevYearRow.addEventListener('click', async () => {
-			if (clickable) {
-				clickable = false;
-				const yearSlider = parentNode.querySelector('#mc-current--year');
-				const pickedYear = yearSlider.querySelector('span');
-				const pickedMonth = parentNode.querySelector('#mc-current--month span');
-				let newYear = Number(pickedYear.textContent) - 1;
-				yearSlider.innerHTML += `<span style="transform: translateX(100px);">${newYear}</span>`;
-				let yearSliders = yearSlider.querySelectorAll('span');
-				await _this.slide(yearSliders[0], yearSliders[1], 'right');
-				const newDate = new Date(newYear, _this.months.indexOf(pickedMonth.textContent), 1);
-				_this.writeCalendar(newDate);
-				clickable = true;
-			}
-		});
-		nextYearRow.addEventListener('click', async () => {
-			if (clickable) {
-				clickable = false;
-				const yearSlider = parentNode.querySelector('#mc-current--year');
-				const pickedYear = yearSlider.querySelector('span');
-				const pickedMonth = parentNode.querySelector('#mc-current--month span');
-				let newYear = Number(pickedYear.textContent) + 1;
-				yearSlider.innerHTML += `<span style="transform: translateX(100px);">${newYear}</span>`;
-				let yearSliders = yearSlider.querySelectorAll('span');
-				await _this.slide(yearSliders[0], yearSliders[1], 'left');
-				const newDate = new Date(newYear, _this.months.indexOf(pickedMonth.textContent), 1);
-				_this.writeCalendar(newDate);
-				pickedYear.innerHTML = newYear;
-				clickable = true;
-			}
+			utils.yearChange(currentYearSelect, 'next');
 		});
 	}
 
@@ -305,12 +193,12 @@ class Datepicker {
 		let cancelButton = _this.parentNode.querySelector('#mc-btn__cancel');
 		let clearButton = _this.parentNode.querySelector('#mc-btn__clear');
 		okButton.onclick = (e) => {
-			console.log(_this.dateFormatString(_this.pickedDate));
+			console.log(utils.dateFormatString(_this.pickedDate));
 			_this.close();
 		};
 
 		cancelButton.onclick = (e) => {
-			datepickerHide(_this.parentNode);
+			utils.datepickerHide(_this.parentNode);
 		};
 
 		clearButton.onclick = (e) => {
@@ -327,150 +215,4 @@ class Datepicker {
 		// const _this = this;
 		this.parentNode.classList.toggle('mc-calendar__box--opened');
 	}
-
-	dateFormatString(date = new Date(), format = 'dd-mmm-yyyy') {
-		let result = null;
-		if (date != null) {
-			let unsupportedChar = format.match(/[^dmy,-\s\/]/g);
-			const wordReg = /(d|m|y)+/g;
-			let wDay = date.getDay();
-			let mDate = date.getDate();
-			let month = date.getMonth();
-			let year = date.getFullYear();
-			const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-			const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-			let flags = {
-				d: mDate.toString(),
-				dd: mDate.toString().padStart(2, '0'),
-				ddd: weekDays[wDay].substr(0, 3),
-				dddd: weekDays[wDay],
-				m: month.toString(),
-				mm: month.toString().padStart(2, '0'),
-				mmm: months[month].substr(0, 3),
-				mmmm: months[month],
-				yy: year.toString().substr(2),
-				yyyy: year.toString()
-			};
-			if (!unsupportedChar) {
-				result = format.replace(wordReg, (match) => {
-					if (match === 'yyy') {
-						console.error(new TypeError(match + ' Is not a supported format!'));
-						return flags['yy'];
-					} else if (match.match(/d{5,}/) || match.match(/m{5,}/) || match.match(/y{5,}/)) {
-						console.error(new TypeError(match + ' Is not a supported format!'));
-
-						return flags[match.substring(0, 2)];
-					} else {
-						return flags[match];
-					}
-				});
-			} else {
-				console.error(new TypeError(format + ' Is not a supported format!'));
-			}
-		}
-
-		return result;
-	}
-
-	slide(activeElem, newElem, dir) {
-		let value = activeElem.offsetWidth;
-		// console.log(value);
-		// dir == 'prev' ? -1 * value : null;
-		if (dir == 'prev') {
-			value;
-		} else if (dir == 'next') {
-			value = -1 * value;
-		}
-		let animationOptions = {
-			// timing options
-			duration: 1000,
-			easing: 'ease-in-out'
-		};
-		Promise.all([
-			activeElem.animate(
-				[
-					// keyframes
-					{ transform: 'translateX(0px)' },
-					{ transform: `translateX(${value}px)` }
-				],
-				animationOptions
-			).finished,
-			newElem.animate(
-				[
-					// keyframes
-					{ transform: `translateX(${-1 * value}px)` },
-					{ transform: 'translateX(0px)' }
-				],
-				animationOptions
-			).finished
-		]).then(() => {
-			// activeElem.style.transform = 'translateX(100px)';
-			newElem.style.transform = 'translateX(0)';
-			activeElem.remove();
-		});
-	}
-}
-
-function monthChange(elem, direction, month) {
-	elem.dispatchEvent(
-		new CustomEvent('month-change', {
-			bubbles: true,
-			detail: {
-				direction: direction
-			}
-		})
-	);
-}
-
-function yearChange(elem, direction, year) {
-	elem.dispatchEvent(
-		new CustomEvent('year-change', {
-			bubbles: true,
-			detail: {
-				direction: direction
-			}
-		})
-	);
-}
-
-function datepickerShow(elem) {
-	elem.dispatchEvent(new CustomEvent('datepicker-show', { bubbles: true }));
-}
-
-function datepickerHide(elem) {
-	elem.dispatchEvent(new CustomEvent('datepicker-hide', { bubbles: true }));
-}
-
-function datepickerPick(elem, date) {
-	elem.dispatchEvent(
-		new CustomEvent('datepicker-pick', {
-			bubbles: true,
-			detail: {
-				date: date
-			}
-		})
-	);
-}
-
-function dispatchPick(elem) {
-	elem.dispatchEvent(
-		new CustomEvent('datepicker-pick', {
-			bubbles: true,
-			detail: {
-				date: new Date(elem.getAttribute('data-val-date'))
-			}
-		})
-	);
-}
-
-function arrayInfiniteLooper(array, arrayElement, direction) {
-	let overlap = 0;
-	const currentArrayElementIndex = array.indexOf(arrayElement);
-	const forward = (currentArrayElementIndex + 1) % array.length;
-	const backward = (((currentArrayElementIndex - 1) % array.length) + array.length) % array.length;
-	const nextArrayElementIndex = direction === 'next' ? forward : backward;
-	const newElement = array[nextArrayElementIndex];
-	if (direction === 'next' && currentArrayElementIndex > nextArrayElementIndex) overlap++;
-	if (direction === 'prev' && currentArrayElementIndex < nextArrayElementIndex) overlap--;
-	return { newElement, overlap };
 }
