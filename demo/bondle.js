@@ -2,7 +2,7 @@
 import Datepicker from '../src/mc-calendar.js';
 // import { dispatchPick } from '../src/utils.js';
 const picker = new Datepicker();
-const options = { el: '#box' };
+const options = { el: '#box', something: 'test' };
 picker.init(options);
 const btn = document.querySelector('#calendar-btn');
 btn.onclick = () => {

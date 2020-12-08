@@ -9,14 +9,11 @@
 			}
 		],
 		"no-unused-vars": "warn",
-		"no-console": "off",
+		"no-console": "warn",
 		"func-names": "off",
 		"no-process-exit": "off",
 		"object-shorthand": "off",
 		"class-methods-use-this": "off",
-		// "node/no-unsupported-features/es-syntax": "off",
-		// "import/no-extraneous-dependencies": "off",
-		// "import/prefer-default-export": "off",
 		"import/extensions": ["ignorePackages"]
 	},
 	"parserOptions": {

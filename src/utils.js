@@ -1,54 +1,5 @@
-export function monthChange(elem, direction, month) {
-	elem.dispatchEvent(
-		new CustomEvent('month-change', {
-			bubbles: true,
-			detail: {
-				direction: direction
-			}
-		})
-	);
-}
-
-export function yearChange(elem, direction, year) {
-	elem.dispatchEvent(
-		new CustomEvent('year-change', {
-			bubbles: true,
-			detail: {
-				direction: direction
-			}
-		})
-	);
-}
-
-export function datepickerShow(elem) {
-	elem.dispatchEvent(new CustomEvent('datepicker-show', { bubbles: true }));
-}
-
-export function datepickerHide(elem) {
-	elem.dispatchEvent(new CustomEvent('datepicker-hide', { bubbles: true }));
-}
-
-export function datepickerPick(elem, date) {
-	elem.dispatchEvent(
-		new CustomEvent('datepicker-pick', {
-			bubbles: true,
-			detail: {
-				date: date
-			}
-		})
-	);
-}
-
-export function dispatchPick(elem) {
-	elem.dispatchEvent(
-		new CustomEvent('datepicker-pick', {
-			bubbles: true,
-			detail: {
-				date: new Date(elem.getAttribute('data-val-date'))
-			}
-		})
-	);
-}
+import { dateFormatValidator } from './validators.js';
+import { weekDays, months } from './defaults.js';
 
 export function arrayInfiniteLooper(array, arrayElement, direction) {
 	let overlap = 0;
@@ -62,17 +13,20 @@ export function arrayInfiniteLooper(array, arrayElement, direction) {
 	return { newElement, overlap };
 }
 
-export function slide(activeElem, newElem, dir) {
-	let value = activeElem.offsetWidth;
-	if (dir == 'prev') {
-		value;
-	} else if (dir == 'next') {
-		value = -1 * value;
-	}
+export function slide(
+	activeElem,
+	newElem,
+	dir,
+	{ duration = 300, easing = 'ease-in-out', ...customOption } = {}
+) {
+	const value =
+		dir === 'prev' ? activeElem.offsetWidth : dir === 'next' ? activeElem.offsetWidth * -1 : null;
+
 	const animationOptions = {
 		// timing options
-		duration: 300,
-		easing: 'ease-in-out'
+		duration,
+		easing,
+		...customOption
 	};
 	return Promise.all([
 		activeElem.animate(
@@ -94,18 +48,13 @@ export function slide(activeElem, newElem, dir) {
 	]);
 }
 
-export function dateFormatString(date = new Date(), format = 'dd-mmm-yyyy') {
-	let result = null;
-	if (date != null) {
-		let unsupportedChar = format.match(/[^dmy,-\s\/]/g);
-		const wordReg = /(d|m|y)+/g;
-		let wDay = date.getDay();
-		let mDate = date.getDate();
-		let month = date.getMonth();
-		let year = date.getFullYear();
-		const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-		const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-		let flags = {
+export function dateFormatParser(date = new Date(), format = 'dd-mmm-yyyy') {
+	if (date instanceof Date && dateFormatValidator(format).isValid()) {
+		const wDay = date.getDay();
+		const mDate = date.getDate();
+		const month = date.getMonth();
+		const year = date.getFullYear();
+		const flags = {
 			d: mDate.toString(),
 			dd: mDate.toString().padStart(2, '0'),
 			ddd: weekDays[wDay].substr(0, 3),
@@ -117,27 +66,23 @@ export function dateFormatString(date = new Date(), format = 'dd-mmm-yyyy') {
 			yy: year.toString().substr(2),
 			yyyy: year.toString()
 		};
-		if (!unsupportedChar) {
-			result = format.replace(wordReg, (match) => {
-				if (match === 'yyy') {
-					console.error(new TypeError(match + ' Is not a supported format!'));
-					return flags['yy'];
-				} else if (match.match(/d{5,}/) || match.match(/m{5,}/) || match.match(/y{5,}/)) {
-					console.error(new TypeError(match + ' Is not a supported format!'));
-
-					return flags[match.substring(0, 2)];
-				} else {
-					return flags[match];
-				}
-			});
-		} else {
-			console.error(new TypeError(format + ' Is not a supported format!'));
-		}
+		return dateFormatValidator(format).replaceMatch(flags);
 	}
-
-	return result;
+	throw new Error(date + ' Is not a Date object.');
 }
 
-export function alert() {
-	console.log('It works');
+export function getCalendarArray(date) {
+	let calendarArray = [];
+	const firstMonthDate = new Date(date.getFullYear(), date.getMonth(), 1);
+	let firstCalendarDate = (firstMonthDate.getDay() - 1) * -1;
+	while (calendarArray.length < 6) {
+		let week = [];
+		while (week.length < 7) week.push(firstCalendarDate++);
+		calendarArray.push(week);
+	}
+	return calendarArray;
+}
+
+export function valueOfDate(date) {
+	return date.setHours(0, 0, 0, 0).valueOf();
 }
