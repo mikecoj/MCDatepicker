@@ -73,16 +73,13 @@ function isToday(date) {
 	return valueOfDate(date) === valueOfDate(new Date()) ? true : false;
 }
 
-function writeCalendarTable() {}
-
-function createDay(day) {
-	return `<td class="${day.classlist}" data-val-date="${day.date}">${day.date.getDate()}</td>`;
-}
-
-function createMonth(monthArray) {
-	return calendarArray
-		.map((week) => {
-			return `<tr class="mc-table__week">${week.map((day) => writeDay(day)).join('')}</tr>`;
-		})
-		.join('');
+export function writeCalendarTable(instance, day) {
+	const calendar = renderCalendar(instance, day);
+	const createDay = (day) => {
+		return `<td class="${day.classlist}" data-val-date="${day.date}">${day.date.getDate()}</td>`;
+	};
+	const createWeek = (week) => {
+		return `<tr class="mc-table__week">${week.map((day) => createDay(day)).join('')}</tr>`;
+	};
+	return calendar.map((week) => createWeek(week));
 }

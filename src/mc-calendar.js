@@ -3,14 +3,20 @@ import * as utils from './utils.js';
 import defaultOptions from './defaults.js';
 import { defaultEventObject, defaultEventColorType, weekDays, months } from './defaults.js';
 import createInstance from './instance.js';
+import { validateOptions } from './validators.js';
 
-const MCDatepicked = (options) => {
-	let datepickerCreated = false;
+const MCDatepicker = ((options) => {
 	let datepickers = [];
 	let activeInstance = null;
-	if (!datepickers.length) renderCalendar();
-	const instance = createInstance(instanceOptions);
-};
+
+	const create = (options) => {
+		const instanceOptions = validateOptions(options, defaultOptions);
+		const instance = createInstance(instanceOptions);
+		this.datepickers.push(instance);
+		return instance;
+	};
+	return { create };
+})();
 
 // console.log(optionsDefault);
 // export default class Datepicker {
