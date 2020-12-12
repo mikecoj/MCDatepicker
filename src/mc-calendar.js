@@ -15,8 +15,10 @@ const MCDatepicker = ((options) => {
 		this.datepickers.push(instance);
 		return instance;
 	};
-	const remove = (instance) => {};
-	return { create };
+	const remove = (instance) => {
+		this.datepickers.slice(datepickers.indexOf({ instance }), 1);
+	};
+	return { create, remove };
 })();
 
 // console.log(optionsDefault);
