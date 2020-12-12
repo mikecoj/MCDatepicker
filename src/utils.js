@@ -1,7 +1,8 @@
 import { dateFormatValidator } from './validators.js';
 import { weekDays, months } from './defaults.js';
+import { Is } from './validators.js';
 
-export function arrayInfiniteLooper(array, arrayElement, direction) {
+export const arrayInfiniteLooper = (array, arrayElement, direction) => {
 	let overlap = 0;
 	const currentArrayElementIndex = array.indexOf(arrayElement);
 	const forward = (currentArrayElementIndex + 1) % array.length;
@@ -11,7 +12,7 @@ export function arrayInfiniteLooper(array, arrayElement, direction) {
 	if (direction === 'next' && currentArrayElementIndex > nextArrayElementIndex) overlap++;
 	if (direction === 'prev' && currentArrayElementIndex < nextArrayElementIndex) overlap--;
 	return { newElement, overlap };
-}
+};
 
 export function slide(
 	activeElem,
@@ -48,8 +49,8 @@ export function slide(
 	]);
 }
 
-export function dateFormatParser(date = new Date(), format = 'dd-mmm-yyyy') {
-	if (date instanceof Date && dateFormatValidator(format).isValid()) {
+export const dateFormatParser = (date = new Date(), format = 'dd-mmm-yyyy') => {
+	if (Is(date).date() && dateFormatValidator(format).isValid()) {
 		const wDay = date.getDay();
 		const mDate = date.getDate();
 		const month = date.getMonth();
@@ -69,9 +70,9 @@ export function dateFormatParser(date = new Date(), format = 'dd-mmm-yyyy') {
 		return dateFormatValidator(format).replaceMatch(flags);
 	}
 	throw new Error(date + ' Is not a Date object.');
-}
+};
 
-export function getCalendarArray(date) {
+export const getCalendarArray = (date) => {
 	let calendarArray = [];
 	const firstMonthDate = new Date(date.getFullYear(), date.getMonth(), 1);
 	let firstCalendarDate = (firstMonthDate.getDay() - 1) * -1;
@@ -81,8 +82,8 @@ export function getCalendarArray(date) {
 		calendarArray.push(week);
 	}
 	return calendarArray;
-}
+};
 
-export function valueOfDate(date) {
+export const valueOfDate = (date) => {
 	return date.setHours(0, 0, 0, 0).valueOf();
-}
+};

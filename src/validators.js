@@ -1,12 +1,12 @@
-export function validateOptions(customOptions, defaultOptions) {
+export const validateOptions = (customOptions, defaultOptions) => {
 	const allParametersInclouded = reqParams.every((item) =>
 		defaultOptions.some((param) => param.name === item)
 	);
 	if (!allParametersInclouded) throw new Error('Unrecognized option!');
 
 	return { ...defaultOptions, ...customOptions };
-}
-export function dateFormatValidator(format) {
+};
+export const dateFormatValidator = (format) => {
 	const validator = /^(?:(d{1,4}|m{1,4}|y{4}|y{2})?\b(?:(?:,\s)|[-\s\/]{1})?(d{1,4}|m{1,4}|y{4}|y{2})?\b(?:(?:,\s)|[-\s\/]{1})?(d{1,4}|m{1,4}|y{4}|y{2})\b(?:(?:,\s)|[-\s\/]{1})?(d{1,4}|m{1,4}|y{2}|y{4})?\b)$/gi;
 	const isValid = () => {
 		const test = validator.test(format);
@@ -22,23 +22,11 @@ export function dateFormatValidator(format) {
 		});
 	};
 	return { isValid, replaceMatch };
-}
+};
 
 export function eventValidator(event, eventDefaults) {}
 
-const isArray = (variable) => {
-	return Array.isArray(variable);
-};
-
-const isDate = (variable) => {
-	return variable instanceof Date;
-};
-
-const isString = (variable) => {
-	return typeof variable === 'string' || variable instanceof String ? true : false;
-};
-
-const Is = (variable) => {
+export const Is = (variable) => {
 	const type = Object.prototype.toString
 		.call(variable)
 		.match(/\s([a-zA-Z]+)/)[1]

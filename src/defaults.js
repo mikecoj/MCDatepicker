@@ -25,7 +25,8 @@ const defaultOptions = {
 	markDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
 	markDatesCustom: null, // ex: (day) => (date.getDay() === 10)
 	daterange: false,
-	events: []
+	events: [],
+	eventColorScheme: []
 };
 
 export const defaultEventObject = {
