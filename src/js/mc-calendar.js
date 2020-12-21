@@ -1,3 +1,6 @@
+import '@fortawesome/fontawesome-free/js/all.js';
+import './style.css';
+import './mc-calendar.css';
 import template from './template.js';
 import * as utils from './utils.js';
 import defaultOptions from './defaults.js';
@@ -5,10 +8,9 @@ import { defaultEventObject, defaultEventColorType, weekDays, months } from './d
 import createInstance from './instance.js';
 import { validateOptions } from './validators.js';
 
-const MCDatepicker = ((options) => {
+window.MCDatepicker = (() => {
 	let datepickers = [];
-	let activeInstance = null;
-
+	// let activeInstance = null;
 	const create = (options) => {
 		const instanceOptions = validateOptions(options, defaultOptions);
 		const instance = createInstance(instanceOptions);

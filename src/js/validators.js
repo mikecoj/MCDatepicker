@@ -1,5 +1,5 @@
 export const validateOptions = (customOptions, defaultOptions) => {
-	const allParametersInclouded = reqParams.every((item) =>
+	const allParametersInclouded = customOptions.every((item) =>
 		defaultOptions.some((param) => param.name === item)
 	);
 	if (!allParametersInclouded) throw new Error('Unrecognized option!');

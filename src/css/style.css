@@ -1,0 +1,42 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	min-height: 100vh;
+	min-width: 100%;
+}
+
+/* #box {
+	position: absolute;
+	z-index: 2;
+} */
+.container {
+	width: min(80%, 1000px);
+	margin: 0 auto;
+}
+.col {
+	width: 50%;
+}
+.main__header {
+	/* height: 10vh; */
+	height: clamp(40px, 8vh, 65px);
+	background-color: #38ada9;
+	color: #fff;
+}
+
+.main__body {
+	height: 80vh;
+	background-color: #e4eefa;
+}
+
+.main__footer {
+	height: 10vh;
+	background-color: #38ada9;
+}
+.form-field__label,
+.form-field__input {
+	display: block;
+}

@@ -6,6 +6,7 @@ export default function createInstance(customOptions, datepicker) {
 	const instance = {
 		datepicker: datepicker,
 		el: instanceOptions.el,
+		linkedElement: document.querySelector(instanceOptions.el),
 		pickedDate: new Date(),
 		options: instanceOptions,
 

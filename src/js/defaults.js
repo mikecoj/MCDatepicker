@@ -1,7 +1,7 @@
 const defaultOptions = {
 	el: null,
 	dateFormat: 'DD-MMM-YYYY',
-	bodyType: 'modal', // ['modal', 'inline', 'permanent']
+	bodyType: 'modal', // ['modal', 'inline', 'range', 'permanent']
 	showCalendarDisplay: true,
 	customWeekDays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
 	customMonths: [
