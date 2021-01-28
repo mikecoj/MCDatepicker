@@ -1,6 +1,7 @@
 import { weekDays, months } from './defaults.js';
 import { writeCalendarTable } from './render,js';
 import * as utils from './utils.js';
+import { CALENDAR_HIDE, CALENDAR_SHOW, CHANGE_MONTH, CHANGE_YEAR, DATE_PICK } from './events';
 import {
 	datepickerShow,
 	datepickerHide,
@@ -18,8 +19,8 @@ export const applyOnFocusListener = (elem) => {
 	document.querySelector(elem).addEventListener('focus', (e) => datepickerShow(e.target));
 };
 
-export function applyListeners(datepickers) {
-	const calendar = document.querySelector('#mc-calendar');
+export function applyListeners(calendar, datepickers) {
+	// const calendar = document.querySelector('#mc-calendar');
 	const tableBody = calendar.querySelector('.mc-table__body');
 	const displayDay = calendar.querySelector('.mc-display__day');
 	const displayDate = calendar.querySelector('.mc-display__date');
@@ -39,17 +40,17 @@ export function applyListeners(datepickers) {
 	let activeInstance = null;
 	let clickable = true;
 
-	calendar.addEventListener('show-calendar', (e) => {
+	calendar.addEventListener(CALENDAR_SHOW, (e) => {
 		activeInstance = datepickers.find(({ el }) => el === e.target.id);
 		calendar.classList.add('mc-calendar__box--opened');
 		activeInstance.onOpen(e);
 	});
-	calendar.addEventListener('hide-calendar', (e) => {
+	calendar.addEventListener(CALENDAR_HIDE, (e) => {
 		calendar.classList.remove('mc-calendar__box--opened');
 		activeInstance.onClose(e);
 		activeInstance = null;
 	});
-	calendar.addEventListener('date-pick', function (e) {
+	calendar.addEventListener(DATE_PICK, function (e) {
 		const selectedDate = e.detail.date;
 		displayDay.innerText = weekDays[selectedDate.getDay()];
 		displayDate.innerText = selectedDate.getDate();
@@ -63,7 +64,7 @@ export function applyListeners(datepickers) {
 		activeInstance.onSelect(e);
 	});
 
-	currentMonthSelect.addEventListener('month-change', function (e) {
+	currentMonthSelect.addEventListener(CHANGE_MONTH, function (e) {
 		if (!clickable) return;
 		clickable = !clickable;
 		const selectedMonth = e.target.children[0].innerText;
@@ -98,7 +99,7 @@ export function applyListeners(datepickers) {
 		});
 	});
 
-	currentYearSelect.addEventListener('year-change', function (e) {
+	currentYearSelect.addEventListener(CHANGE_YEAR, function (e) {
 		if (!clickable) return;
 		clickable = !clickable;
 		const selectedMonth = currentMonthSelect.children[0].innerText;

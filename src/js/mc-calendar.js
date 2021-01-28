@@ -7,7 +7,7 @@ import defaultOptions, {
 	weekDays,
 	months
 } from './defaults';
-import { applyOnFocusListener } from './handlers';
+import { applyListeners, applyOnFocusListener } from './handlers';
 import createInstance from './instance';
 import validateOptions from './validators';
 import { writeTemplate } from './render';
@@ -18,7 +18,7 @@ const MCDatepicker = (() => {
 	let datepickers = [];
 	// let activeInstance = null;
 	const create = (options = {}) => {
-		writeTemplate();
+		writeTemplate(datepickers);
 		const instanceOptions = validateOptions(options, defaultOptions);
 		const instance = createInstance(instanceOptions);
 		this.datepickers.push(instance);

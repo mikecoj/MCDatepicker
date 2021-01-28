@@ -1,5 +1,6 @@
 import template from './template.js';
 import { getCalendarArray, valueOfDate, noop } from './utils.js';
+import { applyListeners } from './handlers';
 
 const renderCalendar = (instance, date) => {
 	const firstMonthDate = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -85,12 +86,13 @@ export function writeCalendarTable(instance, day) {
 	return calendar.map((week) => createWeek(week));
 }
 
-export function writeTemplate() {
+export function writeTemplate(datepickers) {
 	writeTemplate = noop;
 	const calendarDiv = document.createElement('div');
 	calendarDiv.id = 'mc-calendar';
 	calendarDiv.className = 'mc-calendar__box row mc-calendar__box--opened';
 	calendarDiv.innerHTML = template();
 	document.body.appendChild(calendarDiv);
+	applyListeners(calendarDiv, datepickers);
 	// document.innerHTML += template();
 }
