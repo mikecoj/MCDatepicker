@@ -14,6 +14,10 @@ const spanTemplate = (direction, content) => {
 	return `<span style="transform: translateX(${units}px);">${content}</span>`;
 };
 
+export const applyOnFocusListener = (elem) => {
+	document.querySelector(elem).addEventListener('focus', (e) => datepickerShow(e.target));
+};
+
 export function applyListeners(datepickers) {
 	const calendar = document.querySelector('#mc-calendar');
 	const tableBody = calendar.querySelector('.mc-table__body');

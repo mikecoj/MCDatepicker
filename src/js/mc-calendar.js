@@ -7,6 +7,7 @@ import defaultOptions, {
 	weekDays,
 	months
 } from './defaults';
+import { applyOnFocusListener } from './handlers';
 import createInstance from './instance';
 import validateOptions from './validators';
 import { writeTemplate } from './render';
@@ -20,8 +21,8 @@ const MCDatepicker = (() => {
 		writeTemplate();
 		const instanceOptions = validateOptions(options, defaultOptions);
 		const instance = createInstance(instanceOptions);
-		// const instance = createInstance(instance);
-		// this.datepickers.push(instance);
+		this.datepickers.push(instance);
+		applyOnFocusListener(instance.el);
 		// return instance;
 	};
 	const remove = (instance) => {
