@@ -2,6 +2,8 @@ import { dateFormatValidator } from './validators.js';
 import { weekDays, months } from './defaults.js';
 import { Is } from './validators.js';
 
+export function noop() {}
+
 export const arrayInfiniteLooper = (array, arrayElement, direction) => {
 	let overlap = 0;
 	const currentArrayElementIndex = array.indexOf(arrayElement);

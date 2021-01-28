@@ -1,28 +1,34 @@
-import '@fortawesome/fontawesome-free/js/all.js';
-import './style.css';
-import './mc-calendar.css';
-import template from './template.js';
-import * as utils from './utils.js';
-import defaultOptions from './defaults.js';
-import { defaultEventObject, defaultEventColorType, weekDays, months } from './defaults.js';
-import createInstance from './instance.js';
-import { validateOptions } from './validators.js';
+// import { fas, faAngleLeft, faAngleRight } from 'font-awesome/css/font-awesome.css';
+// import template from './template';
+import * as utils from './utils';
+import defaultOptions from './defaults';
+import { defaultEventObject, defaultEventColorType, weekDays, months } from './defaults';
+import createInstance from './instance';
+import { validateOptions } from './validators';
+import { writeTemplate } from './render';
 
-window.MCDatepicker = (() => {
+import '../css/mc-calendar.css';
+
+const MCDatepicker = (() => {
 	let datepickers = [];
 	// let activeInstance = null;
-	const create = (options) => {
-		const instanceOptions = validateOptions(options, defaultOptions);
-		const instance = createInstance(instanceOptions);
-		this.datepickers.push(instance);
-		return instance;
+	const create = (options = {}) => {
+		writeTemplate();
+		// const instanceOptions = validateOptions(options, defaultOptions);
+		// const instance = createInstance(instanceOptions);
+		// const instance = createInstance(instance);
+		// this.datepickers.push(instance);
+		// return instance;
 	};
 	const remove = (instance) => {
 		this.datepickers.slice(datepickers.indexOf({ instance }), 1);
 	};
-	return { create, remove };
+	const test = (message) => {
+		console.log(message);
+	};
+	return { create, remove, test };
 })();
-
+export default MCDatepicker;
 // console.log(optionsDefault);
 // export default class Datepicker {
 // 	constructor() {

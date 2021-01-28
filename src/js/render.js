@@ -1,4 +1,5 @@
-import { getCalendarArray, valueOfDate } from './utils.js';
+import template from './template.js';
+import { getCalendarArray, valueOfDate, noop } from './utils.js';
 
 function renderCalendar(instance, date) {
 	const firstMonthDate = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -82,4 +83,14 @@ export function writeCalendarTable(instance, day) {
 		return `<tr class="mc-table__week">${week.map((day) => createDay(day)).join('')}</tr>`;
 	};
 	return calendar.map((week) => createWeek(week));
+}
+
+export function writeTemplate() {
+	writeTemplate = noop;
+	const calendarDiv = document.createElement('div');
+	calendarDiv.id = 'mc-calendar';
+	calendarDiv.className = 'mc-calendar__box row mc-calendar__box--opened';
+	calendarDiv.innerHTML = template();
+	document.body.appendChild(calendarDiv);
+	// document.innerHTML += template();
 }
