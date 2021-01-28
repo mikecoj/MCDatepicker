@@ -1,13 +1,13 @@
 import defaultOptions from './defaults.js';
-import { validateOptions } from './validators.js';
+import { validateRequired, eventSchema, eventColorTypeSchema } from './validators.js';
 
-export default function createInstance(customOptions, datepicker) {
-	const instanceOptions = validateOptions(defaultOptions, customOptions);
+export default function createInstance(instanceOptions, datepicker) {
+	// const instanceOptions = validateOptions(defaultOptions, customOptions);
 	const instance = {
 		datepicker: datepicker,
 		el: instanceOptions.el,
 		linkedElement: document.querySelector(instanceOptions.el),
-		pickedDate: new Date(),
+		pickedDate: instanceOptions.selectedDate,
 		options: instanceOptions,
 
 		open: () => {
@@ -43,24 +43,34 @@ export default function createInstance(customOptions, datepicker) {
 			return this.options.events;
 		},
 		//  Setters
-		customizeEvents: ([...eventsType]) => {
-			const requestedParameters = ['type', 'color'];
-			const validFormat = eventsType.every((event) => {
-				Object.keys(event).every((key) => requestedParameters.includes(key));
-			});
-			if (validFormat) {
-				this.eventColorScheme.concat(eventsType);
-			} else throw new Error('Invalid Event Color Scheme Format');
+		customizeEvents: (eventsType) => {
+			if (!validateRequired(eventsType, eventColorTypeSchema)) return;
+			this.eventColorScheme.push(...eventsType);
 		},
-		addEvents: ([...events]) => {
-			const requestedParameters = ['date', 'title', 'description'];
-			const validFormat = events.every((event) => {
-				Object.keys(event).every((key) => requestedParameters.includes(key));
-			});
-			if (validFormat) {
-				this.events.concat(events);
-			} else throw new Error('Invalid Event Format');
+		addEvents: (events) => {
+			if (!validateRequired(events, eventSchema)) return;
+			this.events.push(...events);
 		}
 	};
 	return instance;
 }
+
+//     customizeEvents: (eventsType) => {
+// 			if (!validateRequired(eventsType, eventColorTypeSchema)) return;
+// 			const requestedParameters = ['type', 'color'];
+// 			const validFormat = eventsType.every((event) => {
+// 				Object.keys(event).every((key) => requestedParameters.includes(key));
+// 			});
+// 			if (validFormat) {
+// 				this.eventColorScheme.concat(eventsType);
+// 			} else throw new Error('Invalid Event Color Scheme Format');
+// 		},
+// 		addEvents: ([...events]) => {
+// 			const requestedParameters = ['date', 'title', 'description'];
+// 			const validFormat = events.every((event) => {
+// 				Object.keys(event).every((key) => requestedParameters.includes(key));
+// 			});
+// 			if (validFormat) {
+// 				this.events.concat(events);
+// 			} else throw new Error('Invalid Event Format');
+// 		}

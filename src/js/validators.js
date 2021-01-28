@@ -45,7 +45,7 @@ export const dateFormatValidator = (format) => {
 	return { isValid, replaceMatch };
 };
 
-const validateRequired = (object, schema) => {
+export const validateRequired = (object, schema) => {
 	const errors = Object.keys(schema)
 		.filter((key) => !schema[key](object[key]))
 		.map((key) => new Error(`Data does not match the schema for property: "${key}"`));
@@ -54,13 +54,13 @@ const validateRequired = (object, schema) => {
 	return false;
 };
 
-const eventSchema = {
+export const eventSchema = {
 	date: (value) => Is(value).date(),
 	title: (value) => Is(value).string(),
 	description: (value) => Is(value).string()
 };
 
-const eventColorTypeSchema = {
+export const eventColorTypeSchema = {
 	type: (value) => Is(value).string(),
 	color: (value) => /^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/.test(value)
 };

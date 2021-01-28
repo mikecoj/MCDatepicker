@@ -18,8 +18,8 @@ const MCDatepicker = (() => {
 	// let activeInstance = null;
 	const create = (options = {}) => {
 		writeTemplate();
-		// const instanceOptions = validateOptions(options, defaultOptions);
-		// const instance = createInstance(instanceOptions);
+		const instanceOptions = validateOptions(options, defaultOptions);
+		const instance = createInstance(instanceOptions);
 		// const instance = createInstance(instance);
 		// this.datepickers.push(instance);
 		// return instance;
