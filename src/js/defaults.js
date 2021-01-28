@@ -1,39 +1,8 @@
-const defaultOptions = {
-	el: null,
-	dateFormat: 'DD-MMM-YYYY',
-	bodyType: 'modal', // ['modal', 'inline', 'range', 'permanent']
-	showCalendarDisplay: true,
-	customWeekDays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-	customMonths: [
-		'January',
-		'February',
-		'March',
-		'April',
-		'May',
-		'June',
-		'July',
-		'August',
-		'September',
-		'October',
-		'November',
-		'December'
-	],
-	selectedDate: new Date(),
-	disableWeekends: false,
-	disableWeekDays: [], // ex: [0,2,5] accept numbers 0-6;
-	disableDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
-	markDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
-	markDatesCustom: null, // ex: (day) => (date.getDay() === 10)
-	daterange: false,
-	events: [],
-	eventColorScheme: []
-};
-
-export const defaultEventObject = {
-	date: new Date(),
-	title: 'Title',
-	description: ''
-};
+// export const defaultEventObject = {
+// 	date: new Date(),
+// 	title: 'Title',
+// 	description: ''
+// };
 
 export const defaultEventColorType = [
 	{ type: 'high', color: '#f03048' },
@@ -67,4 +36,20 @@ export const months = [
 	'December'
 ];
 
-export default defaultOptions;
+export default defaultOptions = {
+	el: null,
+	dateFormat: 'DD-MMM-YYYY',
+	bodyType: 'modal', // ['modal', 'inline', 'range', 'permanent']
+	showCalendarDisplay: true,
+	customWeekDays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+	customMonths: months,
+	selectedDate: new Date(),
+	disableWeekends: false,
+	disableWeekDays: [], // ex: [0,2,5] accept numbers 0-6;
+	disableDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
+	markDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
+	markDatesCustom: () => {}, // ex: (day) => (date.getDay() === 10)
+	daterange: false,
+	events: [],
+	eventColorScheme: defaultEventColorType
+};

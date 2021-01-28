@@ -1,10 +1,14 @@
 // import { fas, faAngleLeft, faAngleRight } from 'font-awesome/css/font-awesome.css';
 // import template from './template';
 import * as utils from './utils';
-import defaultOptions from './defaults';
-import { defaultEventObject, defaultEventColorType, weekDays, months } from './defaults';
+import defaultOptions, {
+	defaultEventObject,
+	defaultEventColorType,
+	weekDays,
+	months
+} from './defaults';
 import createInstance from './instance';
-import { validateOptions } from './validators';
+import validateOptions from './validators';
 import { writeTemplate } from './render';
 
 import '../css/mc-calendar.css';

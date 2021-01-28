@@ -1,11 +1,47 @@
 import template from './template.js';
 import { getCalendarArray, valueOfDate, noop } from './utils.js';
 
-function renderCalendar(instance, date) {
+const renderCalendar = (instance, date) => {
 	const firstMonthDate = new Date(date.getFullYear(), date.getMonth(), 1);
 	const activeMonth = firstMonthDate.getMonth();
 	const calendarArray = getCalendarArray(date);
 	let modifiableDate = new Date(firstMonthDate);
+
+	const isInActiveMonth = (activeMonth, date) => {
+		return date.getMonth() !== activeMonth ? false : true;
+	};
+
+	const isExcludedWeekend = (options, date) => {
+		if (options.disableWeekends.length) {
+			return date.getDay() === 5 || 6 ? true : false;
+		}
+		return false;
+	};
+
+	const isDisabledWeekDate = (options, date) => {
+		if (options.disableWeekDays.length) {
+			return options.disableWeekDays.some((weekDay) => weekDay === date.getDay());
+		}
+		return false;
+	};
+
+	const isDisabledDate = (options, date) => {
+		if (options.disableDates.length) {
+			return options.disableDates.some(
+				(disabledDate) => valueOfDate(disabledDate) === valueOfDate(date)
+			);
+		}
+		return false;
+	};
+
+	const isPicked = (selectedDate, date) => {
+		// instance.selectedDate;
+		return valueOfDate(selectedDate) === valueOfDate(date) ? true : false;
+	};
+
+	const isToday = (date) => {
+		return valueOfDate(date) === valueOfDate(new Date()) ? true : false;
+	};
 
 	const renderDay = (day) => {
 		let classList = ['mc-date'];
@@ -36,43 +72,7 @@ function renderCalendar(instance, date) {
 	return calendarArray.map((week) => {
 		week.map((day) => renderDay(day));
 	});
-}
-
-function isInActiveMonth(activeMonth, date) {
-	return date.getMonth() !== activeMonth ? false : true;
-}
-
-function isExcludedWeekend(options, date) {
-	if (options.disableWeekends.length) {
-		return date.getDay() === 5 || 6 ? true : false;
-	}
-	return false;
-}
-
-function isDisabledWeekDate(options, date) {
-	if (options.disableWeekDays.length) {
-		return options.disableWeekDays.some((weekDay) => weekDay === date.getDay());
-	}
-	return false;
-}
-
-function isDisabledDate(options, date) {
-	if (options.disableDates.length) {
-		return options.disableDates.some(
-			(disabledDate) => valueOfDate(disabledDate) === valueOfDate(date)
-		);
-	}
-	return false;
-}
-
-function isPicked(selectedDate, date) {
-	// instance.selectedDate;
-	return valueOfDate(selectedDate) === valueOfDate(date) ? true : false;
-}
-
-function isToday(date) {
-	return valueOfDate(date) === valueOfDate(new Date()) ? true : false;
-}
+};
 
 export function writeCalendarTable(instance, day) {
 	const calendar = renderCalendar(instance, day);
