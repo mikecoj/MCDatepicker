@@ -3,5 +3,6 @@ export default {
 	CALENDAR_SHOW: 'show-calendar',
 	CHANGE_MONTH: 'month-change',
 	CHANGE_YEAR: 'year-change',
-	DATE_PICK: 'date-pick'
+	DATE_PICK: 'date-pick',
+	TABLE_UPDATE: 'update-table'
 };

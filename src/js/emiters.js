@@ -8,6 +8,10 @@ export function datepickerHide(elem) {
 	elem.dispatchEvent(new CustomEvent(CALENDAR_HIDE, { bubbles: true }));
 }
 
+export function tableUpdate(elem) {
+	elem.dispatchEvent(new CustomEvent(TABLE_UPDATE, { bubbles: true }));
+}
+
 // export function datepickerPick(elem, date) {
 // 	elem.dispatchEvent(
 // 		new CustomEvent('datepicker-pick', {
