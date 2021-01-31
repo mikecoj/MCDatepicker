@@ -1,7 +1,14 @@
 import { weekDays, months } from './defaults.js';
-import { writeCalendarTable } from './render,js';
+import { renderCalendar } from './render.js';
 import * as utils from './utils.js';
-import { CALENDAR_HIDE, CALENDAR_SHOW, CHANGE_MONTH, CHANGE_YEAR, DATE_PICK } from './events';
+import {
+	CALENDAR_HIDE,
+	CALENDAR_SHOW,
+	CHANGE_MONTH,
+	CHANGE_YEAR,
+	DATE_PICK,
+	TABLE_UPDATE
+} from './events';
 import {
 	datepickerShow,
 	datepickerHide,
@@ -15,8 +22,15 @@ const spanTemplate = (direction, content) => {
 	return `<span style="transform: translateX(${units}px);">${content}</span>`;
 };
 
-export const applyOnFocusListener = (elem) => {
-	document.querySelector(elem).addEventListener('focus', (e) => datepickerShow(e.target));
+export const applyOnFocusListener = (calendarDiv, elem) => {
+	document.querySelector(elem).addEventListener('focus', (e) => {
+		console.log(e.target.id);
+		datepickerShow(calendarDiv);
+	});
+	document.querySelector(elem).addEventListener('blur', (e) => {
+		console.log(e.target.id);
+		datepickerHide(calendarDiv);
+	});
 };
 
 export function applyListeners(calendar, datepickers) {
@@ -37,12 +51,15 @@ export function applyListeners(calendar, datepickers) {
 	const clearButton = calendar.querySelector('#mc-btn__clear');
 	const pickedDays = calendar.querySelectorAll('.mc-date--picked');
 	const activeDates = calendar.querySelectorAll('.mc-date--active');
+	const dateCells = calendar.querySelectorAll('mc-date');
 	let activeInstance = null;
 	let clickable = true;
 
+	dateCells.forEach((cell) => cell.addEventListener('click', (e) => dispatchPick(e.target)));
+
 	calendar.addEventListener(CALENDAR_SHOW, (e) => {
-		activeInstance = datepickers.find(({ el }) => el === e.target.id);
 		calendar.classList.add('mc-calendar__box--opened');
+		activeInstance = datepickers.find(({ el }) => el === '#' + e.target.id);
 		activeInstance.onOpen(e);
 	});
 	calendar.addEventListener(CALENDAR_HIDE, (e) => {
@@ -91,10 +108,10 @@ export function applyListeners(calendar, datepickers) {
 		utils.slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
 			e.target.children[1].style.transform = 'translateX(0)';
 			e.target.children[0].remove();
-			tableBody.innerHTML = writeCalendarTable(
-				new Date(selectedYear, months.indexOf(selectedMonth), 1)
-			);
-			activeDates.onClick = (e) => dispatchPick(e.target);
+			// tableBody.innerHTML = renderCalendar(
+			// 	new Date(selectedYear, months.indexOf(selectedMonth), 1)
+			// );
+			// dateCells.onClick = (e) => dispatchPick(e.target);
 			clickable = !clickable;
 		});
 	});
@@ -112,8 +129,8 @@ export function applyListeners(calendar, datepickers) {
 		utils.slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
 			e.target.children[1].style.transform = 'translateX(0)';
 			e.target.children[0].remove();
-			tableBody.innerHTML = writeCalendarTable(new Date(newYear, months.indexOf(selectedMonth), 1));
-			activeDates.onClick = (e) => dispatchPick(e.target);
+			// tableBody.innerHTML = renderCalendar(new Date(newYear, months.indexOf(selectedMonth), 1));
+			// dateCells.onClick = (e) => dispatchPick(e.target);
 			clickable = !clickable;
 		});
 	});

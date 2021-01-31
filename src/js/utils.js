@@ -74,18 +74,6 @@ export const dateFormatParser = (date = new Date(), format = 'dd-mmm-yyyy') => {
 	throw new Error(date + ' Is not a Date object.');
 };
 
-export const getCalendarArray = (date) => {
-	let calendarArray = [];
-	const firstMonthDate = new Date(date.getFullYear(), date.getMonth(), 1);
-	let firstCalendarDate = (firstMonthDate.getDay() - 1) * -1;
-	while (calendarArray.length < 6) {
-		let week = [];
-		while (week.length < 7) week.push(firstCalendarDate++);
-		calendarArray.push(week);
-	}
-	return calendarArray;
-};
-
 export const valueOfDate = (date) => {
 	return date.setHours(0, 0, 0, 0).valueOf();
 };

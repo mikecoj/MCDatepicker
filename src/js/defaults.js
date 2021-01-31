@@ -36,7 +36,7 @@ export const months = [
 	'December'
 ];
 
-export default defaultOptions = {
+const defaultOptions = {
 	el: null,
 	dateFormat: 'DD-MMM-YYYY',
 	bodyType: 'modal', // ['modal', 'inline', 'range', 'permanent']
@@ -53,3 +53,5 @@ export default defaultOptions = {
 	events: [],
 	eventColorScheme: defaultEventColorType
 };
+
+export default defaultOptions;

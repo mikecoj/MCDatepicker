@@ -1,4 +1,11 @@
-import { CALENDAR_HIDE, CALENDAR_SHOW, CHANGE_MONTH, CHANGE_YEAR, DATE_PICK } from './events';
+import {
+	CALENDAR_HIDE,
+	CALENDAR_SHOW,
+	CHANGE_MONTH,
+	CHANGE_YEAR,
+	DATE_PICK,
+	TABLE_UPDATE
+} from './events';
 
 export function datepickerShow(elem) {
 	elem.dispatchEvent(new CustomEvent(CALENDAR_SHOW, { bubbles: true }));

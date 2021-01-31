@@ -1,8 +1,6 @@
-export default {
-	CALENDAR_HIDE: 'hide-calendar',
-	CALENDAR_SHOW: 'show-calendar',
-	CHANGE_MONTH: 'month-change',
-	CHANGE_YEAR: 'year-change',
-	DATE_PICK: 'date-pick',
-	TABLE_UPDATE: 'update-table'
-};
+export const CALENDAR_HIDE = 'hide-calendar';
+export const CALENDAR_SHOW = 'show-calendar';
+export const CHANGE_MONTH = 'month-change';
+export const CHANGE_YEAR = 'year-change';
+export const DATE_PICK = 'date-pick';
+export const TABLE_UPDATE = 'update-table';

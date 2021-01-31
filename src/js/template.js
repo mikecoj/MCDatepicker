@@ -1,7 +1,7 @@
 export default `
         <div class="mc-calendar__display row">
             <div class="mc-display__header">
-                <h3 class="mc-display__day">$Thursday</h3>
+                <h3 class="mc-display__day">Thursday</h3>
             </div>
             <div class="mc-display__body row">
                 <div class="mc-display__data mc-display__data--primary row">

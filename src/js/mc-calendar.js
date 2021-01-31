@@ -1,12 +1,7 @@
 // import { fas, faAngleLeft, faAngleRight } from 'font-awesome/css/font-awesome.css';
 // import template from './template';
-import * as utils from './utils';
-import defaultOptions, {
-	defaultEventObject,
-	defaultEventColorType,
-	weekDays,
-	months
-} from './defaults';
+// import * as utils from './utils';
+import defaultOptions from './defaults';
 import { applyListeners, applyOnFocusListener } from './handlers';
 import createInstance from './instance';
 import validateOptions from './validators';
@@ -18,11 +13,11 @@ const MCDatepicker = (() => {
 	let datepickers = [];
 	// let activeInstance = null;
 	const create = (options = {}) => {
-		writeTemplate(datepickers);
+		const calendarDiv = writeTemplate(datepickers);
 		const instanceOptions = validateOptions(options, defaultOptions);
 		const instance = createInstance(instanceOptions);
-		this.datepickers.push(instance);
-		applyOnFocusListener(instance.el);
+		datepickers.push(instance);
+		applyOnFocusListener(calendarDiv, instance.el);
 		// return instance;
 	};
 	const remove = (instance) => {
