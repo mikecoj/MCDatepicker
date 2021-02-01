@@ -94,6 +94,14 @@ export const renderCalendar = (instance, date) => {
 	return calendarArray.map((day) => renderDay(day));
 };
 
+export const updateCalendar = (cellsArray = [], datesArray = []) => {
+	cellsArray.forEach((cell, index) => {
+		cell.innerText = datesArray[index].dateNumb;
+		cell.classList = datesArray[index].classList;
+		cell.setAttribute('data-val-date', datesArray[index].date);
+	});
+};
+
 export function writeTemplate(datepickers) {
 	const calendarDiv = document.createElement('div');
 	calendarDiv.id = 'mc-calendar';
