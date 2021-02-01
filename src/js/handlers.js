@@ -48,13 +48,13 @@ export function applyListeners(calendar, datepickers) {
 	const okButton = calendar.querySelector('#mc-btn__ok');
 	const cancelButton = calendar.querySelector('#mc-btn__cancel');
 	const clearButton = calendar.querySelector('#mc-btn__clear');
-	const pickedDays = calendar.querySelectorAll('.mc-date--picked');
-	const activeDates = calendar.querySelectorAll('.mc-date--active');
+	// const pickedDays = calendar.querySelectorAll('.mc-date--picked');
+	// const activeDates = calendar.querySelectorAll('.mc-date--active');
 	const dateCells = calendar.querySelectorAll('.mc-date');
 	let activeCell = null;
 	let activeInstance = null;
 	let clickable = true;
-	// console.log(dateCells);
+
 	dateCells.forEach((cell) => cell.addEventListener('click', (e) => dispatchPick(e.target)));
 
 	calendar.addEventListener(CALENDAR_SHOW, (e) => {
@@ -63,6 +63,8 @@ export function applyListeners(calendar, datepickers) {
 		activeInstance = datepickers.find(({ el }) => el === '#' + e.detail.input);
 		// run all custom onOpen callbacks added by the user
 		activeInstance.onOpenCallbacks.forEach((callback) => callback.apply(null));
+		// get the active cell
+		activeCell = calendar.querySelector('.mc-date--picked');
 	});
 	calendar.addEventListener(CALENDAR_HIDE, (e) => {
 		calendar.classList.remove('mc-calendar__box--opened');
@@ -73,6 +75,7 @@ export function applyListeners(calendar, datepickers) {
 	});
 	calendar.addEventListener(DATE_PICK, function (e) {
 		activeCell !== null && activeCell.classList.remove('mc-date--picked');
+		// const pickedDays = calendar.querySelectorAll('.mc-date--picked');
 		const selectedDate = e.detail.date;
 		// update the display
 		displayDay.innerText = weekDays[selectedDate.getDay()];
@@ -84,43 +87,56 @@ export function applyListeners(calendar, datepickers) {
 		// pickedDays.forEach((date) => date.classList.remove('mc-date--picked'));
 		// update the classlist of the picked cell
 		e.target.classList.add('mc-date--picked');
+		// add a new activeCell
 		activeCell = e.target;
 		// run all custom onSelect callbacks added by the user
 		activeInstance.onSelectCallbacks.forEach((callback) => callback.apply(null));
 	});
 
 	currentMonthSelect.addEventListener(CHANGE_MONTH, function (e) {
+		// check if the button is clickable
 		if (!clickable) return;
+		// set the button clickable to false
 		clickable = !clickable;
+		// get the value of active month
 		const selectedMonth = e.target.children[0].innerText;
+		// get the value of active Year
 		const selectedYear = currentYearSelect.children[0].innerText;
+		// get the next ot prev month and the overlap value
 		const { newElement, overlap } = utils.arrayInfiniteLooper(
 			months,
 			selectedMonth,
 			e.detail.direction
 		);
-
+		// add a new span tah with the new month to the months div
 		e.target.innerHTML += spanTemplate(e.detail.direction, newElement);
 
 		if (overlap !== 0) {
+			// if the overlap is not 0 then calculate the new year
 			const newYear = Number(selectedYear) + overlap;
+			// add a new span with the new year to the years div
 			currentYearSelect.innerHTML += spanTemplate(e.detail.direction, newYear);
+			// apply slide animation to years span tags
 			utils
 				.slide(currentYearSelect.children[0], currentYearSelect.children[1], e.detail.direction)
 				.then(() => {
 					currentYearSelect.children[1].style.transform = 'translateX(0)';
+					// remove the old span tag
 					currentYearSelect.children[0].remove();
 				});
 		}
-
+		// apply slide animation to months span tags
 		utils.slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
 			e.target.children[1].style.transform = 'translateX(0)';
+			// remove the old span tag
 			e.target.children[0].remove();
+			// run all custom onMonthChangeCallbacks callbacks added by the user
 			activeInstance.onMonthChangeCallbacks.forEach((callback) => callback.apply(null));
 			// tableBody.innerHTML = renderCalendar(
 			// 	new Date(selectedYear, months.indexOf(selectedMonth), 1)
 			// );
 			// dateCells.onClick = (e) => dispatchPick(e.target);
+			// reset the button clickable
 			clickable = !clickable;
 		});
 	});
@@ -156,12 +172,14 @@ export function applyListeners(calendar, datepickers) {
 	cancelButton.addEventListener('click', (e) => datepickerHide(e.target));
 
 	okButton.addEventListener('click', (e) => {
+		// set the value of the picked date to the linked input
 		activeInstance.linkedElement.value = activeInstance.pickedDate;
 		datepickerHide(e.target);
 	});
 
 	clearButton.addEventListener('click', () => {
-		pickedDays.forEach((date) => date.classList.remove('mc-date--picked'));
+		activeCell.classList.remove('mc-date--picked');
+		activeCell = null;
 		activeInstance.pickedDate = null;
 	});
 }
