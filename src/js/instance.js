@@ -9,47 +9,62 @@ export default function createInstance(instanceOptions, datepicker) {
 		linkedElement: document.querySelector(instanceOptions.el),
 		pickedDate: instanceOptions.selectedDate,
 		options: instanceOptions,
+		onOpenCallbacks: [],
+		onCloseCallbacks: [],
+		onSelectCallbacks: [],
+		onMonthChangeCallbacks: [],
+		onYearChangeCallbacks: [],
 
 		open: () => {
-			datepicker.open(this.el);
+			datepicker.open(instance.el);
 		},
 		close: () => {
-			datepicker.close(this.el);
+			datepicker.close(instance.el);
 		},
 		destroy: () => {
-			datepicker.remove(this.el);
+			datepicker.remove(instance.el);
 		},
-		// Event Calbacks
-		onOpen: () => {},
-		onClose: () => {},
-		onSelect: () => {},
-		onMonthChange: () => {},
-		onYearChange: () => {},
+		// Event callbacks
+		onOpen: (callback = () => {}) => {
+			instance.onOpenCallbacks.push(callback);
+		},
+		onClose: (callback = () => {}) => {
+			instance.onCloseCallbacks.push(callback);
+		},
+		onSelect: (callback) => {
+			instance.onSelectCallbacks.push(callback);
+		},
+		onMonthChange: (callback) => {
+			instance.onMonthChangeCallbacks.push(callback);
+		},
+		onYearChange: (callback) => {
+			instance.onYearChangeCallbacks.push(callback);
+		},
 		// Getters
 		getDay: () => {
-			return this.pickedDate.getDay();
+			return instance.pickedDate.getDay();
 		},
 		getDate: () => {
-			return this.pickedDate.getDate();
+			return instance.pickedDate.getDate();
 		},
 		getMonth: () => {
-			return this.pickedDate.getMonth();
+			return instance.pickedDate.getMonth();
 		},
 		getYear: () => {
-			return this.pickedDate.getFullYear();
+			return instance.pickedDate.getFullYear();
 		},
 		getFullDate: () => {},
 		getEvents: () => {
-			return this.options.events;
+			return instance.options.events;
 		},
 		//  Setters
 		customizeEvents: (eventsType) => {
 			if (!validateRequired(eventsType, eventColorTypeSchema)) return;
-			this.eventColorScheme.push(...eventsType);
+			instance.options.eventColorScheme.push(...eventsType);
 		},
 		addEvents: (events) => {
 			if (!validateRequired(events, eventSchema)) return;
-			this.events.push(...events);
+			instance.options.events.push(...events);
 		}
 	};
 	return instance;

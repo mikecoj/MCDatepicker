@@ -1,8 +1,8 @@
 // import { fas, faAngleLeft, faAngleRight } from 'font-awesome/css/font-awesome.css';
 // import template from './template';
-// import * as utils from './utils';
+import { noop } from './utils';
 import defaultOptions from './defaults';
-import { applyListeners, applyOnFocusListener } from './handlers';
+import { applyOnFocusListener } from './handlers';
 import createInstance from './instance';
 import validateOptions from './validators';
 import { writeTemplate } from './render';
@@ -11,22 +11,38 @@ import '../css/mc-calendar.css';
 
 const MCDatepicker = (() => {
 	let datepickers = [];
+	let calendarDiv = null;
 	// let activeInstance = null;
+	let initCalendar = () => {
+		initCalendar = noop;
+		calendarDiv = writeTemplate(datepickers);
+	};
+
+	const open = (el) => {};
+
+	const close = (el) => {};
+
 	const create = (options = {}) => {
-		const calendarDiv = writeTemplate(datepickers);
+		// initiate the calendar instance once
+		initCalendar();
+		// validate options and merge them with de default Options
 		const instanceOptions = validateOptions(options, defaultOptions);
-		const instance = createInstance(instanceOptions);
+		// create instance
+		const instance = createInstance(instanceOptions, MCDatepicker);
+		// push fresh created instance to instances array
 		datepickers.push(instance);
+		// add event listener to the linked input
 		applyOnFocusListener(calendarDiv, instance.el);
-		// return instance;
+		return instance;
 	};
-	const remove = (instance) => {
-		this.datepickers.slice(datepickers.indexOf({ instance }), 1);
+	const remove = ({ el }) => {
+		this.datepickers.slice(datepickers.indexOf({ el }), 1);
 	};
+
 	const test = (message) => {
 		console.log(message);
 	};
-	return { create, remove, test };
+	return { create, remove, open, close, test };
 })();
 export default MCDatepicker;
 // console.log(optionsDefault);

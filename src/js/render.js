@@ -1,5 +1,5 @@
 import template from './template.js';
-import { valueOfDate, noop } from './utils.js';
+import { valueOfDate } from './utils.js';
 import { applyListeners } from './handlers';
 
 export const renderCalendar = (instance, date) => {
@@ -59,9 +59,9 @@ export const renderCalendar = (instance, date) => {
 		return false;
 	};
 
-	const isPicked = (selectedDate, date) => {
+	const isPicked = (instance, date) => {
 		// instance.selectedDate;
-		return valueOfDate(selectedDate) === valueOfDate(date.date) ? true : false;
+		return valueOfDate(instance.selectedDate) === valueOfDate(date.date) ? true : false;
 	};
 
 	const isToday = (date) => {
@@ -94,6 +94,16 @@ export const renderCalendar = (instance, date) => {
 	return calendarArray.map((day) => renderDay(day));
 };
 
+export function writeTemplate(datepickers) {
+	const calendarDiv = document.createElement('div');
+	calendarDiv.id = 'mc-calendar';
+	calendarDiv.className = 'mc-calendar__box row';
+	calendarDiv.innerHTML = template;
+	document.body.appendChild(calendarDiv);
+	applyListeners(calendarDiv, datepickers);
+	return calendarDiv;
+}
+
 // export function writeCalendarTable(instance, day) {
 // 	const calendar = renderCalendar(instance, day);
 // 	const createDay = (day) => {
@@ -106,15 +116,3 @@ export const renderCalendar = (instance, date) => {
 // }
 
 // export const updateCalendarTAble = (instance, day) => {};
-
-export function writeTemplate(datepickers) {
-	writeTemplate = noop;
-	const calendarDiv = document.createElement('div');
-	calendarDiv.id = 'mc-calendar';
-	calendarDiv.className = 'mc-calendar__box row';
-	calendarDiv.innerHTML = template;
-	document.body.appendChild(calendarDiv);
-	applyListeners(calendarDiv, datepickers);
-	// document.innerHTML += template();
-	return calendarDiv;
-}

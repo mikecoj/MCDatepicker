@@ -1,5 +1,5 @@
 import { weekDays, months } from './defaults.js';
-import { renderCalendar } from './render.js';
+// import { renderCalendar } from './render.js';
 import * as utils from './utils.js';
 import {
 	CALENDAR_HIDE,
@@ -24,18 +24,17 @@ const spanTemplate = (direction, content) => {
 
 export const applyOnFocusListener = (calendarDiv, elem) => {
 	document.querySelector(elem).addEventListener('focus', (e) => {
-		console.log(e.target.id);
-		datepickerShow(calendarDiv);
+		datepickerShow(calendarDiv, e.target.id);
 	});
-	document.querySelector(elem).addEventListener('blur', (e) => {
-		console.log(e.target.id);
-		datepickerHide(calendarDiv);
-	});
+	// document.querySelector(elem).addEventListener('blur', (e) => {
+	// 	console.log(e.target.id);
+	// 	datepickerHide(calendarDiv);
+	// });
 };
 
 export function applyListeners(calendar, datepickers) {
 	// const calendar = document.querySelector('#mc-calendar');
-	const tableBody = calendar.querySelector('.mc-table__body');
+	// const tableBody = calendar.querySelector('.mc-table__body');
 	const displayDay = calendar.querySelector('.mc-display__day');
 	const displayDate = calendar.querySelector('.mc-display__date');
 	const displayMonth = calendar.querySelector('.mc-display__month');
@@ -51,34 +50,43 @@ export function applyListeners(calendar, datepickers) {
 	const clearButton = calendar.querySelector('#mc-btn__clear');
 	const pickedDays = calendar.querySelectorAll('.mc-date--picked');
 	const activeDates = calendar.querySelectorAll('.mc-date--active');
-	const dateCells = calendar.querySelectorAll('mc-date');
+	const dateCells = calendar.querySelectorAll('.mc-date');
+	let activeCell = null;
 	let activeInstance = null;
 	let clickable = true;
-
+	// console.log(dateCells);
 	dateCells.forEach((cell) => cell.addEventListener('click', (e) => dispatchPick(e.target)));
 
 	calendar.addEventListener(CALENDAR_SHOW, (e) => {
 		calendar.classList.add('mc-calendar__box--opened');
-		activeInstance = datepickers.find(({ el }) => el === '#' + e.target.id);
-		activeInstance.onOpen(e);
+		// get the instance of the input that fired CALENDAR_SHOW event
+		activeInstance = datepickers.find(({ el }) => el === '#' + e.detail.input);
+		// run all custom onOpen callbacks added by the user
+		activeInstance.onOpenCallbacks.forEach((callback) => callback.apply(null));
 	});
 	calendar.addEventListener(CALENDAR_HIDE, (e) => {
 		calendar.classList.remove('mc-calendar__box--opened');
-		activeInstance.onClose(e);
+		// run all custom onClose callbacks added by the user
+		activeInstance.onCloseCallbacks.forEach((callback) => callback.apply(null));
+		// reset the active instance
 		activeInstance = null;
 	});
 	calendar.addEventListener(DATE_PICK, function (e) {
+		activeCell !== null && activeCell.classList.remove('mc-date--picked');
 		const selectedDate = e.detail.date;
+		// update the display
 		displayDay.innerText = weekDays[selectedDate.getDay()];
 		displayDate.innerText = selectedDate.getDate();
 		displayMonth.innerText = months[selectedDate.getMonth()];
 		displayYear.innerText = selectedDate.getFullYear();
-
+		// update the instance picked date
 		activeInstance.pickedDate = selectedDate;
-		pickedDays.forEach((date) => date.classList.remove('mc-date--picked'));
+		// pickedDays.forEach((date) => date.classList.remove('mc-date--picked'));
+		// update the classlist of the picked cell
 		e.target.classList.add('mc-date--picked');
-
-		activeInstance.onSelect(e);
+		activeCell = e.target;
+		// run all custom onSelect callbacks added by the user
+		activeInstance.onSelectCallbacks.forEach((callback) => callback.apply(null));
 	});
 
 	currentMonthSelect.addEventListener(CHANGE_MONTH, function (e) {
@@ -108,6 +116,7 @@ export function applyListeners(calendar, datepickers) {
 		utils.slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
 			e.target.children[1].style.transform = 'translateX(0)';
 			e.target.children[0].remove();
+			activeInstance.onMonthChangeCallbacks.forEach((callback) => callback.apply(null));
 			// tableBody.innerHTML = renderCalendar(
 			// 	new Date(selectedYear, months.indexOf(selectedMonth), 1)
 			// );
@@ -129,6 +138,7 @@ export function applyListeners(calendar, datepickers) {
 		utils.slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
 			e.target.children[1].style.transform = 'translateX(0)';
 			e.target.children[0].remove();
+			activeInstance.onYearChangeCallbacks.forEach((callback) => callback.apply(null));
 			// tableBody.innerHTML = renderCalendar(new Date(newYear, months.indexOf(selectedMonth), 1));
 			// dateCells.onClick = (e) => dispatchPick(e.target);
 			clickable = !clickable;
@@ -146,8 +156,8 @@ export function applyListeners(calendar, datepickers) {
 	cancelButton.addEventListener('click', (e) => datepickerHide(e.target));
 
 	okButton.addEventListener('click', (e) => {
-		datepickerHide(e.target);
 		activeInstance.linkedElement.value = activeInstance.pickedDate;
+		datepickerHide(e.target);
 	});
 
 	clearButton.addEventListener('click', () => {

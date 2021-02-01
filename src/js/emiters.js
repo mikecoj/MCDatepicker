@@ -7,8 +7,15 @@ import {
 	TABLE_UPDATE
 } from './events';
 
-export function datepickerShow(elem) {
-	elem.dispatchEvent(new CustomEvent(CALENDAR_SHOW, { bubbles: true }));
+export function datepickerShow(elem, input) {
+	elem.dispatchEvent(
+		new CustomEvent(CALENDAR_SHOW, {
+			bubbles: true,
+			detail: {
+				input: input
+			}
+		})
+	);
 }
 
 export function datepickerHide(elem) {
