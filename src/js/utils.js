@@ -52,7 +52,7 @@ export function slide(
 }
 
 export const dateFormatParser = (date = new Date(), format = 'dd-mmm-yyyy') => {
-	if (Is(date).date() && dateFormatValidator(format).isValid()) {
+	if (Is(date).date() && dateFormatValidator(format.toLocaleLowerCase()).isValid()) {
 		const wDay = date.getDay();
 		const mDate = date.getDate();
 		const month = date.getMonth();
@@ -69,7 +69,7 @@ export const dateFormatParser = (date = new Date(), format = 'dd-mmm-yyyy') => {
 			yy: year.toString().substr(2),
 			yyyy: year.toString()
 		};
-		return dateFormatValidator(format).replaceMatch(flags);
+		return dateFormatValidator(format.toLocaleLowerCase()).replaceMatch(flags);
 	}
 	throw new Error(date + ' Is not a Date object.');
 };

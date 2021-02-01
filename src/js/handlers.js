@@ -82,7 +82,7 @@ export function applyListeners(calendar, datepickers) {
 		activeInstance = datepickers.find(({ el }) => el === '#' + e.detail.input);
 		// check if the picked date is null, set it to new date
 		activeInstance.pickedDate === null && (activeInstance.pickedDate = new Date());
-		// render the new calendar
+		// render the new calendar array
 		const datesArray = renderCalendar(activeInstance, activeInstance.pickedDate);
 		// update the calendar display
 		updateDisplay(activeInstance.pickedDate);
@@ -159,6 +159,16 @@ export function applyListeners(calendar, datepickers) {
 			e.target.children[1].style.transform = 'translateX(0)';
 			// remove the old span tag
 			e.target.children[0].remove();
+			// get new date for the new calendar array
+			const nextCalendarDate = new Date(
+				currentYearSelect.children[0].innerText,
+				months.indexOf(e.target.children[0].innerHTML),
+				1
+			);
+			// render the new calendar array
+			const datesArray = renderCalendar(activeInstance, nextCalendarDate);
+			// update the calendar
+			updateCalendar(datesArray);
 			// run all custom onMonthChangeCallbacks callbacks added by the user
 			activeInstance.onMonthChangeCallbacks.forEach((callback) => callback.apply(null));
 			// tableBody.innerHTML = renderCalendar(
@@ -183,6 +193,15 @@ export function applyListeners(calendar, datepickers) {
 		utils.slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
 			e.target.children[1].style.transform = 'translateX(0)';
 			e.target.children[0].remove();
+			const nextCalendarDate = new Date(
+				e.target.children[0].innerText,
+				months.indexOf(selectedMonth),
+				1
+			);
+			// render the new calendar array
+			const datesArray = renderCalendar(activeInstance, nextCalendarDate);
+			// update the calendar
+			updateCalendar(datesArray);
 			activeInstance.onYearChangeCallbacks.forEach((callback) => callback.apply(null));
 			// tableBody.innerHTML = renderCalendar(new Date(newYear, months.indexOf(selectedMonth), 1));
 			// dateCells.onClick = (e) => dispatchPick(e.target);
@@ -201,8 +220,13 @@ export function applyListeners(calendar, datepickers) {
 	cancelButton.addEventListener('click', (e) => datepickerHide(e.target));
 
 	okButton.addEventListener('click', (e) => {
+		// if the value of picked date is not null then get formated date
+		let pickedDateValue =
+			activeInstance.pickedDate !== null
+				? utils.dateFormatParser(activeInstance.pickedDate, activeInstance.options.dateFormat)
+				: null;
 		// set the value of the picked date to the linked input
-		activeInstance.linkedElement.value = activeInstance.pickedDate;
+		activeInstance.linkedElement.value = pickedDateValue;
 		datepickerHide(e.target);
 	});
 
