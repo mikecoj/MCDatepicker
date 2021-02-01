@@ -61,7 +61,7 @@ export const renderCalendar = (instance, date) => {
 
 	const isPicked = (instance, date) => {
 		// instance.selectedDate;
-		return valueOfDate(instance.selectedDate) === valueOfDate(date.date) ? true : false;
+		return valueOfDate(instance.pickedDate) === valueOfDate(date.date) ? true : false;
 	};
 
 	const isToday = (date) => {
@@ -69,22 +69,22 @@ export const renderCalendar = (instance, date) => {
 	};
 
 	const renderDay = (dayObject) => {
-		let classList = ['mc-date'];
+		let classArray = ['mc-date'];
 		if (
 			!isInActiveMonth(activeMonth, dayObject) ||
 			isExcludedWeekend(instance, dayObject) ||
 			isDisabledWeekDay(instance, dayObject) ||
 			isDisabledDate(instance, dayObject)
 		) {
-			classlist.push('mc-date--inactive');
+			classArray.push('mc-date--inactive');
 		} else {
-			classlist.push('mc-date--active');
+			classArray.push('mc-date--active');
 		}
-		if (isPicked(instance, dayObject)) classlist.push('mc-date--picked');
+		if (isPicked(instance, dayObject)) classArray.push('mc-date--picked');
 
-		if (isToday(dayObject)) classlist.push('mc-date--today');
+		if (isToday(dayObject)) classArray.push('mc-date--today');
 
-		dayObject.classList = classList.join(' ');
+		dayObject.classList = classArray.join(' ');
 
 		return dayObject;
 	};
@@ -92,14 +92,6 @@ export const renderCalendar = (instance, date) => {
 	const calendarArray = getCalendarArray();
 
 	return calendarArray.map((day) => renderDay(day));
-};
-
-export const updateCalendar = (cellsArray = [], datesArray = []) => {
-	cellsArray.forEach((cell, index) => {
-		cell.innerText = datesArray[index].dateNumb;
-		cell.classList = datesArray[index].classList;
-		cell.setAttribute('data-val-date', datesArray[index].date);
-	});
 };
 
 export function writeTemplate(datepickers) {

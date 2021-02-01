@@ -1,5 +1,5 @@
 import { weekDays, months } from './defaults.js';
-// import { renderCalendar } from './render.js';
+import { renderCalendar } from './render.js';
 import * as utils from './utils.js';
 import {
 	CALENDAR_HIDE,
@@ -55,12 +55,43 @@ export function applyListeners(calendar, datepickers) {
 	let activeInstance = null;
 	let clickable = true;
 
+	const updateDisplay = (date) => {
+		displayDay.innerText = weekDays[date.getDay()];
+		displayDate.innerText = date.getDate();
+		displayMonth.innerText = months[date.getMonth()];
+		displayYear.innerText = date.getFullYear();
+	};
+
+	const updateCalendar = (datesArray = []) => {
+		dateCells.forEach((cell, index) => {
+			cell.innerText = datesArray[index].dateNumb;
+			cell.classList = datesArray[index].classList;
+			cell.setAttribute('data-val-date', datesArray[index].date);
+		});
+	};
+
+	const updateCalendarHeader = (date) => {
+		currentMonthSelect.innerHTML = `<span>${months[date.getMonth()]}</span>`;
+		currentYearSelect.innerHTML = `<span>${date.getFullYear()}</span>`;
+	};
+
 	dateCells.forEach((cell) => cell.addEventListener('click', (e) => dispatchPick(e.target)));
 
 	calendar.addEventListener(CALENDAR_SHOW, (e) => {
-		calendar.classList.add('mc-calendar__box--opened');
 		// get the instance of the input that fired CALENDAR_SHOW event
 		activeInstance = datepickers.find(({ el }) => el === '#' + e.detail.input);
+		// check if the picked date is null, set it to new date
+		activeInstance.pickedDate === null && (activeInstance.pickedDate = new Date());
+		// render the new calendar
+		const datesArray = renderCalendar(activeInstance, activeInstance.pickedDate);
+		// update the calendar display
+		updateDisplay(activeInstance.pickedDate);
+		// update calendar header
+		updateCalendarHeader(activeInstance.pickedDate);
+		// update the calendar
+		updateCalendar(datesArray);
+		// show the calendar
+		calendar.classList.add('mc-calendar__box--opened');
 		// run all custom onOpen callbacks added by the user
 		activeInstance.onOpenCallbacks.forEach((callback) => callback.apply(null));
 		// get the active cell
@@ -74,14 +105,12 @@ export function applyListeners(calendar, datepickers) {
 		activeInstance = null;
 	});
 	calendar.addEventListener(DATE_PICK, function (e) {
+		if (e.target.classList.contains('mc-date--inactive')) return;
 		activeCell !== null && activeCell.classList.remove('mc-date--picked');
 		// const pickedDays = calendar.querySelectorAll('.mc-date--picked');
 		const selectedDate = e.detail.date;
 		// update the display
-		displayDay.innerText = weekDays[selectedDate.getDay()];
-		displayDate.innerText = selectedDate.getDate();
-		displayMonth.innerText = months[selectedDate.getMonth()];
-		displayYear.innerText = selectedDate.getFullYear();
+		updateDisplay(selectedDate);
 		// update the instance picked date
 		activeInstance.pickedDate = selectedDate;
 		// pickedDays.forEach((date) => date.classList.remove('mc-date--picked'));
