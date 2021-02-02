@@ -29,12 +29,15 @@ export const Is = (variable) => {
 
 export const dateFormatValidator = (format) => {
 	const validator = /^(?:(d{1,4}|m{1,4}|y{4}|y{2})?\b(?:(?:,\s)|[-\s\/]{1})?(d{1,4}|m{1,4}|y{4}|y{2})?\b(?:(?:,\s)|[-\s\/]{1})?(d{1,4}|m{1,4}|y{4}|y{2})\b(?:(?:,\s)|[-\s\/]{1})?(d{1,4}|m{1,4}|y{2}|y{4})?\b)$/gi;
+
 	const isValid = () => {
+		// check if the value of the format property match the RegExp
 		const test = validator.test(format);
 		if (!test) return console.error(new Error(`"${format}" format is not supported`));
 		return test;
 	};
 	const replaceMatch = (flags) => {
+		// replace all matched groups with the value of flags
 		return format.replace(validator, (match, ...groups) => {
 			groups.forEach((group) => {
 				if (group) match = match.replace(group, flags[group]);
@@ -46,6 +49,7 @@ export const dateFormatValidator = (format) => {
 };
 
 export const validateRequired = (object, schema) => {
+	// check if all object properied match the schema and return a new Error for the property that doesn't match the schema
 	const errors = Object.keys(schema)
 		.filter((key) => !schema[key](object[key]))
 		.map((key) => new Error(`Data does not match the schema for property: "${key}"`));
@@ -109,18 +113,22 @@ const optionsSchema = {
 	}
 };
 
-const validateOptions = (customOptions, defaultOptions) => {
+export const validateOptions = (customOptions, defaultOptions) => {
+	// filter the object kays and return a new Error for the kays that not match the schema
 	const errors = Object.keys(customOptions)
 		.filter((key) => !defaultOptions.hasOwnProperty(key))
 		.map((key) => new Error(`Property "${key}" is not recognized`));
+	// check if the customOption object has the property "el", that is required
 	if (!customOptions.hasOwnProperty('el'))
 		errors.unshift(new Error(`Missing required property: "el"`));
+	// check if all object properied match the schema
 	const schemaErrors = Object.keys(customOptions)
 		.filter((key) => defaultOptions.hasOwnProperty(key) && !optionsSchema[key](customOptions[key]))
 		.map((key) => new Error(`Data does not match the schema for property: "${key}"`));
+	// merge all errors in one array
 	if (schemaErrors.length > 0) errors.push(...schemaErrors);
+	// log all errors if the array is not empty
 	if (errors.length > 0) return errors.forEach((error) => console.error(error));
+	// replace the default properties with the custom ones
 	return { ...defaultOptions, ...customOptions };
 };
-
-export default validateOptions;

@@ -1,9 +1,3 @@
-// export const defaultEventObject = {
-// 	date: new Date(),
-// 	title: 'Title',
-// 	description: ''
-// };
-
 export const defaultEventColorType = [
 	{ type: 'high', color: '#f03048' },
 	{ type: 'medium', color: '#008E84' },

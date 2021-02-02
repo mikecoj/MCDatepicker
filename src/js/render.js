@@ -1,5 +1,5 @@
-import template from './template.js';
-import { valueOfDate } from './utils.js';
+import template from './template';
+import { valueOfDate } from './utils';
 import { applyListeners } from './handlers';
 
 export const renderCalendar = (instance, date) => {
@@ -7,8 +7,7 @@ export const renderCalendar = (instance, date) => {
 	const firstMonthDate = new Date(date.getFullYear(), date.getMonth(), 1);
 	// get the month
 	const activeMonth = firstMonthDate.getMonth();
-	// get a new instance of the first day of the month, it's used for changing the date based on array
-
+	//  create date custom object
 	const dayObj = (dateVal = null) => {
 		return {
 			date: dateVal,
@@ -25,7 +24,9 @@ export const renderCalendar = (instance, date) => {
 		let firstCalendarDate = (firstMonthDate.getDay() - 1) * -1;
 		// generate the calendar array
 		while (calendarArray.length < 42) {
+			// regenerate date object based on first active month day
 			let modifiableDate = new Date(firstMonthDate);
+			// generate a new date based on the iteration of the first calendar day
 			let newDate = new Date(modifiableDate.setDate(firstCalendarDate++));
 			calendarArray.push(dayObj(newDate));
 		}
@@ -37,26 +38,20 @@ export const renderCalendar = (instance, date) => {
 	};
 
 	const isExcludedWeekend = ({ options }, date) => {
-		if (options.disableWeekends.length) {
-			return date.day === 5 || 6 ? true : false;
-		}
-		return false;
+		if (!options.disableWeekends) return false;
+		return date.day === 0 || date.day === 6 ? true : false;
 	};
 
 	const isDisabledWeekDay = ({ options }, date) => {
-		if (options.disableWeekDays.length) {
-			return options.disableWeekDays.some((weekDay) => weekDay === date.day);
-		}
-		return false;
+		if (!options.disableWeekDays.length) return false;
+		return options.disableWeekDays.some((weekDay) => weekDay === date.day);
 	};
 
 	const isDisabledDate = ({ options }, date) => {
-		if (options.disableDates.length) {
-			return options.disableDates.some(
-				(disabledDate) => valueOfDate(disabledDate) === valueOfDate(date.date)
-			);
-		}
-		return false;
+		if (!options.disableDates.length) return false;
+		return options.disableDates.some(
+			(disabledDate) => valueOfDate(disabledDate) === valueOfDate(date.date)
+		);
 	};
 
 	const isPicked = (instance, date) => {
@@ -70,6 +65,7 @@ export const renderCalendar = (instance, date) => {
 
 	const renderDay = (dayObject) => {
 		let classArray = ['mc-date'];
+		// check the cases when the date is not active
 		if (
 			!isInActiveMonth(activeMonth, dayObject) ||
 			isExcludedWeekend(instance, dayObject) ||
@@ -95,24 +91,17 @@ export const renderCalendar = (instance, date) => {
 };
 
 export function writeTemplate(datepickers) {
+	// create a new div tag
 	const calendarDiv = document.createElement('div');
+	// set the id of the created div
 	calendarDiv.id = 'mc-calendar';
+	// set the classList of the created div
 	calendarDiv.className = 'mc-calendar__box row';
+	// write the template to the div content
 	calendarDiv.innerHTML = template;
+	// add the new div to the document
 	document.body.appendChild(calendarDiv);
+	// apply listeners to calendar
 	applyListeners(calendarDiv, datepickers);
 	return calendarDiv;
 }
-
-// export function writeCalendarTable(instance, day) {
-// 	const calendar = renderCalendar(instance, day);
-// 	const createDay = (day) => {
-// 		return `<td class="${day.classlist}" data-val-date="${day.date}">${day.date.getDate()}</td>`;
-// 	};
-// 	const createWeek = (week) => {
-// 		return `<tr class="mc-table__week">${week.map((day) => createDay(day)).join('')}</tr>`;
-// 	};
-// 	return calendar.map((week) => createWeek(week));
-// }
-
-// export const updateCalendarTAble = (instance, day) => {};

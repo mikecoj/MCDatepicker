@@ -1,6 +1,6 @@
-import { weekDays, months } from './defaults.js';
-import { renderCalendar } from './render.js';
-import * as utils from './utils.js';
+import { weekDays, months } from './defaults';
+import { renderCalendar } from './render';
+import { arrayInfiniteLooper, slide, dateFormatParser } from './utils';
 import {
 	CALENDAR_HIDE,
 	CALENDAR_SHOW,
@@ -10,31 +10,28 @@ import {
 	TABLE_UPDATE
 } from './events';
 import {
-	datepickerShow,
-	datepickerHide,
-	monthChange,
-	yearChange,
-	dispatchPick
-} from './emiters.js';
+	dispatchCalendarShow,
+	dispatchCalendarHide,
+	dispatchChangeMonth,
+	dispatchChangeYear,
+	dispatchDatePick
+} from './emiters';
 
 const spanTemplate = (direction, content) => {
 	const units = direction === 'next' ? '-100' : '100';
 	return `<span style="transform: translateX(${units}px);">${content}</span>`;
 };
+export const applyOnFocusListener = (calendarDiv, { linkedElement }) => {
+	linkedElement.onfocus = () => {
+		dispatchCalendarShow(calendarDiv, '#' + linkedElement.id);
+	};
+};
 
-export const applyOnFocusListener = (calendarDiv, elem) => {
-	document.querySelector(elem).addEventListener('focus', (e) => {
-		datepickerShow(calendarDiv, e.target.id);
-	});
-	// document.querySelector(elem).addEventListener('blur', (e) => {
-	// 	console.log(e.target.id);
-	// 	datepickerHide(calendarDiv);
-	// });
+export const removeOnFocusListener = ({ linkedElement }) => {
+	linkedElement.onfocus = null;
 };
 
 export function applyListeners(calendar, datepickers) {
-	// const calendar = document.querySelector('#mc-calendar');
-	// const tableBody = calendar.querySelector('.mc-table__body');
 	const displayDay = calendar.querySelector('.mc-display__day');
 	const displayDate = calendar.querySelector('.mc-display__date');
 	const displayMonth = calendar.querySelector('.mc-display__month');
@@ -48,8 +45,6 @@ export function applyListeners(calendar, datepickers) {
 	const okButton = calendar.querySelector('#mc-btn__ok');
 	const cancelButton = calendar.querySelector('#mc-btn__cancel');
 	const clearButton = calendar.querySelector('#mc-btn__clear');
-	// const pickedDays = calendar.querySelectorAll('.mc-date--picked');
-	// const activeDates = calendar.querySelectorAll('.mc-date--active');
 	const dateCells = calendar.querySelectorAll('.mc-date');
 	let activeCell = null;
 	let activeInstance = null;
@@ -74,12 +69,12 @@ export function applyListeners(calendar, datepickers) {
 		currentMonthSelect.innerHTML = `<span>${months[date.getMonth()]}</span>`;
 		currentYearSelect.innerHTML = `<span>${date.getFullYear()}</span>`;
 	};
-
-	dateCells.forEach((cell) => cell.addEventListener('click', (e) => dispatchPick(e.target)));
+	// add click event that dispatch a custom DATE_PICK event, to every calendar cell
+	dateCells.forEach((cell) => cell.addEventListener('click', (e) => dispatchDatePick(e.target)));
 
 	calendar.addEventListener(CALENDAR_SHOW, (e) => {
 		// get the instance of the input that fired CALENDAR_SHOW event
-		activeInstance = datepickers.find(({ el }) => el === '#' + e.detail.input);
+		activeInstance = datepickers.find(({ el }) => el === e.detail.input);
 		// check if the picked date is null, set it to new date
 		activeInstance.pickedDate === null && (activeInstance.pickedDate = new Date());
 		// render the new calendar array
@@ -132,11 +127,7 @@ export function applyListeners(calendar, datepickers) {
 		// get the value of active Year
 		const selectedYear = currentYearSelect.children[0].innerText;
 		// get the next ot prev month and the overlap value
-		const { newElement, overlap } = utils.arrayInfiniteLooper(
-			months,
-			selectedMonth,
-			e.detail.direction
-		);
+		const { newElement, overlap } = arrayInfiniteLooper(months, selectedMonth, e.detail.direction);
 		// add a new span tah with the new month to the months div
 		e.target.innerHTML += spanTemplate(e.detail.direction, newElement);
 
@@ -146,16 +137,16 @@ export function applyListeners(calendar, datepickers) {
 			// add a new span with the new year to the years div
 			currentYearSelect.innerHTML += spanTemplate(e.detail.direction, newYear);
 			// apply slide animation to years span tags
-			utils
-				.slide(currentYearSelect.children[0], currentYearSelect.children[1], e.detail.direction)
-				.then(() => {
+			slide(currentYearSelect.children[0], currentYearSelect.children[1], e.detail.direction).then(
+				() => {
 					currentYearSelect.children[1].style.transform = 'translateX(0)';
 					// remove the old span tag
 					currentYearSelect.children[0].remove();
-				});
+				}
+			);
 		}
 		// apply slide animation to months span tags
-		utils.slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
+		slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
 			e.target.children[1].style.transform = 'translateX(0)';
 			// remove the old span tag
 			e.target.children[0].remove();
@@ -169,13 +160,9 @@ export function applyListeners(calendar, datepickers) {
 			const datesArray = renderCalendar(activeInstance, nextCalendarDate);
 			// update the calendar
 			updateCalendar(datesArray);
-			// run all custom onMonthChangeCallbacks callbacks added by the user
+			// run all custom onMonthChangeCallbacks added by the user
 			activeInstance.onMonthChangeCallbacks.forEach((callback) => callback.apply(null));
-			// tableBody.innerHTML = renderCalendar(
-			// 	new Date(selectedYear, months.indexOf(selectedMonth), 1)
-			// );
-			// dateCells.onClick = (e) => dispatchPick(e.target);
-			// reset the button clickable
+
 			clickable = !clickable;
 		});
 	});
@@ -185,14 +172,18 @@ export function applyListeners(calendar, datepickers) {
 		clickable = !clickable;
 		const selectedMonth = currentMonthSelect.children[0].innerText;
 		const selectedYear = e.target.children[0].innerText;
+		// get the next or prev Year, based on the direction property
 		const newYear =
 			e.detail.direction === 'next' ? Number(selectedYear) + 1 : Number(selectedYear) - 1;
-
+		// append a new span tag to the targeted div
 		e.target.innerHTML += spanTemplate(e.detail.direction, newYear);
-
-		utils.slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
+		// apply slide animation
+		slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
+			// reset the style of the new created span tag
 			e.target.children[1].style.transform = 'translateX(0)';
+			// delete the old span tag
 			e.target.children[0].remove();
+			// generate a new date based on the current month and new generated year
 			const nextCalendarDate = new Date(
 				e.target.children[0].innerText,
 				months.indexOf(selectedMonth),
@@ -202,32 +193,33 @@ export function applyListeners(calendar, datepickers) {
 			const datesArray = renderCalendar(activeInstance, nextCalendarDate);
 			// update the calendar
 			updateCalendar(datesArray);
+			// run every custom callback added by user
 			activeInstance.onYearChangeCallbacks.forEach((callback) => callback.apply(null));
-			// tableBody.innerHTML = renderCalendar(new Date(newYear, months.indexOf(selectedMonth), 1));
-			// dateCells.onClick = (e) => dispatchPick(e.target);
+
 			clickable = !clickable;
 		});
 	});
 
-	monthNavPrev.addEventListener('click', () => monthChange(currentMonthSelect, 'prev'));
+	monthNavPrev.addEventListener('click', () => dispatchChangeMonth(currentMonthSelect, 'prev'));
 
-	monthNavNext.addEventListener('click', () => monthChange(currentMonthSelect, 'next'));
+	monthNavNext.addEventListener('click', () => dispatchChangeMonth(currentMonthSelect, 'next'));
 
-	yearNavPrev.addEventListener('click', () => yearChange(currentYearSelect, 'prev'));
+	yearNavPrev.addEventListener('click', () => dispatchChangeYear(currentYearSelect, 'prev'));
 
-	yearNavNext.addEventListener('click', () => yearChange(currentYearSelect, 'next'));
+	yearNavNext.addEventListener('click', () => dispatchChangeYear(currentYearSelect, 'next'));
 
-	cancelButton.addEventListener('click', (e) => datepickerHide(e.target));
+	cancelButton.addEventListener('click', (e) => dispatchCalendarHide(e.target));
 
 	okButton.addEventListener('click', (e) => {
 		// if the value of picked date is not null then get formated date
 		let pickedDateValue =
 			activeInstance.pickedDate !== null
-				? utils.dateFormatParser(activeInstance.pickedDate, activeInstance.options.dateFormat)
+				? dateFormatParser(activeInstance.pickedDate, activeInstance.options.dateFormat)
 				: null;
 		// set the value of the picked date to the linked input
 		activeInstance.linkedElement.value = pickedDateValue;
-		datepickerHide(e.target);
+		// dispatch DATEPICKER_HIDE event
+		dispatchCalendarHide(e.target);
 	});
 
 	clearButton.addEventListener('click', () => {

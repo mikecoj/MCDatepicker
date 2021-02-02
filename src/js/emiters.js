@@ -1,13 +1,6 @@
-import {
-	CALENDAR_HIDE,
-	CALENDAR_SHOW,
-	CHANGE_MONTH,
-	CHANGE_YEAR,
-	DATE_PICK,
-	TABLE_UPDATE
-} from './events';
+import { CALENDAR_HIDE, CALENDAR_SHOW, CHANGE_MONTH, CHANGE_YEAR, DATE_PICK } from './events';
 
-export function datepickerShow(elem, input) {
+export const dispatchCalendarShow = (elem, input) => {
 	elem.dispatchEvent(
 		new CustomEvent(CALENDAR_SHOW, {
 			bubbles: true,
@@ -16,28 +9,13 @@ export function datepickerShow(elem, input) {
 			}
 		})
 	);
-}
+};
 
-export function datepickerHide(elem) {
+export const dispatchCalendarHide = (elem) => {
 	elem.dispatchEvent(new CustomEvent(CALENDAR_HIDE, { bubbles: true }));
-}
+};
 
-export function tableUpdate(elem) {
-	elem.dispatchEvent(new CustomEvent(TABLE_UPDATE, { bubbles: true }));
-}
-
-// export function datepickerPick(elem, date) {
-// 	elem.dispatchEvent(
-// 		new CustomEvent('datepicker-pick', {
-// 			bubbles: true,
-// 			detail: {
-// 				date: date
-// 			}
-// 		})
-// 	);
-// }
-
-export function dispatchPick(elem) {
+export const dispatchDatePick = (elem) => {
 	elem.dispatchEvent(
 		new CustomEvent(DATE_PICK, {
 			bubbles: true,
@@ -46,9 +24,9 @@ export function dispatchPick(elem) {
 			}
 		})
 	);
-}
+};
 
-export function monthChange(elem, direction) {
+export const dispatchChangeMonth = (elem, direction) => {
 	elem.dispatchEvent(
 		new CustomEvent(CHANGE_MONTH, {
 			bubbles: true,
@@ -57,9 +35,9 @@ export function monthChange(elem, direction) {
 			}
 		})
 	);
-}
+};
 
-export function yearChange(elem, direction) {
+export const dispatchChangeYear = (elem, direction) => {
 	elem.dispatchEvent(
 		new CustomEvent(CHANGE_YEAR, {
 			bubbles: true,
@@ -68,4 +46,4 @@ export function yearChange(elem, direction) {
 			}
 		})
 	);
-}
+};

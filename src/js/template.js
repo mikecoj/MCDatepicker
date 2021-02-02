@@ -166,5 +166,3 @@ export default `
             </div>
         </div>
 	`;
-
-// template(this.wDays[this.pickedDate.getDay()], this.pickedDate.getDate(), this.currentMonth, this.currentYear);

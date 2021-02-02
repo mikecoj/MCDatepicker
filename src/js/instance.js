@@ -1,8 +1,6 @@
-import defaultOptions from './defaults.js';
-import { validateRequired, eventSchema, eventColorTypeSchema } from './validators.js';
+import { validateRequired, eventSchema, eventColorTypeSchema } from './validators';
 
 export default function createInstance(instanceOptions, datepicker) {
-	// const instanceOptions = validateOptions(defaultOptions, customOptions);
 	const instance = {
 		datepicker: datepicker,
 		el: instanceOptions.el,
@@ -14,15 +12,15 @@ export default function createInstance(instanceOptions, datepicker) {
 		onSelectCallbacks: [],
 		onMonthChangeCallbacks: [],
 		onYearChangeCallbacks: [],
-
+		// Methods
 		open: () => {
 			datepicker.open(instance.el);
 		},
 		close: () => {
-			datepicker.close(instance.el);
+			datepicker.close();
 		},
 		destroy: () => {
-			datepicker.remove(instance.el);
+			datepicker.remove(instance);
 		},
 		// Event callbacks
 		onOpen: (callback = () => {}) => {
@@ -53,7 +51,9 @@ export default function createInstance(instanceOptions, datepicker) {
 		getYear: () => {
 			return instance.pickedDate.getFullYear();
 		},
-		getFullDate: () => {},
+		getFullDate: () => {
+			return instance.pickedDate;
+		},
 		getEvents: () => {
 			return instance.options.events;
 		},
@@ -69,23 +69,3 @@ export default function createInstance(instanceOptions, datepicker) {
 	};
 	return instance;
 }
-
-//     customizeEvents: (eventsType) => {
-// 			if (!validateRequired(eventsType, eventColorTypeSchema)) return;
-// 			const requestedParameters = ['type', 'color'];
-// 			const validFormat = eventsType.every((event) => {
-// 				Object.keys(event).every((key) => requestedParameters.includes(key));
-// 			});
-// 			if (validFormat) {
-// 				this.eventColorScheme.concat(eventsType);
-// 			} else throw new Error('Invalid Event Color Scheme Format');
-// 		},
-// 		addEvents: ([...events]) => {
-// 			const requestedParameters = ['date', 'title', 'description'];
-// 			const validFormat = events.every((event) => {
-// 				Object.keys(event).every((key) => requestedParameters.includes(key));
-// 			});
-// 			if (validFormat) {
-// 				this.events.concat(events);
-// 			} else throw new Error('Invalid Event Format');
-// 		}
