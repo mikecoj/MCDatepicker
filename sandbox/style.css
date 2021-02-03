@@ -16,26 +16,32 @@ body {
 .container {
 	width: min(80%, 1000px);
 	margin: 0 auto;
+	justify-content: center;
 }
 .col {
 	width: 50%;
 }
 .main__header {
 	/* height: 10vh; */
-	height: clamp(40px, 8vh, 65px);
+	height: 10vh;
 	background-color: #38ada9;
 	color: #fff;
+	text-align: center;
+}
+
+.main__header h1 {
+	padding: 0.8em;
 }
 
 .main__body {
-	height: 80vh;
+	height: 90vh;
 	background-color: #e4eefa;
 }
 
-.main__footer {
-	height: 10vh;
-	background-color: #38ada9;
+.card {
+	margin: 2rem;
 }
+
 .form-field__label,
 .form-field__input {
 	display: block;
