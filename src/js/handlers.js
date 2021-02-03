@@ -32,6 +32,7 @@ export const removeOnFocusListener = ({ linkedElement }) => {
 };
 
 export function applyListeners(calendar, datepickers) {
+	const calendarDisplay = calendar.querySelector('.mc-calendar__display');
 	const displayDay = calendar.querySelector('.mc-display__day');
 	const displayDate = calendar.querySelector('.mc-display__date');
 	const displayMonth = calendar.querySelector('.mc-display__month');
@@ -50,14 +51,17 @@ export function applyListeners(calendar, datepickers) {
 	let activeInstance = null;
 	let clickable = true;
 
-	const updateDisplay = (date) => {
-		displayDay.innerText = weekDays[date.getDay()];
-		displayDate.innerText = date.getDate();
-		displayMonth.innerText = months[date.getMonth()];
-		displayYear.innerText = date.getFullYear();
+	const updateDisplay = (pickedDate) => {
+		displayDay.innerText = weekDays[pickedDate.getDay()];
+		displayDate.innerText = pickedDate.getDate();
+		displayMonth.innerText = months[pickedDate.getMonth()];
+		displayYear.innerText = pickedDate.getFullYear();
 	};
 
-	const updateCalendar = (datesArray = []) => {
+	const updateCalendar = (instance, date) => {
+		// render the new calendar array
+		const datesArray = renderCalendar(instance, date);
+		// update teh DOM for each date cell
 		dateCells.forEach((cell, index) => {
 			cell.innerText = datesArray[index].dateNumb;
 			cell.classList = datesArray[index].classList;
@@ -69,6 +73,21 @@ export function applyListeners(calendar, datepickers) {
 		currentMonthSelect.innerHTML = `<span>${months[date.getMonth()]}</span>`;
 		currentYearSelect.innerHTML = `<span>${date.getFullYear()}</span>`;
 	};
+
+	const updateCalendarUI = (instance) => {
+		const { options, pickedDate } = instance;
+		// update the calendar
+		updateCalendar(instance, pickedDate);
+		// update calendar header
+		updateCalendarHeader(pickedDate);
+		// update calendar display UI based on custom options
+		if (!options.showCalendarDisplay) {
+			calendarDisplay.classList.add('mc-calendar__display--hide');
+		} else {
+			calendarDisplay.classList.remove('mc-calendar__display--hide');
+			updateDisplay(pickedDate);
+		}
+	};
 	// add click event that dispatch a custom DATE_PICK event, to every calendar cell
 	dateCells.forEach((cell) => cell.addEventListener('click', (e) => dispatchDatePick(e.target)));
 
@@ -77,14 +96,8 @@ export function applyListeners(calendar, datepickers) {
 		activeInstance = datepickers.find(({ el }) => el === e.detail.input);
 		// check if the picked date is null, set it to new date
 		activeInstance.pickedDate === null && (activeInstance.pickedDate = new Date());
-		// render the new calendar array
-		const datesArray = renderCalendar(activeInstance, activeInstance.pickedDate);
 		// update the calendar display
-		updateDisplay(activeInstance.pickedDate);
-		// update calendar header
-		updateCalendarHeader(activeInstance.pickedDate);
-		// update the calendar
-		updateCalendar(datesArray);
+		updateCalendarUI(activeInstance);
 		// show the calendar
 		calendar.classList.add('mc-calendar__box--opened');
 		// run all custom onOpen callbacks added by the user
@@ -104,11 +117,10 @@ export function applyListeners(calendar, datepickers) {
 		activeCell !== null && activeCell.classList.remove('mc-date--picked');
 		// const pickedDays = calendar.querySelectorAll('.mc-date--picked');
 		const selectedDate = e.detail.date;
-		// update the display
-		updateDisplay(selectedDate);
 		// update the instance picked date
 		activeInstance.pickedDate = selectedDate;
-		// pickedDays.forEach((date) => date.classList.remove('mc-date--picked'));
+		// update the display
+		updateDisplay(activeInstance.pickedDate);
 		// update the classlist of the picked cell
 		e.target.classList.add('mc-date--picked');
 		// add a new activeCell
@@ -156,10 +168,8 @@ export function applyListeners(calendar, datepickers) {
 				months.indexOf(e.target.children[0].innerHTML),
 				1
 			);
-			// render the new calendar array
-			const datesArray = renderCalendar(activeInstance, nextCalendarDate);
 			// update the calendar
-			updateCalendar(datesArray);
+			updateCalendar(activeInstance, nextCalendarDate);
 			// run all custom onMonthChangeCallbacks added by the user
 			activeInstance.onMonthChangeCallbacks.forEach((callback) => callback.apply(null));
 
@@ -189,10 +199,8 @@ export function applyListeners(calendar, datepickers) {
 				months.indexOf(selectedMonth),
 				1
 			);
-			// render the new calendar array
-			const datesArray = renderCalendar(activeInstance, nextCalendarDate);
 			// update the calendar
-			updateCalendar(datesArray);
+			updateCalendar(activeInstance, nextCalendarDate);
 			// run every custom callback added by user
 			activeInstance.onYearChangeCallbacks.forEach((callback) => callback.apply(null));
 

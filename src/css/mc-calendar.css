@@ -106,6 +106,10 @@ for example media object known from OOCSS such as list, radio-button. */
 	transition: max-height 0.3s linear;
 }
 
+.mc-calendar__display--hide {
+	display: none;
+}
+
 .mc-calendar__box--opened .mc-calendar__display {
 	max-height: 175px;
 	transition-delay: 0.5s;

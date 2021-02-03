@@ -7,7 +7,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = (env, argv) => {
 	console.log(env);
-	let entry = env.prod ? './src/js/mc-calendar.js' : './demo/index.js';
+	let entry = env.prod ? './src/js/mc-calendar.js' : './sandbox/index.js';
 	// env.prod ? entry : (entry = ['./demo/index.js', './src/css/mc-calendar.css', './demo/style.css']);
 	const outputFilename = env.prod ? 'mc-calendar.min' : 'bundle';
 	return {
@@ -27,7 +27,7 @@ module.exports = (env, argv) => {
 		devServer: {
 			open: true,
 			disableHostCheck: true,
-			contentBase: path.resolve(__dirname, './demo'),
+			contentBase: path.resolve(__dirname, './sandbox'),
 			port: 9000,
 			public: 'http://dev-test:9000'
 		},
@@ -96,7 +96,7 @@ module.exports = (env, argv) => {
 			}),
 			!env.prod &&
 				new HtmlWebpackPlugin({
-					template: path.resolve(__dirname, 'demo/template.html'),
+					template: path.resolve(__dirname, 'sandbox/template.html'),
 					title: 'Datepicker Sandbox'
 				}),
 			new CleanWebpackPlugin()
