@@ -1,4 +1,5 @@
 import { validateRequired, eventSchema, eventColorTypeSchema } from './validators';
+import { dateFormater } from './utils';
 
 export default function createInstance(instanceOptions, datepicker) {
 	const instance = {
@@ -18,6 +19,10 @@ export default function createInstance(instanceOptions, datepicker) {
 		},
 		close: () => {
 			datepicker.close();
+		},
+		reset: () => {
+			instance.linkedElement.value = null;
+			instance.pickedDate = null;
 		},
 		destroy: () => {
 			datepicker.remove(instance);
@@ -53,6 +58,9 @@ export default function createInstance(instanceOptions, datepicker) {
 		},
 		getFullDate: () => {
 			return instance.pickedDate;
+		},
+		getFormatedDate: () => {
+			return dateFormatParser(instance.pickedDate, instance.options.dateFormat);
 		},
 		getEvents: () => {
 			return instance.options.events;

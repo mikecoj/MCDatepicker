@@ -15,5 +15,5 @@ firstDatePicker.onOpen(() => {
 	firstDatePicker.destroy();
 });
 // firstDatePicker.open();
-MCDatepicker.create({ el: '#inline_date', bodyType: 'permanent' });
-MCDatepicker.create({ el: '#daterange', bodyType: 'modal' });
+const secundDatePicker = MCDatepicker.create({ el: '#inline_date', bodyType: 'permanent' });
+const thirdDatePicker = MCDatepicker.create({ el: '#daterange', bodyType: 'modal' });
