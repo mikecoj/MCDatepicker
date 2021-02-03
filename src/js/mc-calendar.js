@@ -44,10 +44,6 @@ const MCDatepicker = (() => {
 		// Remove the instance from the datepickers array
 		datepickers.splice(datepickers.indexOf(instance), 1);
 	};
-
-	const test = (message) => {
-		console.log(message);
-	};
-	return { create, remove, open, close, test };
+	return { create, remove, open, close };
 })();
 export default MCDatepicker;
