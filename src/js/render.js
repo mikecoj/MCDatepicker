@@ -3,6 +3,7 @@ import { valueOfDate } from './utils';
 import { applyListeners } from './handlers';
 
 export const renderCalendar = (instance, date) => {
+	// console.log(instance.pickedDate);
 	// get the first day of the month
 	const firstMonthDate = new Date(date.getFullYear(), date.getMonth(), 1);
 	// get the month
@@ -56,6 +57,8 @@ export const renderCalendar = (instance, date) => {
 
 	const isPicked = (instance, date) => {
 		// instance.selectedDate;
+		if (instance.pickedDate === null) return false;
+
 		return valueOfDate(instance.pickedDate) === valueOfDate(date.date) ? true : false;
 	};
 

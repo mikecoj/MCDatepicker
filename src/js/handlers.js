@@ -1,14 +1,8 @@
 import { weekDays, months } from './defaults';
 import { renderCalendar } from './render';
+import { spanTemplate } from './template';
 import { arrayInfiniteLooper, slide, dateFormatParser } from './utils';
-import {
-	CALENDAR_HIDE,
-	CALENDAR_SHOW,
-	CHANGE_MONTH,
-	CHANGE_YEAR,
-	DATE_PICK,
-	TABLE_UPDATE
-} from './events';
+import { CALENDAR_HIDE, CALENDAR_SHOW, CHANGE_MONTH, CHANGE_YEAR, DATE_PICK } from './events';
 import {
 	dispatchCalendarShow,
 	dispatchCalendarHide,
@@ -17,10 +11,6 @@ import {
 	dispatchDatePick
 } from './emiters';
 
-const spanTemplate = (direction, content) => {
-	const units = direction === 'next' ? '-100' : '100';
-	return `<span style="transform: translateX(${units}px);">${content}</span>`;
-};
 export const applyOnFocusListener = (calendarDiv, { linkedElement }) => {
 	linkedElement.onfocus = () => {
 		dispatchCalendarShow(calendarDiv, '#' + linkedElement.id);
@@ -58,7 +48,7 @@ export function applyListeners(calendar, datepickers) {
 		displayYear.innerText = pickedDate.getFullYear();
 	};
 
-	const updateCalendar = (instance, date) => {
+	const updateCalendarTable = (instance, date) => {
 		// render the new calendar array
 		const datesArray = renderCalendar(instance, date);
 		// update teh DOM for each date cell
@@ -76,16 +66,18 @@ export function applyListeners(calendar, datepickers) {
 
 	const updateCalendarUI = (instance) => {
 		const { options, pickedDate } = instance;
-		// update the calendar
-		updateCalendar(instance, pickedDate);
+		// if the picketDate is null, render the calendar based on today's date
+		const targetDate = pickedDate === null ? new Date() : pickedDate;
+		// update the calendar table
+		updateCalendarTable(instance, targetDate);
 		// update calendar header
-		updateCalendarHeader(pickedDate);
+		updateCalendarHeader(targetDate);
 		// update calendar display UI based on custom options
 		if (!options.showCalendarDisplay) {
 			calendarDisplay.classList.add('mc-calendar__display--hide');
 		} else {
 			calendarDisplay.classList.remove('mc-calendar__display--hide');
-			updateDisplay(pickedDate);
+			updateDisplay(targetDate);
 		}
 	};
 	// add click event that dispatch a custom DATE_PICK event, to every calendar cell
@@ -94,8 +86,6 @@ export function applyListeners(calendar, datepickers) {
 	calendar.addEventListener(CALENDAR_SHOW, (e) => {
 		// get the instance of the input that fired CALENDAR_SHOW event
 		activeInstance = datepickers.find(({ el }) => el === e.detail.input);
-		// check if the picked date is null, set it to new date
-		activeInstance.pickedDate === null && (activeInstance.pickedDate = new Date());
 		// update the calendar display
 		updateCalendarUI(activeInstance);
 		// show the calendar
@@ -115,10 +105,8 @@ export function applyListeners(calendar, datepickers) {
 	calendar.addEventListener(DATE_PICK, function (e) {
 		if (e.target.classList.contains('mc-date--inactive')) return;
 		activeCell !== null && activeCell.classList.remove('mc-date--picked');
-		// const pickedDays = calendar.querySelectorAll('.mc-date--picked');
-		const selectedDate = e.detail.date;
 		// update the instance picked date
-		activeInstance.pickedDate = selectedDate;
+		activeInstance.pickedDate = e.detail.date;
 		// update the display
 		updateDisplay(activeInstance.pickedDate);
 		// update the classlist of the picked cell
@@ -168,8 +156,8 @@ export function applyListeners(calendar, datepickers) {
 				months.indexOf(e.target.children[0].innerHTML),
 				1
 			);
-			// update the calendar
-			updateCalendar(activeInstance, nextCalendarDate);
+			// update the calendar table
+			updateCalendarTable(activeInstance, nextCalendarDate);
 			// run all custom onMonthChangeCallbacks added by the user
 			activeInstance.onMonthChangeCallbacks.forEach((callback) => callback.apply(null));
 
@@ -199,8 +187,8 @@ export function applyListeners(calendar, datepickers) {
 				months.indexOf(selectedMonth),
 				1
 			);
-			// update the calendar
-			updateCalendar(activeInstance, nextCalendarDate);
+			// update the calendar table
+			updateCalendarTable(activeInstance, nextCalendarDate);
 			// run every custom callback added by user
 			activeInstance.onYearChangeCallbacks.forEach((callback) => callback.apply(null));
 
@@ -231,8 +219,11 @@ export function applyListeners(calendar, datepickers) {
 	});
 
 	clearButton.addEventListener('click', () => {
-		activeCell.classList.remove('mc-date--picked');
-		activeCell = null;
-		activeInstance.pickedDate = null;
+		if (activeCell !== null) {
+			activeCell.classList.remove('mc-date--picked');
+			activeCell = null;
+			activeInstance.pickedDate = null;
+			activeInstance.linkedElement.value = null;
+		}
 	});
 }

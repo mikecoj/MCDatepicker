@@ -320,7 +320,9 @@ for example media object known from OOCSS such as list, radio-button. */
 		transform: translate(-50%, -50%) scale(1);
 		transition: transform 0.3s, opacity 0.3s, visibility 0s, top 0s linear 0s;
 	}
-
+	.mc-calendar__box--inline {
+		height: 300px;
+	}
 	.mc-calendar__display {
 		width: 200px;
 		height: 100%;

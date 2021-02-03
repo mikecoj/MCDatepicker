@@ -1,3 +1,8 @@
+export const spanTemplate = (direction, content) => {
+	const units = direction === 'next' ? '-100' : '100';
+	return `<span style="transform: translateX(${units}px);">${content}</span>`;
+};
+
 export default `
         <div class="mc-calendar__display row">
             <div class="mc-display__header">

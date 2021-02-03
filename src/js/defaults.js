@@ -33,11 +33,11 @@ export const months = [
 const defaultOptions = {
 	el: null,
 	dateFormat: 'DD-MMM-YYYY',
-	bodyType: 'modal', // ['modal', 'inline', 'range', 'permanent']
+	bodyType: 'modal', // ['modal', 'inline', 'permanent']
 	showCalendarDisplay: true,
 	customWeekDays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
 	customMonths: months,
-	selectedDate: new Date(),
+	selectedDate: null,
 	disableWeekends: false,
 	disableWeekDays: [], // ex: [0,2,5] accept numbers 0-6;
 	disableDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
