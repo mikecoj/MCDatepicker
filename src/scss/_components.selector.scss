@@ -1,0 +1,101 @@
+/*============================================*/
+/*              Selector Components           */
+/*============================================*/
+
+.mc-select {
+	$root: &;
+
+	&__month,
+	&__year {
+		display: flex;
+		padding: 0 0.2em;
+	}
+	&__month {
+		justify-content: flex-end;
+	}
+
+	&__nav {
+		position: absolute;
+		text-decoration: none;
+		color: $month-year-color;
+		@include for-desktop {
+			#{$modal} & {
+				position: relative;
+				padding: 0 1em;
+			}
+			#{$inline} & {
+				padding: 0;
+			}
+		}
+
+		&--prev,
+		&--next {
+			transition: transform 0.1s ease-in-out;
+		}
+		&--prev {
+			&:active {
+				transform: translateX(-0.8em);
+			}
+			#{$inline} #{$root}__month &,
+			& {
+				left: 0;
+			}
+		}
+		&--next {
+			&:active {
+				transform: translateX(0.8em);
+			}
+			#{$inline} #{$root}__month &,
+			& {
+				right: 0;
+			}
+		}
+
+		#{$root}__year & {
+			#{$inline} &,
+			& {
+				display: none;
+			}
+			@include for-desktop {
+				display: inline-block;
+			}
+		}
+	}
+	&__data {
+		font-size: clamp(1rem, 8vw, 1.25rem);
+		height: clamp(1rem, 8vw, 1.25rem);
+		overflow: hidden;
+		position: relative;
+
+		span {
+			text-align: center;
+			position: absolute;
+		}
+
+		&--month {
+			&,
+			span {
+				width: clamp(5rem, 40vw, 6.25rem);
+			}
+			#{$inline} & {
+				&,
+				span {
+					width: 6.4rem;
+				}
+			}
+		}
+
+		&--year {
+			&,
+			span {
+				width: clamp(3rem, 22vw, 3.5rem);
+			}
+			#{$inline} & {
+				&,
+				span {
+					width: 3.2rem;
+				}
+			}
+		}
+	}
+}

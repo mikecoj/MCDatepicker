@@ -1,0 +1,26 @@
+/*============================================*/
+/*             Transition Variables           */
+/*============================================*/
+$transition-duration-m: 0.7s;
+$transition-duration-s: 0.3s;
+$transition-duration-n: 0s;
+
+$transition-delay-m: 0.5s;
+$transition-delay-s: 0.3s;
+$transition-delay-n: 0s;
+
+$easing: linear;
+
+// transition: transform 0.3s linear 0.3s, visibility 0s, top 0s;
+
+// transition: transform 0.3s, opacity 0.3s, visibility 0s linear 0.3s, top 0s linear 0.3s;
+
+// transition: transform 0.3s linear 0.3s, visibility 0s, top 0s;
+
+// transition: transform 0.3s, opacity 0.3s, visibility 0s, top 0s linear 0s;
+
+// Display
+
+// transition: max-height 0.3s linear;
+
+// transition-delay: 0.5s;

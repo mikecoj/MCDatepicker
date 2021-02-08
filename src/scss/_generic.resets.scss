@@ -1,0 +1,31 @@
+/*============================================*/
+/*                  CSS Resets                */
+/*============================================*/
+
+.mc-calendar {
+	&,
+	* {
+		&,
+		&::before,
+		&::after {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+	}
+}
+.mc-btn,
+.mc-select__nav {
+	background: none;
+	border: 0;
+	cursor: pointer;
+	font: inherit;
+	line-height: normal;
+	overflow: visible;
+	padding: 0;
+	outline: none;
+	&::-moz-focus-inner {
+		border: 0;
+		padding: 0;
+	}
+}

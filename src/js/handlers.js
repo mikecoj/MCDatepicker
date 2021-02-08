@@ -17,6 +17,13 @@ export const applyOnFocusListener = (calendarDiv, { linkedElement }) => {
 	};
 };
 
+const updateCalendarPosition = (calendarDIV, { linkedElement }) => {
+	const positionTop = linkedElement.offsetTop + linkedElement.offsetHeight + 5;
+	const positionLeft = linkedElement.offsetLeft;
+	calendarDIV.style.top = `${positionTop}px`;
+	calendarDIV.style.left = `${positionLeft}px`;
+};
+
 export const removeOnFocusListener = ({ linkedElement }) => {
 	linkedElement.onfocus = null;
 };
@@ -90,6 +97,8 @@ export function applyListeners(calendar, datepickers) {
 		updateCalendarUI(activeInstance);
 		// show the calendar
 		calendar.classList.add('mc-calendar__box--opened');
+
+		updateCalendarPosition(calendar, activeInstance);
 		// run all custom onOpen callbacks added by the user
 		activeInstance.onOpenCallbacks.forEach((callback) => callback.apply(null));
 		// get the active cell

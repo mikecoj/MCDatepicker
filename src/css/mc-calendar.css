@@ -5,6 +5,15 @@
 
 /* =========================SETTINGS========================= */
 
+/*
+.mc-calendar__modal
+.mc-calendar__modal--opened
+.mc-calendar__inline
+.mc-calendar__inline--opened
+.mc-calendar__permanent
+.mc-calendar__permanent--opened
+*/
+
 :root {
 	--main-bg-color: #f5f5f6;
 	--main-theme-color: #38ada9;
@@ -36,7 +45,7 @@ This layer is only used if we use a preprocessor as SASS. */
 }
 
 /* =========================ELEMENTS========================= */
-/* Styling for bare HTML elements (like H1, A, header, footer, …). 
+/* Styling for bare HTML elements (like H1, A, header, footer, …).
 These come with default styling from the browser so we must to redefine them here. */
 .mc-calendar__box h1,
 .mc-calendar__box h2,
@@ -95,6 +104,16 @@ for example media object known from OOCSS such as list, radio-button. */
 	transition: transform 0.3s linear 0.3s, visibility 0s, top 0s;
 }
 
+.mc-calendar__box--inline {
+	height: 325px;
+	width: min(100%, 300px);
+	background: none;
+	font-size: 1rem;
+	box-shadow: none;
+	border: 1px solid #c9c7c7;
+	border-radius: 10px;
+}
+
 /* --------------Calendar Display------------ */
 
 .mc-calendar__display {
@@ -104,6 +123,10 @@ for example media object known from OOCSS such as list, radio-button. */
 	max-height: 0;
 	/* transition: <property> <duration> <timing-function> <delay>; */
 	transition: max-height 0.3s linear;
+}
+
+.mc-calendar__box--inline .mc-calendar__display {
+	display: none;
 }
 
 .mc-calendar__display--hide {
@@ -163,6 +186,12 @@ for example media object known from OOCSS such as list, radio-button. */
 	border-radius: 30px;
 }
 
+.mc-calendar__box--inline .mc-calendar__picker {
+	width: 100%;
+	height: 100%;
+	border-radius: unset;
+}
+
 .mc-picker__header {
 	font-size: 1.25rem;
 	justify-content: center;
@@ -170,19 +199,28 @@ for example media object known from OOCSS such as list, radio-button. */
 	color: var(--month-year-piker);
 }
 
+.mc-calendar__box--inline .mc-picker__header {
+	font-size: 1rem;
+	padding: 1em 0 0.5em;
+}
+
 .mc-picker__select-month,
-.mc-picker__select-year {
+.mc-picker__select-year,
+.mc-calendar__box--inline .mc-picker__select-month,
+.mc-calendar__box--inline .mc-picker__select-year {
 	padding: 0 0.2em;
 }
 
 .mc-picker__select-month {
 	justify-content: flex-end;
 }
+.mc-calendar__box--inline .mc-picker__nav,
 .mc-picker__nav {
 	position: absolute;
 	text-decoration: none;
 	color: var(--month-year-piker);
 }
+.mc-calendar__box--inline .mc-select__data,
 .mc-select__data {
 	font-size: clamp(1rem, 8vw, 1.25rem);
 	height: clamp(1rem, 8vw, 1.25rem);
@@ -190,13 +228,25 @@ for example media object known from OOCSS such as list, radio-button. */
 	/* width: clamp(6.25rem, 50vw, 7.8rem); */
 	position: relative;
 }
+
 .mc-select__data--month,
 .mc-select__data--month span {
 	width: clamp(5rem, 40vw, 6.25rem);
 }
+
 .mc-select__data--year,
 .mc-select__data--year span {
 	width: clamp(3rem, 22vw, 3.5rem);
+}
+
+.mc-calendar__box--inline .mc-select__data--month,
+.mc-calendar__box--inline .mc-select__data--month span {
+	width: 6.4rem;
+}
+
+.mc-calendar__box--inline .mc-select__data--year,
+.mc-calendar__box--inline .mc-select__data--year span {
+	width: 3.2rem;
 }
 .mc-select__data span {
 	/* display: inline-block; */
@@ -219,6 +269,17 @@ for example media object known from OOCSS such as list, radio-button. */
 	display: none;
 }
 
+.mc-calendar__box--inline .mc-picker__select-month .mc-picker__nav--prev {
+	left: 0;
+}
+.mc-calendar__box--inline .mc-picker__select-month .mc-picker__nav--next {
+	right: 0;
+}
+
+.mc-calendar__box--inline .mc-picker__select-year .mc-picker__nav {
+	display: none;
+}
+
 .mc-picker__nav--prev:active {
 	transform: translateX(-0.8em);
 	/* animation-name: btn-animate;
@@ -233,6 +294,11 @@ for example media object known from OOCSS such as list, radio-button. */
 .mc-picker__table {
 	height: 100%;
 }
+
+.mc-calendar__box--inline .mc-picker__table {
+	border-top: none;
+}
+
 .mc-table__weekday {
 	padding: 0.5em 0;
 	color: var(--main-theme-color);
@@ -279,6 +345,11 @@ for example media object known from OOCSS such as list, radio-button. */
 	justify-content: space-between;
 	padding: 1em 0 2em;
 }
+
+.mc-calendar__box--inline .mc-picker__footer {
+	padding: 1em 0;
+}
+
 .mc-btn {
 	display: inline-block;
 	text-decoration: none;
@@ -321,8 +392,15 @@ for example media object known from OOCSS such as list, radio-button. */
 		transition: transform 0.3s, opacity 0.3s, visibility 0s, top 0s linear 0s;
 	}
 	.mc-calendar__box--inline {
-		height: 300px;
+		/* top: calc(128px + 19px + 5px);
+		left: 261px; */
+		height: 325px;
+		width: 300px;
+		box-shadow: none;
+		border: 1px solid #c9c7c7;
+		transform: unset;
 	}
+
 	.mc-calendar__display {
 		width: 200px;
 		height: 100%;
@@ -376,6 +454,10 @@ for example media object known from OOCSS such as list, radio-button. */
 	.mc-picker__nav {
 		position: relative;
 		padding: 0 1em;
+	}
+
+	.mc-calendar__box--inline .mc-picker__nav {
+		padding: 0;
 	}
 
 	.mc-picker__select-year .mc-picker__nav {

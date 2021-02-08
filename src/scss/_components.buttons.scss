@@ -1,0 +1,22 @@
+/*============================================*/
+/*               Button Components            */
+/*============================================*/
+
+.mc-btn {
+	display: inline-block;
+	font-weight: 500;
+
+	&--success {
+		color: $main-theme-color;
+		margin-left: 1em;
+	}
+
+	&--danger {
+		color: $danger-button-color;
+		margin-right: 1em;
+	}
+
+	&:active {
+		transform: scale3d(0.95, 0.95, 0.95);
+	}
+}

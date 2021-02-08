@@ -1,0 +1,22 @@
+/*============================================*/
+/*               Table Components             */
+/*============================================*/
+
+.mc-table {
+	height: 100%;
+
+    #{$modal} & {
+        @include for-desktop {
+            border-top: none;
+        }
+    }
+
+    #{$inline} & {
+        border-top: none;
+    }
+    &__weekday {
+	    padding: 0.5em 0;
+	    color: $main-theme-color;
+    }
+}
+

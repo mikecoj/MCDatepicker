@@ -1,0 +1,107 @@
+/*============================================*/
+/*              Display Components            */
+/*============================================*/
+
+.mc-display {
+	display: flex;
+	flex-direction: column;
+	color: $inactive-white-color;
+	max-height: 0;
+	transition: max-height 0.3s linear;
+
+	#{$inline} &,
+	&--hide {
+		display: none;
+	}
+
+	#{$modal} & {
+		@include for-desktop {
+			width: 200px;
+			height: 100%;
+			max-height: unset;
+			background-color: $main-theme-color;
+		}
+	}
+
+	#{$modal}#{$opened} & {
+		max-height: 175px;
+		transition-delay: 0.5s;
+
+		@include for-desktop {
+			max-height: unset;
+			transition: unset;
+		}
+	}
+
+	&__body {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0.5em 0;
+
+		@include for-desktop {
+			flex-direction: column;
+			height: 100%;
+			padding: 0;
+		}
+	}
+
+	&__day {
+		text-align: center;
+		background-color: $dark-bg-color;
+		font-size: clamp(1.2rem, 9vw, 1.375rem);
+		line-height: 1;
+		padding: 0.5em 0;
+		@include for-desktop {
+			padding: 1em 0;
+		}
+	}
+
+	&__data {
+		display: flex;
+		width: 50%;
+
+		@include for-desktop {
+			width: 100%;
+			height: 50%;
+			text-align: center;
+		}
+
+		&--primary {
+			justify-content: flex-end;
+
+			@include for-desktop {
+				justify-content: center;
+				align-items: flex-end;
+			}
+		}
+		&--secondary {
+			flex-direction: column;
+
+			@include for-desktop {
+				justify-content: space-between;
+			}
+		}
+	}
+
+	&__date {
+		font-size: clamp(5rem, 40vw, 7rem);
+		line-height: 1;
+	}
+
+	&__month {
+		font-size: clamp(1.2rem, 9vw, 1.5rem);
+		@include for-desktop {
+			height: auto;
+		}
+	}
+
+	&__year {
+		font-size: clamp(2.4rem, 18vw, 3rem);
+		line-height: 0.8;
+		@include for-desktop {
+			height: auto;
+			padding: 0.5em 0;
+		}
+	}
+}

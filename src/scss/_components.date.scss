@@ -1,0 +1,48 @@
+/*============================================*/
+/*                Date Components             */
+/*============================================*/
+
+.mc-date {
+	$root: &;
+	text-align: center;
+	border-radius: 5px;
+	font-weight: 300;
+
+	&--active {
+		cursor: pointer;
+
+		&#{$root}--today {
+			background-color: $dark-bg-color;
+		}
+		&#{$root}--picked {
+			color: #fff;
+			background-color: $main-theme-color;
+			#{$modal} & {
+				box-shadow: 0 0 10px rgba(124, 124, 124, 0.5);
+			}
+		}
+	}
+
+	&--inactive {
+		color: $inactive-date-color;
+		cursor: default;
+
+		%colorShadow {
+			color: $inactive-white-color;
+			box-shadow: none;
+		}
+		&#{$root}--today {
+			@extend %colorShadow;
+			// background-color: $dark-bg-color;
+			// color: $inactive-black-color;
+			// opacity: 0.5;
+			border: 1px solid $inactive-date-color;
+		}
+
+		&#{$root}--picked {
+			@extend %colorShadow;
+			border: 1px solid $inactive-picked-bg;
+			color: $inactive-picked-bg;
+		}
+	}
+}
