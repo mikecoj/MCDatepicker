@@ -29,7 +29,7 @@ export const removeOnFocusListener = ({ linkedElement }) => {
 };
 
 export function applyListeners(calendar, datepickers) {
-	const calendarDisplay = calendar.querySelector('.mc-calendar__display');
+	const calendarDisplay = calendar.querySelector('.mc-display');
 	const displayDay = calendar.querySelector('.mc-display__day');
 	const displayDate = calendar.querySelector('.mc-display__date');
 	const displayMonth = calendar.querySelector('.mc-display__month');
@@ -81,9 +81,9 @@ export function applyListeners(calendar, datepickers) {
 		updateCalendarHeader(targetDate);
 		// update calendar display UI based on custom options
 		if (!options.showCalendarDisplay) {
-			calendarDisplay.classList.add('mc-calendar__display--hide');
+			calendarDisplay.classList.add('u-display-none');
 		} else {
-			calendarDisplay.classList.remove('mc-calendar__display--hide');
+			calendarDisplay.classList.remove('u-display-none');
 			updateDisplay(targetDate);
 		}
 	};
@@ -96,7 +96,7 @@ export function applyListeners(calendar, datepickers) {
 		// update the calendar display
 		updateCalendarUI(activeInstance);
 		// show the calendar
-		calendar.classList.add('mc-calendar__box--opened');
+		calendar.classList.add('mc-calendar--opened');
 
 		updateCalendarPosition(calendar, activeInstance);
 		// run all custom onOpen callbacks added by the user
@@ -105,7 +105,12 @@ export function applyListeners(calendar, datepickers) {
 		activeCell = calendar.querySelector('.mc-date--picked');
 	});
 	calendar.addEventListener(CALENDAR_HIDE, (e) => {
-		calendar.classList.remove('mc-calendar__box--opened');
+		// hide the calendar
+		calendar.classList.remove('mc-calendar--opened');
+		// delete the style attribute for inline calendar
+		if (activeInstance.options.bodyType == 'inline') {
+			calendar.removeAttribute('style');
+		}
 		// run all custom onClose callbacks added by the user
 		activeInstance.onCloseCallbacks.forEach((callback) => callback.apply(null));
 		// reset the active instance

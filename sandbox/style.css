@@ -9,6 +9,13 @@ body {
 	min-width: 100%;
 }
 
+.card {
+	margin: 2rem;
+}
+
+.row {
+	display: flex;
+}
 /* #box {
 	position: absolute;
 	z-index: 2;
@@ -36,10 +43,6 @@ body {
 .main__body {
 	height: 90vh;
 	background-color: #e4eefa;
-}
-
-.card {
-	margin: 2rem;
 }
 
 .form-field__label,

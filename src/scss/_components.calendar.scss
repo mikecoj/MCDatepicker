@@ -6,15 +6,18 @@
 	flex-direction: column;
 	font-family: $calendar-font;
 	font-weight: 500;
-	// background-color: $main-theme-color;
 	overflow: hidden;
 	user-select: none;
+	visibility: hidden;
 
 	&--opened {
 		visibility: visible;
 	}
 
 	&--inline {
+		position: absolute;
+		top: -100%;
+		left: 50%;
 		height: 325px;
 		// width: #{min(100%, 300px)};
 		width: 100%;
@@ -38,7 +41,6 @@
 	}
 
 	&--modal {
-		// flex-direction: column;
 		position: absolute;
 		top: -100%;
 		left: 50%;
@@ -84,6 +86,6 @@
 	&--permanent {
 		// width: #{min(100%, 425px)};
 		width: 100%;
-		max-width: 425px;
+		height: 100%;
 	}
 }

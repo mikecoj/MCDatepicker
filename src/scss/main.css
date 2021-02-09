@@ -200,7 +200,7 @@ These come with default styling from the browser so we must to redefine them her
 
 .mc-calendar--permanent {
   width: 100%;
-  max-width: 425px;
+  height: 100%;
 }
 
 /*============================================*/
@@ -554,11 +554,6 @@ These come with default styling from the browser so we must to redefine them her
 .mc-date--active.mc-date--picked {
   color: #fff;
   background-color: #38ada9;
-}
-
-.mc-calendar--modal .mc-date--active.mc-date--picked {
-  -webkit-box-shadow: 0 0 10px rgba(124, 124, 124, 0.5);
-          box-shadow: 0 0 10px rgba(124, 124, 124, 0.5);
 }
 
 .mc-date--inactive {

@@ -6,7 +6,8 @@ import { validateOptions } from './validators';
 import { writeTemplate } from './render';
 import { dispatchCalendarShow, dispatchCalendarHide } from './emiters';
 
-import '../css/mc-calendar.css';
+// import '../css/mc-calendar.css';
+import '../scss/main.scss';
 
 const MCDatepicker = (() => {
 	let datepickers = [];

@@ -17,9 +17,6 @@
 		&#{$root}--picked {
 			color: #fff;
 			background-color: $main-theme-color;
-			#{$modal} & {
-				box-shadow: 0 0 10px rgba(124, 124, 124, 0.5);
-			}
 		}
 	}
 
@@ -33,9 +30,6 @@
 		}
 		&#{$root}--today {
 			@extend %colorShadow;
-			// background-color: $dark-bg-color;
-			// color: $inactive-black-color;
-			// opacity: 0.5;
 			border: 1px solid $inactive-date-color;
 		}
 
