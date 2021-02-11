@@ -17,7 +17,8 @@ export const applyOnFocusListener = (calendarDiv, { linkedElement }) => {
 	};
 };
 
-const updateCalendarPosition = (calendarDIV, { linkedElement }) => {
+const updateCalendarPosition = (calendarDIV, { linkedElement, options: { bodyType } }) => {
+	if (bodyType !== 'inline') return;
 	const positionTop = linkedElement.offsetTop + linkedElement.offsetHeight + 5;
 	const positionLeft = linkedElement.offsetLeft;
 	calendarDIV.style.top = `${positionTop}px`;

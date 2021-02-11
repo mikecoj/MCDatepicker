@@ -2,16 +2,8 @@
 /*                    Layout                  */
 /*============================================*/
 
-.container {
-	&-m,
-	&-s {
-		position: relative;
-		margin: 0 auto;
-	}
-	&-m {
-		width: 80%;
-	}
-	&-s {
-		width: 90%;
-	}
+.mc-container {
+	position: relative;
+	margin: 0 auto;
+	width: 90%;
 }

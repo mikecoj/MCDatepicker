@@ -99,7 +99,7 @@ export function writeTemplate(datepickers) {
 	// set the id of the created div
 	calendarDiv.id = 'mc-calendar';
 	// set the classList of the created div
-	calendarDiv.className = 'mc-calendar mc-calendar--inline'; // mc-calendar__box--inline
+	calendarDiv.className = 'mc-calendar mc-calendar--modal'; // mc-calendar__box--inline
 	// write the template to the div content
 	calendarDiv.innerHTML = template;
 	// add the new div to the document

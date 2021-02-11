@@ -33,6 +33,11 @@
 		justify-content: center;
 		padding: 1em 0;
 		color: $month-year-color;
+		#{$modal} & {
+			@include for-desktop {
+				justify-content: space-between;
+			}
+		}
 
 		#{$inline} & {
 			font-size: 1rem;

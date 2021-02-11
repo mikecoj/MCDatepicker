@@ -2,6 +2,32 @@
 /*                 Transitions                */
 /*============================================*/
 
+@keyframes slide-left {
+	0% {
+		transform: translateX(0);
+	}
+
+	100% {
+		transform: translateX(-0.5em);
+	}
+}
+@keyframes slide-right {
+	0% {
+		transform: translateX(0);
+	}
+
+	100% {
+		transform: translateX(0.5em);
+	}
+}
+
+@mixin slide($left: true) {
+	@if $left {
+		animation: slide-left 0.2s linear;
+	} @else {
+		animation: slide-right 0.2s linear;
+	}
+}
 // @mixin basic-transition(
 // 	$properties: (
 // 		all

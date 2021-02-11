@@ -5,15 +5,16 @@
 .mc-btn {
 	display: inline-block;
 	font-weight: 500;
+	padding: 0 1em;
 
 	&--success {
 		color: $main-theme-color;
-		margin-left: 1em;
+		margin-left: 0.5em;
 	}
 
 	&--danger {
 		color: $danger-button-color;
-		margin-right: 1em;
+		margin-right: 0.5em;
 	}
 
 	&:active {

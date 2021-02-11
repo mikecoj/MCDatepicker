@@ -10,31 +10,25 @@
 		display: flex;
 		padding: 0 0.2em;
 	}
-	&__month {
-		justify-content: flex-end;
-	}
-
 	&__nav {
 		position: absolute;
 		text-decoration: none;
 		color: $month-year-color;
+		padding: 0 1em;
 		@include for-desktop {
 			#{$modal} & {
 				position: relative;
-				padding: 0 1em;
-			}
-			#{$inline} & {
-				padding: 0;
 			}
 		}
 
 		&--prev,
 		&--next {
-			transition: transform 0.1s ease-in-out;
+			transition: transform 0.2s ease-in-out;
 		}
 		&--prev {
 			&:active {
-				transform: translateX(-0.8em);
+				transform: translateX(-0.5em);
+				// @include slide(true);
 			}
 			#{$inline} #{$root}__month &,
 			& {
@@ -43,7 +37,8 @@
 		}
 		&--next {
 			&:active {
-				transform: translateX(0.8em);
+				transform: translateX(0.5em);
+				// @include slide(false);
 			}
 			#{$inline} #{$root}__month &,
 			& {
@@ -53,6 +48,7 @@
 
 		#{$root}__year & {
 			#{$inline} &,
+			#{$permanent} &,
 			& {
 				display: none;
 			}
