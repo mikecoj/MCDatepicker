@@ -3,18 +3,14 @@
 /*============================================*/
 
 .mc-display {
-	display: flex;
-	flex-direction: column;
+	display: none;
 	color: $inactive-white-color;
-	max-height: 0;
-	transition: max-height 0.3s linear;
-
-	#{$inline} &,
-	&--hide {
-		display: none;
-	}
 
 	#{$modal} & {
+		display: flex;
+		flex-direction: column;
+		max-height: 0;
+		transition: max-height 0.2s linear;
 		@include for-desktop {
 			width: 200px;
 			height: 100%;
@@ -25,11 +21,12 @@
 
 	#{$modal}#{$opened} & {
 		max-height: 175px;
-		transition-delay: 0.5s;
+		animation: stretch 0.4s;
 
 		@include for-desktop {
-			max-height: unset;
 			transition: unset;
+			max-height: unset;
+			animation: unset;
 		}
 	}
 

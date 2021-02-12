@@ -18,11 +18,14 @@ export const applyOnFocusListener = (calendarDiv, { linkedElement }) => {
 };
 
 const updateCalendarPosition = (calendarDIV, { linkedElement, options: { bodyType } }) => {
-	if (bodyType !== 'inline') return;
-	const positionTop = linkedElement.offsetTop + linkedElement.offsetHeight + 5;
-	const positionLeft = linkedElement.offsetLeft;
-	calendarDIV.style.top = `${positionTop}px`;
-	calendarDIV.style.left = `${positionLeft}px`;
+	if (bodyType === 'inline') {
+		const positionTop = linkedElement.offsetTop + linkedElement.offsetHeight + 5;
+		const positionLeft = linkedElement.offsetLeft;
+		calendarDIV.style.top = `${positionTop}px`;
+		calendarDIV.style.left = `${positionLeft}px`;
+	} else {
+		if (calendarDIV.hasAttribute('style')) calendarDIV.removeAttribute('style');
+	}
 };
 
 export const removeOnFocusListener = ({ linkedElement }) => {
@@ -73,7 +76,11 @@ export function applyListeners(calendar, datepickers) {
 	};
 
 	const updateCalendarUI = (instance) => {
-		const { options, pickedDate } = instance;
+		const {
+			options: { showCalendarDisplay, bodyType },
+			pickedDate
+		} = instance;
+		calendar.classList = 'mc-calendar';
 		// if the picketDate is null, render the calendar based on today's date
 		const targetDate = pickedDate === null ? new Date() : pickedDate;
 		// update the calendar table
@@ -81,12 +88,14 @@ export function applyListeners(calendar, datepickers) {
 		// update calendar header
 		updateCalendarHeader(targetDate);
 		// update calendar display UI based on custom options
-		if (!options.showCalendarDisplay) {
+		if (!showCalendarDisplay) {
 			calendarDisplay.classList.add('u-display-none');
 		} else {
 			calendarDisplay.classList.remove('u-display-none');
-			updateDisplay(targetDate);
 		}
+		updateDisplay(targetDate);
+		// update the calendar classlist based on options.bodytype
+		calendar.classList.add(`mc-calendar--${bodyType}`);
 	};
 	// add click event that dispatch a custom DATE_PICK event, to every calendar cell
 	dateCells.forEach((cell) => cell.addEventListener('click', (e) => dispatchDatePick(e.target)));
@@ -98,7 +107,7 @@ export function applyListeners(calendar, datepickers) {
 		updateCalendarUI(activeInstance);
 		// show the calendar
 		calendar.classList.add('mc-calendar--opened');
-
+		// update the calendar position based on calendar type
 		updateCalendarPosition(calendar, activeInstance);
 		// run all custom onOpen callbacks added by the user
 		activeInstance.onOpenCallbacks.forEach((callback) => callback.apply(null));

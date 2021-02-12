@@ -6,7 +6,6 @@ import { validateOptions } from './validators';
 import { writeTemplate } from './render';
 import { dispatchCalendarShow, dispatchCalendarHide } from './emiters';
 
-// import '../css/mc-calendar.css';
 import '../scss/main.scss';
 
 const MCDatepicker = (() => {
@@ -37,6 +36,7 @@ const MCDatepicker = (() => {
 		datepickers.push(instance);
 		// add event listener to the linked input
 		applyOnFocusListener(calendarDiv, instance);
+
 		return instance;
 	};
 	const remove = (instance) => {

@@ -5,9 +5,9 @@ window.MCDatepicker = MCDatepicker;
 
 const firstDatePicker = MCDatepicker.create({
 	el: '#datepicker_one',
-	bodyType: 'permanent',
+	bodyType: 'inline',
 	dateFormat: 'dddd, dd mmmm yyyy',
-	showCalendarDisplay: false,
+
 	// disableWeekDays: [3],
 	disableDates: [new Date(2021, 1, 12), new Date(2021, 3, 15)]
 	// disableWeekends: true
@@ -18,8 +18,12 @@ console.log(firstDatePicker.linkedElement);
 // 	firstDatePicker.destroy();
 // });
 // firstDatePicker.open();
-const secundDatePicker = MCDatepicker.create({ el: '#datepicker_two', bodyType: 'permanent' });
-const thirdDatePicker = MCDatepicker.create({ el: '#datepicker_three', bodyType: 'modal' });
+const secundDatePicker = MCDatepicker.create({
+	el: '#datepicker_two',
+	bodyType: 'modal'
+	// showCalendarDisplay: false
+});
+const thirdDatePicker = MCDatepicker.create({ el: '#datepicker_three', bodyType: 'permanent' });
 
 // offsetTop: 128;
 // offsetLeft: 261;

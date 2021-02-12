@@ -7,25 +7,3 @@
 		@content;
 	}
 }
-
-@mixin on-open() {
-	$parent: &;
-	&#{$opened} {
-		@if #{$parent} == #{$modal} {
-			top: 0;
-			transform: translate(-50%, 0);
-			ransition: transform 0.3s linear 0.3s, visibility 0s, top 0s;
-		}
-	}
-}
-
-// @mixin pressed {
-// 	&:focus {
-// 		@content;
-// 	}
-// }
-
-// @mixin date-background {
-// 	@if & == '.mc-date--inactive' {
-// 	}
-// }

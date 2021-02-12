@@ -3,5 +3,7 @@
 /*============================================*/
 
 .u-display-none {
-	display: none !important;
+	@include for-desktop {
+		display: none !important;
+	}
 }

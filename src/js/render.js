@@ -3,7 +3,6 @@ import { valueOfDate } from './utils';
 import { applyListeners } from './handlers';
 
 export const renderCalendar = (instance, date) => {
-	// console.log(instance.pickedDate);
 	// get the first day of the month
 	const firstMonthDate = new Date(date.getFullYear(), date.getMonth(), 1);
 	// get the month
@@ -97,9 +96,9 @@ export function writeTemplate(datepickers) {
 	// create a new div tag
 	const calendarDiv = document.createElement('div');
 	// set the id of the created div
-	calendarDiv.id = 'mc-calendar';
+	// calendarDiv.id = 'mc-calendar';
 	// set the classList of the created div
-	calendarDiv.className = 'mc-calendar mc-calendar--modal'; // mc-calendar__box--inline
+	calendarDiv.className = 'mc-calendar';
 	// write the template to the div content
 	calendarDiv.innerHTML = template;
 	// add the new div to the document

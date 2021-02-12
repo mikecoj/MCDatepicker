@@ -26,7 +26,7 @@ export function slide(
 	activeElem,
 	newElem,
 	dir,
-	{ duration = 300, easing = 'ease-in-out', ...customOption } = {}
+	{ duration = 150, easing = 'ease-in-out', ...customOption } = {}
 ) {
 	// get the with of the element, and transform it based on dir property
 	const value =

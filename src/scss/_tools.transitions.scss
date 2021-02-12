@@ -20,6 +20,39 @@
 		transform: translateX(0.5em);
 	}
 }
+@keyframes slide-down {
+	0% {
+		transform: translate(-50%, #{min(-400px, -65vh)});
+	}
+
+	100% {
+		transform: translate(-50%, 0);
+	}
+}
+
+@keyframes zoom-in {
+	0% {
+		// opacity: 0;
+		transform: translate(-50%, -50%) scale(0.9);
+	}
+	100% {
+		// opacity: 0;
+		transform: translate(-50%, -50%) scale(1);
+	}
+}
+
+@keyframes stretch {
+	0% {
+		max-height: 0;
+	}
+	50% {
+		max-height: 0;
+	}
+
+	100% {
+		max-height: 175px;
+	}
+}
 
 @mixin slide($left: true) {
 	@if $left {
@@ -28,28 +61,11 @@
 		animation: slide-right 0.2s linear;
 	}
 }
-// @mixin basic-transition(
-// 	$properties: (
-// 		all
-// 	),
-// 	$duration: $transition-duration,
-// 	$delay: null,
-// 	$easing: $easing
-// ) {
-// 	$value: null;
 
-// 	@each $prop in $properties {
-// 		$prop-value: append((), $prop, space);
-// 		$prop-value: append($prop-value, $duration, space);
-
-// 		@if $delay != null {
-// 			$prop-value: append($prop-value, $delay, space);
-// 		}
-
-// 		$prop-value: append($prop-value, $easing, space);
-
-// 		$value: append($value, $prop-value, comma);
-// 	}
-
-// 	transition: $value;
-// }
+@mixin popup($in: true) {
+	@if $in {
+		animation: zoom-in 0.1s linear;
+	} @else {
+		animation: zoom-in 0.1s linear reverse;
+	}
+}
