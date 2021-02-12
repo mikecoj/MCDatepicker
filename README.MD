@@ -6,20 +6,17 @@ The package also includes pre-built js/css files for those who like to use it di
 
 ### Features
 
-- Date picker (input-dropdown, inline), date range picker
-- Keyboard operation support (navigation by arrow keys, editing on input field)
+- Date picker (input-dropdown, inline)
 - Easily customizable to adapt stylesheet for various CSS frameworks
 - Dependency free
-- Made for modern browsers — no IE support
+- Made for modern browsers
 
 ## Usage
 
-> Initiating new Datepicker object
+> Initiating new calendar instance
 
 ```
-const picker = new Dateicker();
-
-    picker.init({
+const picker = MCDatepicker.create({
         el: '#box',
     });
 ```
