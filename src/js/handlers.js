@@ -12,7 +12,8 @@ import {
 } from './emiters';
 
 export const applyOnFocusListener = (calendarDiv, { linkedElement }) => {
-	linkedElement.onfocus = () => {
+	linkedElement.onfocus = (e) => {
+		e.preventDefault();
 		dispatchCalendarShow(calendarDiv, '#' + linkedElement.id);
 	};
 };
