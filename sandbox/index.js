@@ -13,6 +13,9 @@ const firstDatePicker = MCDatepicker.create({
 	// disableWeekends: true
 });
 
+firstDatePicker.onSelect((date) => console.log('this is onSelect method'));
+firstDatePicker.onSelect((date) => console.log(date));
+
 console.log(firstDatePicker.linkedElement);
 // firstDatePicker.onOpen(() => {
 // 	firstDatePicker.destroy();

@@ -138,8 +138,6 @@ export function applyListeners(calendar, datepickers) {
 		e.target.classList.add('mc-date--picked');
 		// add a new activeCell
 		activeCell = e.target;
-		// run all custom onSelect callbacks added by the user
-		activeInstance.onSelectCallbacks.forEach((callback) => callback.apply(null));
 	});
 
 	currentMonthSelect.addEventListener(CHANGE_MONTH, function (e) {
@@ -239,6 +237,10 @@ export function applyListeners(calendar, datepickers) {
 				: null;
 		// set the value of the picked date to the linked input
 		activeInstance.linkedElement.value = pickedDateValue;
+		// run all custom onSelect callbacks added by the user
+		activeInstance.onSelectCallbacks.forEach((callback) =>
+			callback.apply(null, [activeInstance.pickedDate])
+		);
 		// dispatch DATEPICKER_HIDE event
 		dispatchCalendarHide(e.target);
 	});
