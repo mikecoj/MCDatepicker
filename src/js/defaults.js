@@ -36,6 +36,7 @@ const defaultOptions = {
 	bodyType: 'modal', // ['modal', 'inline', 'permanent']
 	showCalendarDisplay: true,
 	customWeekDays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+	firstWeekday: 0, // ex: 1 accept numbers 0-6;
 	customMonths: months,
 	selectedDate: null,
 	disableWeekends: false,
