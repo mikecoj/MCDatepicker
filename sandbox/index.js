@@ -6,7 +6,7 @@ window.MCDatepicker = MCDatepicker;
 const firstDatePicker = MCDatepicker.create({
 	el: '#datepicker_one',
 	bodyType: 'inline',
-	dateFormat: 'dddd, dd mmmm yyyy',
+	dateFormat: 'dddd, dd mmmm.yyyy',
 	disableDates: [new Date(2021, 1, 12), new Date(2021, 3, 15)]
 });
 
