@@ -181,6 +181,8 @@ export function applyListeners(calendar, datepickers) {
 			);
 			// update the calendar table
 			updateCalendarTable(activeInstance, nextCalendarDate);
+			// get the active cell
+			activeCell = calendar.querySelector('.mc-date--picked');
 			// run all custom onMonthChangeCallbacks added by the user
 			activeInstance.onMonthChangeCallbacks.forEach((callback) => callback.apply(null));
 
@@ -212,6 +214,8 @@ export function applyListeners(calendar, datepickers) {
 			);
 			// update the calendar table
 			updateCalendarTable(activeInstance, nextCalendarDate);
+			// get the active cell
+			activeCell = calendar.querySelector('.mc-date--picked');
 			// run every custom callback added by user
 			activeInstance.onYearChangeCallbacks.forEach((callback) => callback.apply(null));
 
