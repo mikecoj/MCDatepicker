@@ -29,7 +29,7 @@ module.exports = (env, argv) => {
 			disableHostCheck: true,
 			contentBase: path.resolve(__dirname, './sandbox'),
 			port: 9000,
-			public: 'http://dev-test:9000'
+			public: 'http://localhost:9000'
 		},
 		module: {
 			rules: [
