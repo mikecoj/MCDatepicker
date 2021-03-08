@@ -21,7 +21,11 @@ export const renderCalendar = (instance, date) => {
 	const getCalendarArray = () => {
 		let calendarArray = [];
 		// get the day of the first date of the first table cell
-		let firstCalendarDate = (firstMonthDate.getDay() - 1) * -1;
+		const { firstWeekday } = instance.options;
+		const wDay = firstMonthDate.getDay();
+		const wDays = 7;
+		const offset = (firstWeekday - wDays) % wDays;
+		let firstCalendarDate = ((wDay - offset - 1) * -1) % wDays;
 		// generate the calendar array
 		while (calendarArray.length < 42) {
 			// regenerate date object based on first active month day

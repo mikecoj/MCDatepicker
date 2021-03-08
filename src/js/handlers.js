@@ -45,6 +45,7 @@ export function applyListeners(calendar, datepickers) {
 	const monthNavNext = calendar.querySelector('#mc-picker__month--next');
 	const yearNavPrev = calendar.querySelector('#mc-picker__year--prev');
 	const yearNavNext = calendar.querySelector('#mc-picker__year--next');
+	const weekdays = calendar.querySelectorAll('.mc-table__weekday');
 	const okButton = calendar.querySelector('#mc-btn__ok');
 	const cancelButton = calendar.querySelector('#mc-btn__cancel');
 	const clearButton = calendar.querySelector('#mc-btn__clear');
@@ -53,6 +54,12 @@ export function applyListeners(calendar, datepickers) {
 	let activeInstance = null;
 	let clickable = true;
 
+	const updateWeekdays = ({ customWeekDays, firstWeekday }) => {
+		weekdays.forEach((wDay, index) => {
+			const nextElement = (firstWeekday + index) % customWeekDays.length;
+			wDay.innerText = customWeekDays[nextElement];
+		});
+	};
 	const updateDisplay = (pickedDate) => {
 		displayDay.innerText = weekDays[pickedDate.getDay()];
 		displayDate.innerText = pickedDate.getDate();
@@ -61,6 +68,7 @@ export function applyListeners(calendar, datepickers) {
 	};
 
 	const updateCalendarTable = (instance, date) => {
+		updateWeekdays(instance.options);
 		// render the new calendar array
 		const datesArray = renderCalendar(instance, date);
 		// update teh DOM for each date cell

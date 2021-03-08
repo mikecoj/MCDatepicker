@@ -7,7 +7,8 @@ const firstDatePicker = MCDatepicker.create({
 	el: '#datepicker_one',
 	bodyType: 'inline',
 	dateFormat: 'dddd, dd mmmm.yyyy',
-	disableDates: [new Date(2021, 1, 12), new Date(2021, 3, 15)]
+	disableDates: [new Date(2021, 1, 12), new Date(2021, 3, 15)],
+	firstWeekday: 1
 });
 
 firstDatePicker.onSelect((date) => console.log('this is onSelect method'));

@@ -85,6 +85,7 @@ const optionsSchema = {
 			value.every((elem) => /^[A-Za-z]+$|^[0-9]{1,2}$/.test(elem))
 		);
 	},
+	firstWeekday: (value) => Is(value).number() && /^[0-6]{1}$/.test(value),
 	customMonths: (value) => {
 		return (
 			Is(value).array() &&
