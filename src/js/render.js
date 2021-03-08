@@ -26,6 +26,7 @@ export const renderCalendar = (instance, date) => {
 		const wDays = 7;
 		const offset = (firstWeekday - wDays) % wDays;
 		let firstCalendarDate = ((wDay - offset - 1) * -1) % wDays;
+		firstCalendarDate = firstCalendarDate > -6 ? firstCalendarDate : 1;
 		// generate the calendar array
 		while (calendarArray.length < 42) {
 			// regenerate date object based on first active month day
