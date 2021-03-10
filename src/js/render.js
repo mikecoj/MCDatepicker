@@ -66,6 +66,13 @@ export const renderCalendar = (instance, date) => {
 		return valueOfDate(instance.pickedDate) === valueOfDate(date.date) ? true : false;
 	};
 
+	const isMarked = ({ options }, date) => {
+		if (!options.markDates.length) return false;
+		return options.markDates.some(
+			(markedDate) => valueOfDate(markedDate) === valueOfDate(date.date)
+		);
+	};
+
 	const isToday = (date) => {
 		return valueOfDate(date.date) === valueOfDate(new Date()) ? true : false;
 	};
@@ -84,6 +91,8 @@ export const renderCalendar = (instance, date) => {
 			classArray.push('mc-date--active');
 		}
 		if (isPicked(instance, dayObject)) classArray.push('mc-date--picked');
+
+		if (isMarked(instance, dayObject)) classArray.push('mc-date--marked');
 
 		if (isToday(dayObject)) classArray.push('mc-date--today');
 
