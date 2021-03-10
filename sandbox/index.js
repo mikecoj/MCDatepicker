@@ -8,7 +8,21 @@ const firstDatePicker = MCDatepicker.create({
 	bodyType: 'inline',
 	dateFormat: 'dddd, dd mmmm.yyyy',
 	disableDates: [new Date(2021, 1, 12), new Date(2021, 3, 15)],
-	customWeekDays: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+	customWeekDays: ['Duminica', 'Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata'],
+	customMonths: [
+		'Ianuarie',
+		'Februarie',
+		'Martie',
+		'Aprilie',
+		'Mai',
+		'Iunie',
+		'Iulie',
+		'August',
+		'Septembrie',
+		'Octombrie',
+		'Noiembrie',
+		'Decembrie'
+	],
 	firstWeekday: 1
 });
 

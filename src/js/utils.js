@@ -1,5 +1,4 @@
 import { dateFormatValidator } from './validators';
-import { weekDays, months } from './defaults';
 import { Is } from './validators';
 
 export function noop() {}
@@ -59,7 +58,11 @@ export function slide(
 	]);
 }
 
-export const dateFormatParser = (date = new Date(), format = 'dd-mmm-yyyy') => {
+export const dateFormatParser = (
+	date = new Date(),
+	{ customWeekDays, customMonths },
+	format = 'dd-mmm-yyyy'
+) => {
 	if (Is(date).date() && dateFormatValidator(format.toLocaleLowerCase()).isValid()) {
 		const wDay = date.getDay();
 		const mDate = date.getDate();
@@ -68,12 +71,12 @@ export const dateFormatParser = (date = new Date(), format = 'dd-mmm-yyyy') => {
 		const flags = {
 			d: String(mDate),
 			dd: String(mDate).padStart(2, '0'),
-			ddd: weekDays[wDay].substr(0, 3),
-			dddd: weekDays[wDay],
+			ddd: customWeekDays[wDay].substr(0, 3),
+			dddd: customWeekDays[wDay],
 			m: String(month + 1),
 			mm: String(month + 1).padStart(2, '0'),
-			mmm: months[month].substr(0, 3),
-			mmmm: months[month],
+			mmm: customMonths[month].substr(0, 3),
+			mmmm: customMonths[month],
 			yy: String(year).substr(2),
 			yyyy: String(year)
 		};

@@ -1,4 +1,3 @@
-import { weekDays, months } from './defaults';
 import { renderCalendar } from './render';
 import { spanTemplate } from './template';
 import { arrayInfiniteLooper, slide, dateFormatParser } from './utils';
@@ -57,13 +56,13 @@ export function applyListeners(calendar, datepickers) {
 	const updateWeekdays = ({ customWeekDays, firstWeekday }) => {
 		weekdays.forEach((wDay, index) => {
 			const nextElement = (firstWeekday + index) % customWeekDays.length;
-			wDay.innerText = customWeekDays[nextElement];
+			wDay.innerText = customWeekDays[nextElement].substr(0, 2);
 		});
 	};
-	const updateDisplay = (pickedDate) => {
-		displayDay.innerText = weekDays[pickedDate.getDay()];
+	const updateDisplay = (pickedDate, { customWeekDays, customMonths }) => {
+		displayDay.innerText = customWeekDays[pickedDate.getDay()];
 		displayDate.innerText = pickedDate.getDate();
-		displayMonth.innerText = months[pickedDate.getMonth()];
+		displayMonth.innerText = customMonths[pickedDate.getMonth()];
 		displayYear.innerText = pickedDate.getFullYear();
 	};
 
@@ -79,8 +78,8 @@ export function applyListeners(calendar, datepickers) {
 		});
 	};
 
-	const updateCalendarHeader = (date) => {
-		currentMonthSelect.innerHTML = `<span>${months[date.getMonth()]}</span>`;
+	const updateCalendarHeader = (date, { customMonths }) => {
+		currentMonthSelect.innerHTML = `<span>${customMonths[date.getMonth()]}</span>`;
 		currentYearSelect.innerHTML = `<span>${date.getFullYear()}</span>`;
 	};
 
@@ -95,14 +94,14 @@ export function applyListeners(calendar, datepickers) {
 		// update the calendar table
 		updateCalendarTable(instance, targetDate);
 		// update calendar header
-		updateCalendarHeader(targetDate);
+		updateCalendarHeader(targetDate, instance.options);
 		// update calendar display UI based on custom options
 		if (!showCalendarDisplay) {
 			calendarDisplay.classList.add('u-display-none');
 		} else {
 			calendarDisplay.classList.remove('u-display-none');
 		}
-		updateDisplay(targetDate);
+		updateDisplay(targetDate, instance.options);
 		// update the calendar classlist based on options.bodytype
 		calendar.classList.add(`mc-calendar--${bodyType}`);
 	};
@@ -141,7 +140,7 @@ export function applyListeners(calendar, datepickers) {
 		// update the instance picked date
 		activeInstance.pickedDate = e.detail.date;
 		// update the display
-		updateDisplay(activeInstance.pickedDate);
+		updateDisplay(activeInstance.pickedDate, activeInstance.options);
 		// update the classlist of the picked cell
 		e.target.classList.add('mc-date--picked');
 		// add a new activeCell
@@ -149,6 +148,7 @@ export function applyListeners(calendar, datepickers) {
 	});
 
 	currentMonthSelect.addEventListener(CHANGE_MONTH, function (e) {
+		const { customMonths } = activeInstance.options;
 		// check if the button is clickable
 		if (!clickable) return;
 		// set the button clickable to false
@@ -158,7 +158,11 @@ export function applyListeners(calendar, datepickers) {
 		// get the value of active Year
 		const selectedYear = currentYearSelect.children[0].innerText;
 		// get the next ot prev month and the overlap value
-		const { newElement, overlap } = arrayInfiniteLooper(months, selectedMonth, e.detail.direction);
+		const { newElement, overlap } = arrayInfiniteLooper(
+			customMonths,
+			selectedMonth,
+			e.detail.direction
+		);
 		// add a new span tah with the new month to the months div
 		e.target.innerHTML += spanTemplate(e.detail.direction, newElement);
 
@@ -184,7 +188,7 @@ export function applyListeners(calendar, datepickers) {
 			// get new date for the new calendar array
 			const nextCalendarDate = new Date(
 				currentYearSelect.children[0].innerText,
-				months.indexOf(e.target.children[0].innerHTML),
+				customMonths.indexOf(e.target.children[0].innerHTML),
 				1
 			);
 			// update the calendar table
@@ -201,6 +205,7 @@ export function applyListeners(calendar, datepickers) {
 	currentYearSelect.addEventListener(CHANGE_YEAR, function (e) {
 		if (!clickable) return;
 		clickable = !clickable;
+		const { customMonths } = activeInstance.options;
 		const selectedMonth = currentMonthSelect.children[0].innerText;
 		const selectedYear = e.target.children[0].innerText;
 		// get the next or prev Year, based on the direction property
@@ -217,7 +222,7 @@ export function applyListeners(calendar, datepickers) {
 			// generate a new date based on the current month and new generated year
 			const nextCalendarDate = new Date(
 				e.target.children[0].innerText,
-				months.indexOf(selectedMonth),
+				customMonths.indexOf(selectedMonth),
 				1
 			);
 			// update the calendar table
@@ -245,7 +250,11 @@ export function applyListeners(calendar, datepickers) {
 		// if the value of picked date is not null then get formated date
 		let pickedDateValue =
 			activeInstance.pickedDate !== null
-				? dateFormatParser(activeInstance.pickedDate, activeInstance.options.dateFormat)
+				? dateFormatParser(
+						activeInstance.pickedDate,
+						activeInstance.options,
+						activeInstance.options.dateFormat
+				  )
 				: null;
 		// set the value of the picked date to the linked input
 		activeInstance.linkedElement.value = pickedDateValue;

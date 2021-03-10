@@ -35,7 +35,7 @@ const defaultOptions = {
 	dateFormat: 'DD-MMM-YYYY',
 	bodyType: 'modal', // ['modal', 'inline', 'permanent']
 	showCalendarDisplay: true,
-	customWeekDays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+	customWeekDays: weekDays,
 	firstWeekday: 0, // ex: 1 accept numbers 0-6;
 	customMonths: months,
 	selectedDate: null,
