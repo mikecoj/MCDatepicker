@@ -1,22 +1,59 @@
-# Vanilla JS Datepicker
+# MCDatepicker
 
-This package is written from scratch as ECMAScript modules/[Sass](https://sass-lang.com) stylesheets to reproduce similar usability to bootstrap-datepicker.
-
-The package also includes pre-built js/css files for those who like to use it directly on browser.
+Framework-agnostic, highly-customizable Vanilla JavaScript datepicker with zero dependencies.
 
 ### Features
 
-- Date picker (input-dropdown, inline)
-- Easily customizable to adapt stylesheet for various CSS frameworks
+- 2 Modes: (modal, inline)
 - Dependency free
-- Made for modern browsers
+- Custom weekday and month names
+- Disable weekdays and specific dates
+- Fully responsive/ Mobile friendly
+
+## Installation
+
+#### Using CDN
+
+Include CDN links in the `<head>`...
+
+```html
+<link
+	href="https://cdn.jsdelivr.net/gh/mikecoj/MCDatepicker/dist/mc-calendar.min.css"
+	rel="stylesheet"
+/>
+
+<script src="https://cdn.jsdelivr.net/gh/mikecoj/MCDatepicker/dist/mc-calendar.min.js"></script>
+```
 
 ## Usage
 
-> Initiating new calendar instance
+1. Create a new instance, and attach it to an input field
 
+```html
+<input id="datepicker" type="text" />
 ```
+
+```javascript
 const picker = MCDatepicker.create({
-        el: '#box',
-    });
+	el: '#datepicker'
+});
 ```
+
+2. Customize the datepicker by adding more options
+
+```javascript
+const picker = MCDatepicker.create({
+	el: '#datepicker',
+	disableWeekends: true
+});
+```
+
+3. Use methods to manipulate the datepicker
+
+```javascript
+btn.onclick = () => picker.open();
+```
+
+## License
+
+[MIT](LICENSE)
