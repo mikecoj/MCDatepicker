@@ -39,4 +39,9 @@
 			color: $inactive-picked-bg;
 		}
 	}
+
+	&--marked {
+		color: $main-theme-color;
+		font-weight: 500;
+	}
 }
