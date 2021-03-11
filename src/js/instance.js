@@ -1,5 +1,5 @@
 import { validateRequired, eventSchema, eventColorTypeSchema } from './validators';
-import { dateFormater } from './utils';
+import { dateFormatParser } from './utils';
 
 export default function createInstance(instanceOptions, datepicker) {
 	const instance = {
@@ -61,7 +61,7 @@ export default function createInstance(instanceOptions, datepicker) {
 			return instance.pickedDate;
 		},
 		getFormatedDate: () => {
-			return dateFormatParser(instance.pickedDate, instance.options.dateFormat);
+			return dateFormatParser(instance.pickedDate, instance.options, instance.options.dateFormat);
 		},
 		getEvents: () => {
 			return instance.options.events;
