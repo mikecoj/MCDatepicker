@@ -27,6 +27,8 @@ const firstDatePicker = MCDatepicker.create({
 	markDates: [new Date(2021, 2, 21), new Date(2021, 3, 1)]
 });
 
+firstDatePicker.markDatesCustom((date) => date.getDate() == 5);
+
 firstDatePicker.onSelect((date) => console.log('this is onSelect method'));
 firstDatePicker.onSelect((date) => console.log(date));
 

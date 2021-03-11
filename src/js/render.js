@@ -66,11 +66,14 @@ export const renderCalendar = (instance, date) => {
 		return valueOfDate(instance.pickedDate) === valueOfDate(date.date) ? true : false;
 	};
 
-	const isMarked = ({ options }, date) => {
-		if (!options.markDates.length) return false;
-		return options.markDates.some(
+	const isMarked = ({ options, markCustomCallbacks }, date) => {
+		// if (!options.markDates.length) return false;
+		const optionMark = options.markDates.some(
 			(markedDate) => valueOfDate(markedDate) === valueOfDate(date.date)
 		);
+		const customMark = markCustomCallbacks.some((callback) => callback.apply(null, [date.date]));
+
+		return optionMark || customMark;
 	};
 
 	const isToday = (date) => {

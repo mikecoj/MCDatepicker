@@ -13,6 +13,7 @@ export default function createInstance(instanceOptions, datepicker) {
 		onSelectCallbacks: [],
 		onMonthChangeCallbacks: [],
 		onYearChangeCallbacks: [],
+		markCustomCallbacks: [],
 		// Methods
 		open: () => {
 			datepicker.open(instance.el);
@@ -64,6 +65,9 @@ export default function createInstance(instanceOptions, datepicker) {
 		},
 		getEvents: () => {
 			return instance.options.events;
+		},
+		markDatesCustom: (callback) => {
+			instance.markCustomCallbacks.push(callback);
 		},
 		//  Setters
 		customizeEvents: (eventsType) => {

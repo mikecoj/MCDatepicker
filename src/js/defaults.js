@@ -43,7 +43,7 @@ const defaultOptions = {
 	disableWeekDays: [], // ex: [0,2,5] accept numbers 0-6;
 	disableDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
 	markDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
-	markDatesCustom: () => {}, // ex: (day) => (date.getDay() === 10)
+	// markDatesCustom: () => {}, // ex: (day) => (date.getDay() === 10)
 	daterange: false,
 	events: [],
 	eventColorScheme: defaultEventColorType
