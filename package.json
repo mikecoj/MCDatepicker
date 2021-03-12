@@ -1,7 +1,7 @@
 {
 	"name": "mc-datepicker",
 	"version": "0.1.0",
-	"description": "This package is written from scratch as ECMAScript modules/[Sass](https://sass-lang.com) stylesheets to reproduce similar usability to bootstrap-datepicker.",
+	"description": "Framework-agnostic, highly-customizable Vanilla JavaScript datepicker with zero dependencies.",
 	"main": "src/mc-calendar.js",
 	"scripts": {
 		"esrbnb": "npm i -D eslint prettier eslint-plugin-prettier eslint-config-prettier eslint-plugin-node eslint-config-node",
