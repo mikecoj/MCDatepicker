@@ -18,7 +18,7 @@
 	"bugs": {
 		"url": "https://github.com/mikecoj/Datepicker/issues"
 	},
-	"homepage": "https://github.com/mikecoj/Datepicker#readme",
+	"homepage": "https://mcdatepicker.netlify.app/",
 	"devDependencies": {
 		"@babel/core": "^7.12.10",
 		"@babel/preset-env": "^7.12.11",
