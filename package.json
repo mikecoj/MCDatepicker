@@ -1,5 +1,5 @@
 {
-	"name": "js-calendar",
+	"name": "mc-datepicker",
 	"version": "1.0.0",
 	"description": "This package is written from scratch as ECMAScript modules/[Sass](https://sass-lang.com) stylesheets to reproduce similar usability to bootstrap-datepicker.",
 	"main": "src/mc-calendar.js",
