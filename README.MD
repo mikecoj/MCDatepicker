@@ -17,7 +17,7 @@ Framework-agnostic, highly-customizable Vanilla JavaScript datepicker with zero 
 Include CDN links in the `<head>`...
 
 ```html
-<link href="https://cdn.jsdelivr.net/gh/mikecoj/MCDatepicker@0.1.0/dist/mc-calendar.min.css"	rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/gh/mikecoj/MCDatepicker@0.1.0/dist/mc-calendar.min.css" rel="stylesheet"/>
 
 <script src="https://cdn.jsdelivr.net/gh/mikecoj/MCDatepicker@0.1.0/dist/mc-calendar.min.js"></script>
 ```
