@@ -1,8 +1,8 @@
 {
 	"name": "mc-datepicker",
-	"version": "0.1.1",
+	"version": "0.1.0",
 	"description": "Framework-agnostic, highly-customizable Vanilla JavaScript datepicker with zero dependencies.",
-	"main": "./src/js/mc-datepicker.js",
+	"main": "./src/js/mc-calendar.js",
 	"scripts": {
 		"esrbnb": "npm i -D eslint prettier eslint-plugin-prettier eslint-config-prettier eslint-plugin-node eslint-config-node",
 		"start": "webpack-dev-server --env.dev --open",
