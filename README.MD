@@ -23,12 +23,9 @@ npm install mc-datepicker --save
 Include CDN links in the `<head>`...
 
 ```html
-<link
-	href="https://cdn.jsdelivr.net/gh/mikecoj/MCDatepicker/dist/mc-calendar.min.css"
-	rel="stylesheet"
-/>
+<link href="https://cdn.jsdelivr.net/npm/mc-datepicker/dist/mc-calendar.min.css" rel="stylesheet" />
 
-<script src="https://cdn.jsdelivr.net/gh/mikecoj/MCDatepicker/dist/mc-calendar.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mc-datepicker/dist/mc-calendar.min.js"></script>
 ```
 
 ## Usage
@@ -37,7 +34,7 @@ Include CDN links in the `<head>`...
 <input id="datepicker" type="text" />
 ```
 
-- If you’re using a bundler, e.g. webpack, you’ll need to import ` MCDatepicker`
+If you’re using a bundler, e.g. webpack, you’ll need to import ` MCDatepicker`
 
 ```javascript
 import MCDatepicker from 'mc-datepicker';
