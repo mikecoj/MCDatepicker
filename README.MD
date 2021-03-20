@@ -31,7 +31,7 @@ Include CDN links in the `<head>`...
 ## Usage
 
 ```html
-<input id="datepicker" type="text" />
+<input id="datepicker" type="text">
 ```
 
 If you’re using a bundler, e.g. webpack, you’ll need to import ` MCDatepicker`
@@ -62,6 +62,10 @@ const picker = MCDatepicker.create({
 ```javascript
 btn.onclick = () => picker.open();
 ```
+
+## Documentation
+
+[Online Docs](https://mcdatepicker.netlify.app/docs/)
 
 ## License
 
