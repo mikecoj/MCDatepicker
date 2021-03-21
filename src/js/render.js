@@ -38,46 +38,52 @@ export const renderCalendar = (instance, date) => {
 		return calendarArray;
 	};
 
-	const isInActiveMonth = (activeMonth, date) => {
-		return date.month !== activeMonth ? false : true;
+	const isSelectable = ({ options: { minDate, maxDate } }, { date }) => {
+		const smallerTanMin = minDate !== null ? valueOfDate(minDate) > valueOfDate(date) : false;
+		const biggerTanMax = maxDate !== null ? valueOfDate(maxDate) < valueOfDate(date) : false;
+		return smallerTanMin || biggerTanMax;
 	};
 
-	const isExcludedWeekend = ({ options }, date) => {
+	const isInActiveMonth = (activeMonth, { month }) => {
+		return month !== activeMonth ? false : true;
+	};
+
+	const isExcludedWeekend = ({ options }, { day }) => {
 		if (!options.disableWeekends) return false;
-		return date.day === 0 || date.day === 6 ? true : false;
+		return day === 0 || day === 6 ? true : false;
 	};
 
-	const isDisabledWeekDay = ({ options }, date) => {
+	const isDisabledWeekDay = ({ options }, { day }) => {
 		if (!options.disableWeekDays.length) return false;
-		return options.disableWeekDays.some((weekDay) => weekDay === date.day);
+		return options.disableWeekDays.some((weekDay) => weekDay === day);
 	};
 
-	const isDisabledDate = ({ options }, date) => {
+	const isDisabledDate = ({ options }, { date }) => {
 		if (!options.disableDates.length) return false;
 		return options.disableDates.some(
-			(disabledDate) => valueOfDate(disabledDate) === valueOfDate(date.date)
+			(disabledDate) => valueOfDate(disabledDate) === valueOfDate(date)
 		);
 	};
 
-	const isPicked = (instance, date) => {
+	const isPicked = ({ pickedDate }, { date }) => {
 		// instance.selectedDate;
-		if (instance.pickedDate === null) return false;
+		if (pickedDate === null) return false;
 
-		return valueOfDate(instance.pickedDate) === valueOfDate(date.date) ? true : false;
+		return valueOfDate(pickedDate) === valueOfDate(date) ? true : false;
 	};
 
-	const isMarked = ({ options, markCustomCallbacks }, date) => {
+	const isMarked = ({ options, markCustomCallbacks }, { date }) => {
 		// if (!options.markDates.length) return false;
 		const optionMark = options.markDates.some(
-			(markedDate) => valueOfDate(markedDate) === valueOfDate(date.date)
+			(markedDate) => valueOfDate(markedDate) === valueOfDate(date)
 		);
-		const customMark = markCustomCallbacks.some((callback) => callback.apply(null, [date.date]));
+		const customMark = markCustomCallbacks.some((callback) => callback.apply(null, [date]));
 
 		return optionMark || customMark;
 	};
 
-	const isToday = (date) => {
-		return valueOfDate(date.date) === valueOfDate(new Date()) ? true : false;
+	const isToday = ({ date }) => {
+		return valueOfDate(date) === valueOfDate(new Date()) ? true : false;
 	};
 
 	const renderDay = (dayObject) => {
@@ -85,6 +91,7 @@ export const renderCalendar = (instance, date) => {
 		// check the cases when the date is not active
 		if (
 			!isInActiveMonth(activeMonth, dayObject) ||
+			isSelectable(instance, dayObject) ||
 			isExcludedWeekend(instance, dayObject) ||
 			isDisabledWeekDay(instance, dayObject) ||
 			isDisabledDate(instance, dayObject)

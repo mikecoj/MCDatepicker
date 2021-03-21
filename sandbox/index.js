@@ -24,6 +24,8 @@ const firstDatePicker = MCDatepicker.create({
 		'Decembrie'
 	],
 	firstWeekday: 1,
+	minDate: new Date(2021, 2, 15),
+	maxDate: new Date(2021, 2, 25),
 	markDates: [new Date(2021, 2, 21), new Date(2021, 3, 1)]
 });
 
