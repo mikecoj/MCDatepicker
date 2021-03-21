@@ -24,6 +24,9 @@
 		&--inactive {
 			color: $inactive-date-color;
 			cursor: default;
+			&:active {
+				transform: none !important;
+			}
 		}
 
 		&--prev,
