@@ -73,7 +73,7 @@ const optionsSchema = {
 	el: (value) => /^[#][-\w]+$/.test(value),
 	dateFormat: (value) => dateFormatValidator(value).isValid(),
 	bodyType: (value) => {
-		const types = ['modal', 'inline', 'range', 'permanent'];
+		const types = ['modal', 'inline', 'permanent'];
 		return types.includes(value);
 	},
 	showCalendarDisplay: (value) => Is(value).boolean(),
@@ -85,7 +85,6 @@ const optionsSchema = {
 			value.every((elem) => /^[A-Za-z]+$|^[0-9]{1,2}$/.test(elem))
 		);
 	},
-	firstWeekday: (value) => Is(value).number() && /^[0-6]{1}$/.test(value),
 	customMonths: (value) => {
 		return (
 			Is(value).array() &&
@@ -93,7 +92,10 @@ const optionsSchema = {
 			value.every((elem) => /^[A-Za-z]+$|^[0-9]{1,2}$/.test(elem))
 		);
 	},
+	firstWeekday: (value) => Is(value).number() && /^[0-6]{1}$/.test(value),
 	selectedDate: (value) => Is(value).date(),
+	minDate: (value) => Is(value).date(),
+	maxDate: (value) => Is(value).date(),
 	disableWeekends: (value) => Is(value).boolean(),
 	disableWeekDays: (value) => Is(value).array() && value.every((elem) => /^[0-6]{1}$/.test(elem)), // ex: [0,2,5] accept numbers 0-6;
 	disableDates: (value) => Is(value).array() && value.every((elem) => Is(elem).date()), // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
