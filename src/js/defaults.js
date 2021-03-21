@@ -36,9 +36,11 @@ const defaultOptions = {
 	bodyType: 'modal', // ['modal', 'inline', 'permanent']
 	showCalendarDisplay: true,
 	customWeekDays: weekDays,
-	firstWeekday: 0, // ex: 1 accept numbers 0-6;
 	customMonths: months,
+	firstWeekday: 0, // ex: 1 accept numbers 0-6;
 	selectedDate: null,
+	minDate: null,
+	maxDate: null,
 	disableWeekends: false,
 	disableWeekDays: [], // ex: [0,2,5] accept numbers 0-6;
 	disableDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
