@@ -68,6 +68,9 @@ export function applyListeners(calendar, datepickers) {
 			valueOfDate(new Date(currentYear, currentMonth)) > valueOfDate(minDate)
 				? monthNavPrev.classList.remove('mc-select__nav--inactive')
 				: monthNavPrev.classList.add('mc-select__nav--inactive');
+		} else {
+			yearNavPrev.classList.remove('mc-select__nav--inactive');
+			monthNavPrev.classList.remove('mc-select__nav--inactive');
 		}
 		if (maxDate !== null) {
 			maxYear >= currentYear + 1 && maxMonth >= currentMonth
@@ -77,6 +80,9 @@ export function applyListeners(calendar, datepickers) {
 			valueOfDate(new Date(currentYear, currentMonth + 1, 0)) < valueOfDate(maxDate)
 				? monthNavNext.classList.remove('mc-select__nav--inactive')
 				: monthNavNext.classList.add('mc-select__nav--inactive');
+		} else {
+			yearNavNext.classList.remove('mc-select__nav--inactive');
+			monthNavNext.classList.remove('mc-select__nav--inactive');
 		}
 	};
 

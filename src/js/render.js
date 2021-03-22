@@ -39,7 +39,7 @@ export const renderCalendar = (instance, date) => {
 	};
 
 	const isSelectable = ({ options: { minDate, maxDate } }, { date }) => {
-		const smallerTanMin = minDate !== null ? valueOfDate(minDate) > valueOfDate(date) : false;
+		const smallerTanMin = minDate !== null ? valueOfDate(date) < valueOfDate(minDate) : false;
 		const biggerTanMax = maxDate !== null ? valueOfDate(maxDate) < valueOfDate(date) : false;
 		return smallerTanMin || biggerTanMax;
 	};

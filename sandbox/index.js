@@ -7,7 +7,7 @@ const firstDatePicker = MCDatepicker.create({
 	el: '#datepicker_one',
 	bodyType: 'modal',
 	dateFormat: 'dddd, dd mmmm yyyy',
-	disableDates: [new Date(2021, 1, 12), new Date(2021, 3, 15)],
+	disableDates: [new Date(2021, 1, 12), new Date(2021, 4, 15)],
 	customWeekDays: ['Duminica', 'Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata'],
 	customMonths: [
 		'Ianuarie',
@@ -25,7 +25,7 @@ const firstDatePicker = MCDatepicker.create({
 	],
 	selectedDate: new Date(2021, 2, 22),
 	firstWeekday: 1,
-	minDate: new Date(2021, 3, 15),
+	minDate: new Date(2021, 2, 15),
 	maxDate: new Date(2021, 3, 26),
 	markDates: [new Date(2021, 2, 21), new Date(2021, 3, 1)]
 });
