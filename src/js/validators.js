@@ -1,3 +1,5 @@
+import { valueOfDate } from './utils';
+
 export const Is = (variable) => {
 	const type = Object.prototype.toString
 		.call(variable)
@@ -73,7 +75,7 @@ const optionsSchema = {
 	el: (value) => /^[#][-\w]+$/.test(value),
 	dateFormat: (value) => dateFormatValidator(value).isValid(),
 	bodyType: (value) => {
-		const types = ['modal', 'inline', 'range', 'permanent'];
+		const types = ['modal', 'inline', 'permanent'];
 		return types.includes(value);
 	},
 	showCalendarDisplay: (value) => Is(value).boolean(),
@@ -85,7 +87,6 @@ const optionsSchema = {
 			value.every((elem) => /^[A-Za-z]+$|^[0-9]{1,2}$/.test(elem))
 		);
 	},
-	firstWeekday: (value) => Is(value).number() && /^[0-6]{1}$/.test(value),
 	customMonths: (value) => {
 		return (
 			Is(value).array() &&
@@ -93,7 +94,10 @@ const optionsSchema = {
 			value.every((elem) => /^[A-Za-z]+$|^[0-9]{1,2}$/.test(elem))
 		);
 	},
+	firstWeekday: (value) => Is(value).number() && /^[0-6]{1}$/.test(value),
 	selectedDate: (value) => Is(value).date(),
+	minDate: (value) => Is(value).date(),
+	maxDate: (value) => Is(value).date(),
 	disableWeekends: (value) => Is(value).boolean(),
 	disableWeekDays: (value) => Is(value).array() && value.every((elem) => /^[0-6]{1}$/.test(elem)), // ex: [0,2,5] accept numbers 0-6;
 	disableDates: (value) => Is(value).array() && value.every((elem) => Is(elem).date()), // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
@@ -126,6 +130,11 @@ export const validateOptions = (customOptions, defaultOptions) => {
 	const schemaErrors = Object.keys(customOptions)
 		.filter((key) => defaultOptions.hasOwnProperty(key) && !optionsSchema[key](customOptions[key]))
 		.map((key) => new Error(`Data does not match the schema for property: "${key}"`));
+
+	if (customOptions.hasOwnProperty('minDate') && customOptions.hasOwnProperty('maxDate')) {
+		valueOfDate(customOptions.minDate) >= valueOfDate(customOptions.maxDate) &&
+			errors.push(new Error('maxDate should be greater than minDate'));
+	}
 	// merge all errors in one array
 	if (schemaErrors.length > 0) errors.push(...schemaErrors);
 	// log all errors if the array is not empty

@@ -21,6 +21,14 @@
 			}
 		}
 
+		&--inactive {
+			color: $inactive-date-color;
+			cursor: default;
+			&:active {
+				transform: none !important;
+			}
+		}
+
 		&--prev,
 		&--next {
 			transition: transform 0.2s ease-in-out;

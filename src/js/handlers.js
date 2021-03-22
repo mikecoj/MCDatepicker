@@ -1,6 +1,6 @@
 import { renderCalendar } from './render';
 import { spanTemplate } from './template';
-import { arrayInfiniteLooper, slide, dateFormatParser } from './utils';
+import { arrayInfiniteLooper, slide, dateFormatParser, valueOfDate } from './utils';
 import { CALENDAR_HIDE, CALENDAR_SHOW, CHANGE_MONTH, CHANGE_YEAR, DATE_PICK } from './events';
 import {
 	dispatchCalendarShow,
@@ -53,6 +53,39 @@ export function applyListeners(calendar, datepickers) {
 	let activeInstance = null;
 	let clickable = true;
 
+	const updateNavs = ({ options: { minDate, maxDate, customMonths } }, date) => {
+		const currentMonth = date.getMonth();
+		const currentYear = date.getFullYear();
+		const minMonth = minDate !== null && minDate.getMonth();
+		const maxMonth = maxDate !== null && maxDate.getMonth();
+		const minYear = minDate !== null && minDate.getFullYear();
+		const maxYear = maxDate !== null && maxDate.getFullYear();
+
+		if (minDate !== null) {
+			minYear <= currentYear - 1 && minMonth <= currentMonth
+				? yearNavPrev.classList.remove('mc-select__nav--inactive')
+				: yearNavPrev.classList.add('mc-select__nav--inactive');
+			valueOfDate(new Date(currentYear, currentMonth)) > valueOfDate(minDate)
+				? monthNavPrev.classList.remove('mc-select__nav--inactive')
+				: monthNavPrev.classList.add('mc-select__nav--inactive');
+		} else {
+			yearNavPrev.classList.remove('mc-select__nav--inactive');
+			monthNavPrev.classList.remove('mc-select__nav--inactive');
+		}
+		if (maxDate !== null) {
+			maxYear >= currentYear + 1 && maxMonth >= currentMonth
+				? yearNavNext.classList.remove('mc-select__nav--inactive')
+				: yearNavNext.classList.add('mc-select__nav--inactive');
+
+			valueOfDate(new Date(currentYear, currentMonth + 1, 0)) < valueOfDate(maxDate)
+				? monthNavNext.classList.remove('mc-select__nav--inactive')
+				: monthNavNext.classList.add('mc-select__nav--inactive');
+		} else {
+			yearNavNext.classList.remove('mc-select__nav--inactive');
+			monthNavNext.classList.remove('mc-select__nav--inactive');
+		}
+	};
+
 	const updateWeekdays = ({ customWeekDays, firstWeekday }) => {
 		weekdays.forEach((wDay, index) => {
 			const nextElement = (firstWeekday + index) % customWeekDays.length;
@@ -70,7 +103,9 @@ export function applyListeners(calendar, datepickers) {
 		updateWeekdays(instance.options);
 		// render the new calendar array
 		const datesArray = renderCalendar(instance, date);
-		// update teh DOM for each date cell
+		// Update clickable navs based on minDate and maxDate
+		updateNavs(instance, date);
+		// update the DOM for each date cell
 		dateCells.forEach((cell, index) => {
 			cell.innerText = datesArray[index].dateNumb;
 			cell.classList = datesArray[index].classList;
@@ -83,25 +118,34 @@ export function applyListeners(calendar, datepickers) {
 		currentYearSelect.innerHTML = `<span>${date.getFullYear()}</span>`;
 	};
 
+	const getActiveDate = (pickedDate, minDate, maxDate) => {
+		let targetDate = pickedDate === null ? new Date() : pickedDate;
+		targetDate =
+			minDate !== null && valueOfDate(targetDate) < valueOfDate(minDate) ? minDate : targetDate;
+		targetDate =
+			maxDate !== null && valueOfDate(targetDate) > valueOfDate(maxDate) ? maxDate : targetDate;
+		return targetDate;
+	};
+
 	const updateCalendarUI = (instance) => {
 		const {
-			options: { showCalendarDisplay, bodyType },
+			options: { showCalendarDisplay, bodyType, minDate, maxDate },
 			pickedDate
 		} = instance;
 		calendar.classList = 'mc-calendar';
 		// if the picketDate is null, render the calendar based on today's date
-		const targetDate = pickedDate === null ? new Date() : pickedDate;
+		const activeDate = getActiveDate(pickedDate, minDate, maxDate);
 		// update the calendar table
-		updateCalendarTable(instance, targetDate);
+		updateCalendarTable(instance, activeDate);
 		// update calendar header
-		updateCalendarHeader(targetDate, instance.options);
+		updateCalendarHeader(activeDate, instance.options);
 		// update calendar display UI based on custom options
 		if (!showCalendarDisplay) {
 			calendarDisplay.classList.add('u-display-none');
 		} else {
 			calendarDisplay.classList.remove('u-display-none');
 		}
-		updateDisplay(targetDate, instance.options);
+		updateDisplay(pickedDate || new Date(), instance.options);
 		// update the calendar classlist based on options.bodytype
 		calendar.classList.add(`mc-calendar--${bodyType}`);
 	};
@@ -236,13 +280,25 @@ export function applyListeners(calendar, datepickers) {
 		});
 	});
 
-	monthNavPrev.addEventListener('click', () => dispatchChangeMonth(currentMonthSelect, 'prev'));
+	monthNavPrev.addEventListener('click', (e) => {
+		if (e.currentTarget.classList.contains('mc-select__nav--inactive')) return;
+		dispatchChangeMonth(currentMonthSelect, 'prev');
+	});
 
-	monthNavNext.addEventListener('click', () => dispatchChangeMonth(currentMonthSelect, 'next'));
+	monthNavNext.addEventListener('click', (e) => {
+		if (e.currentTarget.classList.contains('mc-select__nav--inactive')) return;
+		dispatchChangeMonth(currentMonthSelect, 'next');
+	});
 
-	yearNavPrev.addEventListener('click', () => dispatchChangeYear(currentYearSelect, 'prev'));
+	yearNavPrev.addEventListener('click', (e) => {
+		if (e.currentTarget.classList.contains('mc-select__nav--inactive')) return;
+		dispatchChangeYear(currentYearSelect, 'prev');
+	});
 
-	yearNavNext.addEventListener('click', () => dispatchChangeYear(currentYearSelect, 'next'));
+	yearNavNext.addEventListener('click', (e) => {
+		if (e.currentTarget.classList.contains('mc-select__nav--inactive')) return;
+		dispatchChangeYear(currentYearSelect, 'next');
+	});
 
 	cancelButton.addEventListener('click', (e) => dispatchCalendarHide(e.target));
 
