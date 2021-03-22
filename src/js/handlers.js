@@ -112,25 +112,34 @@ export function applyListeners(calendar, datepickers) {
 		currentYearSelect.innerHTML = `<span>${date.getFullYear()}</span>`;
 	};
 
+	const getActiveDate = (pickedDate, minDate, maxDate) => {
+		let targetDate = pickedDate === null ? new Date() : pickedDate;
+		targetDate =
+			minDate !== null && valueOfDate(targetDate) < valueOfDate(minDate) ? minDate : targetDate;
+		targetDate =
+			maxDate !== null && valueOfDate(targetDate) > valueOfDate(maxDate) ? maxDate : targetDate;
+		return targetDate;
+	};
+
 	const updateCalendarUI = (instance) => {
 		const {
-			options: { showCalendarDisplay, bodyType },
+			options: { showCalendarDisplay, bodyType, minDate, maxDate },
 			pickedDate
 		} = instance;
 		calendar.classList = 'mc-calendar';
 		// if the picketDate is null, render the calendar based on today's date
-		const targetDate = pickedDate === null ? new Date() : pickedDate;
+		const activeDate = getActiveDate(pickedDate, minDate, maxDate);
 		// update the calendar table
-		updateCalendarTable(instance, targetDate);
+		updateCalendarTable(instance, activeDate);
 		// update calendar header
-		updateCalendarHeader(targetDate, instance.options);
+		updateCalendarHeader(activeDate, instance.options);
 		// update calendar display UI based on custom options
 		if (!showCalendarDisplay) {
 			calendarDisplay.classList.add('u-display-none');
 		} else {
 			calendarDisplay.classList.remove('u-display-none');
 		}
-		updateDisplay(targetDate, instance.options);
+		updateDisplay(pickedDate || new Date(), instance.options);
 		// update the calendar classlist based on options.bodytype
 		calendar.classList.add(`mc-calendar--${bodyType}`);
 	};
