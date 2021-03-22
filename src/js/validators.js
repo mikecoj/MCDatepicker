@@ -1,3 +1,5 @@
+import { valueOfDate } from './utils';
+
 export const Is = (variable) => {
 	const type = Object.prototype.toString
 		.call(variable)
@@ -128,6 +130,11 @@ export const validateOptions = (customOptions, defaultOptions) => {
 	const schemaErrors = Object.keys(customOptions)
 		.filter((key) => defaultOptions.hasOwnProperty(key) && !optionsSchema[key](customOptions[key]))
 		.map((key) => new Error(`Data does not match the schema for property: "${key}"`));
+
+	if (customOptions.hasOwnProperty('minDate') && customOptions.hasOwnProperty('maxDate')) {
+		valueOfDate(customOptions.minDate) >= valueOfDate(customOptions.maxDate) &&
+			errors.push(new Error('maxDate should be greater than minDate'));
+	}
 	// merge all errors in one array
 	if (schemaErrors.length > 0) errors.push(...schemaErrors);
 	// log all errors if the array is not empty

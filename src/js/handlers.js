@@ -1,6 +1,6 @@
 import { renderCalendar } from './render';
 import { spanTemplate } from './template';
-import { arrayInfiniteLooper, slide, dateFormatParser } from './utils';
+import { arrayInfiniteLooper, slide, dateFormatParser, valueOfDate } from './utils';
 import { CALENDAR_HIDE, CALENDAR_SHOW, CHANGE_MONTH, CHANGE_YEAR, DATE_PICK } from './events';
 import {
 	dispatchCalendarShow,
@@ -56,26 +56,27 @@ export function applyListeners(calendar, datepickers) {
 	const updateNavs = ({ options: { minDate, maxDate, customMonths } }, date) => {
 		const currentMonth = date.getMonth();
 		const currentYear = date.getFullYear();
-		const prevMonthClickable = minDate !== null ? currentMonth > minDate.getMonth() : true;
-		const nextMonthClickable = maxDate !== null ? currentMonth < maxDate.getMonth() : true;
-		const prevYearClickable = minDate !== null ? currentYear > minDate.getFullYear() : true;
-		const nextYearClickable = maxDate !== null ? currentYear < maxDate.getFullYear() : true;
+		const minMonth = minDate !== null && minDate.getMonth();
+		const maxMonth = maxDate !== null && maxDate.getMonth();
+		const minYear = minDate !== null && minDate.getFullYear();
+		const maxYear = maxDate !== null && maxDate.getFullYear();
 
-		if (prevYearClickable) {
-			yearNavPrev.classList.remove('mc-select__nav--inactive');
-		} else {
-			yearNavPrev.classList.add('mc-select__nav--inactive');
-			// !prevMonthClickable
-			// 	? monthNavPrev.classList.add('mc-select__nav--inactive')
-			// 	: monthNavPrev.classList.remove('mc-select__nav--inactive');
+		if (minDate !== null) {
+			minYear <= currentYear - 1 && minMonth <= currentMonth
+				? yearNavPrev.classList.remove('mc-select__nav--inactive')
+				: yearNavPrev.classList.add('mc-select__nav--inactive');
+			valueOfDate(new Date(currentYear, currentMonth)) > valueOfDate(minDate)
+				? monthNavPrev.classList.remove('mc-select__nav--inactive')
+				: monthNavPrev.classList.add('mc-select__nav--inactive');
 		}
-		if (nextYearClickable) {
-			yearNavNext.classList.remove('mc-select__nav--inactive');
-		} else {
-			yearNavNext.classList.add('mc-select__nav--inactive');
-			// !nextMonthClickable
-			// 	? monthNavNext.classList.add('mc-select__nav--inactive')
-			// 	: monthNavNext.classList.remove('mc-select__nav--inactive');
+		if (maxDate !== null) {
+			maxYear >= currentYear + 1 && maxMonth >= currentMonth
+				? yearNavNext.classList.remove('mc-select__nav--inactive')
+				: yearNavNext.classList.add('mc-select__nav--inactive');
+
+			valueOfDate(new Date(currentYear, currentMonth + 1, 0)) < valueOfDate(maxDate)
+				? monthNavNext.classList.remove('mc-select__nav--inactive')
+				: monthNavNext.classList.add('mc-select__nav--inactive');
 		}
 	};
 
