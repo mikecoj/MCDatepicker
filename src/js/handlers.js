@@ -56,31 +56,40 @@ export function applyListeners(calendar, datepickers) {
 	const updateNavs = ({ options: { minDate, maxDate, customMonths } }, date) => {
 		const currentMonth = date.getMonth();
 		const currentYear = date.getFullYear();
-		const minMonth = minDate !== null && minDate.getMonth();
-		const maxMonth = maxDate !== null && maxDate.getMonth();
-		const minYear = minDate !== null && minDate.getFullYear();
-		const maxYear = maxDate !== null && maxDate.getFullYear();
 
 		if (minDate !== null) {
-			minYear <= currentYear - 1 && minMonth <= currentMonth
-				? yearNavPrev.classList.remove('mc-select__nav--inactive')
-				: yearNavPrev.classList.add('mc-select__nav--inactive');
+			// check if the minDate is greater than the last day of the same month of the previous year
+			valueOfDate(minDate) > valueOfDate(new Date(currentYear - 1, currentMonth + 1, 0))
+				? // add the inactive class to prev year selector arrow if the condition is true
+				  yearNavPrev.classList.add('mc-select__nav--inactive')
+				: // remove the inactive class if the condition is false
+				  yearNavPrev.classList.remove('mc-select__nav--inactive');
+			// check if the first day of the current month and year is greater that the minDate
 			valueOfDate(new Date(currentYear, currentMonth)) > valueOfDate(minDate)
-				? monthNavPrev.classList.remove('mc-select__nav--inactive')
-				: monthNavPrev.classList.add('mc-select__nav--inactive');
+				? // remove the inactive class from prev month selector arrow if the condition is true
+				  monthNavPrev.classList.remove('mc-select__nav--inactive')
+				: // add the inactive class if the condition is false
+				  monthNavPrev.classList.add('mc-select__nav--inactive');
 		} else {
+			// remove the inactive class from month and year prev arrow selectors if the minDate is null
 			yearNavPrev.classList.remove('mc-select__nav--inactive');
 			monthNavPrev.classList.remove('mc-select__nav--inactive');
 		}
 		if (maxDate !== null) {
-			maxYear >= currentYear + 1 && maxMonth >= currentMonth
-				? yearNavNext.classList.remove('mc-select__nav--inactive')
-				: yearNavNext.classList.add('mc-select__nav--inactive');
-
+			// check if maxDate is smaller than the first day of the same month of the next year
+			valueOfDate(maxDate) < valueOfDate(new Date(currentYear + 1, currentMonth, 1))
+				? // add the inactive class to next year selector arrow if the condition is true
+				  yearNavNext.classList.add('mc-select__nav--inactive')
+				: // remove the inactive class if the condition is false
+				  yearNavNext.classList.remove('mc-select__nav--inactive');
+			// check the last day of the current month and year is smaller than maxDate
 			valueOfDate(new Date(currentYear, currentMonth + 1, 0)) < valueOfDate(maxDate)
-				? monthNavNext.classList.remove('mc-select__nav--inactive')
-				: monthNavNext.classList.add('mc-select__nav--inactive');
+				? // remove the inactive class from the next month selector arrow if the condition is true
+				  monthNavNext.classList.remove('mc-select__nav--inactive')
+				: // add the inactive class if the condition is false
+				  monthNavNext.classList.add('mc-select__nav--inactive');
 		} else {
+			// remove the inactive class from the month and year next arrow selectors if the maxDate is null
 			yearNavNext.classList.remove('mc-select__nav--inactive');
 			monthNavNext.classList.remove('mc-select__nav--inactive');
 		}
