@@ -25,8 +25,8 @@ const firstDatePicker = MCDatepicker.create({
 	],
 	selectedDate: new Date(2021, 2, 22),
 	firstWeekday: 1,
-	minDate: new Date(2021, 2, 15),
-	maxDate: new Date(2021, 3, 26),
+	minDate: new Date(2020, 2, 22),
+	maxDate: new Date(2021, 3, 22),
 	markDates: [new Date(2021, 2, 21), new Date(2021, 3, 1)]
 });
 
@@ -40,4 +40,9 @@ const secundDatePicker = MCDatepicker.create({
 	bodyType: 'modal',
 	showCalendarDisplay: false
 });
-const thirdDatePicker = MCDatepicker.create({ el: '#datepicker_three', bodyType: 'permanent' });
+const thirdDatePicker = MCDatepicker.create({
+	el: '#datepicker_three',
+	minDate: new Date('2017-09-25'),
+	maxDate: new Date('2020-03-22'),
+	selectedDate: new Date('2020-03-22')
+});
