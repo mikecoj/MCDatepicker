@@ -82,16 +82,12 @@ const optionsSchema = {
 	customWeekDays: (value) => {
 		// ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 		return (
-			Is(value).array() &&
-			value.length === 7 &&
-			value.every((elem) => /^[A-Za-z]+$|^[0-9]{1,2}$/.test(elem))
+			Is(value).array() && value.length === 7 && value.every((elem) => /^[^\d\s]{2,}$/.test(elem))
 		);
 	},
 	customMonths: (value) => {
 		return (
-			Is(value).array() &&
-			value.length === 12 &&
-			value.every((elem) => /^[A-Za-z]+$|^[0-9]{1,2}$/.test(elem))
+			Is(value).array() && value.length === 12 && value.every((elem) => /^[^\d\s]{2,}$/.test(elem))
 		);
 	},
 	firstWeekday: (value) => Is(value).number() && /^[0-6]{1}$/.test(value),
