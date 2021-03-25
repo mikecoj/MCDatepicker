@@ -4,8 +4,8 @@
 .mc-calendar {
 	display: flex;
 	position: absolute;
-	top: -100%;
-	left: 50%;
+	top: -100vh;
+	left: 50vw;
 	flex-direction: column;
 	font-family: $calendar-font;
 	font-weight: 500;
@@ -18,7 +18,7 @@
 	}
 
 	&--inline {
-		height: 325px;
+		height: #{min(100%, 325px)};
 		width: #{min(100%, 300px)};
 		background: none;
 		font-size: 1rem;
@@ -33,6 +33,7 @@
 	}
 
 	&--modal {
+		position: fixed;
 		width: #{min(100%, 425px)};
 		border-radius: 0 0 30px 30px;
 		box-shadow: 0 10px 10px 5px rgba(0, 0, 0, 0.25);
@@ -60,7 +61,7 @@
 			animation: slide-down 0.3s linear;
 
 			@include for-desktop {
-				top: 50%;
+				top: 50vh;
 				opacity: 1;
 				visibility: visible;
 				transform: translate(-50%, -50%) scale(1);
