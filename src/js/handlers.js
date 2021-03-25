@@ -1,6 +1,12 @@
 import { renderCalendar } from './render';
 import { spanTemplate } from './template';
-import { arrayInfiniteLooper, slide, dateFormatParser, valueOfDate } from './utils';
+import {
+	arrayInfiniteLooper,
+	slide,
+	dateFormatParser,
+	valueOfDate,
+	calculateCalendarPosition
+} from './utils';
 import { CALENDAR_HIDE, CALENDAR_SHOW, CHANGE_MONTH, CHANGE_YEAR, DATE_PICK } from './events';
 import {
 	dispatchCalendarShow,
@@ -19,10 +25,9 @@ export const applyOnFocusListener = (calendarDiv, { linkedElement }) => {
 
 const updateCalendarPosition = (calendarDIV, { linkedElement, options: { bodyType } }) => {
 	if (bodyType === 'inline') {
-		const positionTop = linkedElement.offsetTop + linkedElement.offsetHeight + 5;
-		const positionLeft = linkedElement.offsetLeft;
-		calendarDIV.style.top = `${positionTop}px`;
-		calendarDIV.style.left = `${positionLeft}px`;
+		const { top, left } = calculateCalendarPosition(calendarDIV, linkedElement);
+		calendarDIV.style.top = `${top}px`;
+		calendarDIV.style.left = `${left}px`;
 	} else {
 		if (calendarDIV.hasAttribute('style')) calendarDIV.removeAttribute('style');
 	}

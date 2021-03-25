@@ -5,10 +5,10 @@ window.MCDatepicker = MCDatepicker;
 
 const firstDatePicker = MCDatepicker.create({
 	el: '#datepicker_one',
-	bodyType: 'modal',
+	bodyType: 'inline',
 	dateFormat: 'dddd, dd mmmm yyyy',
 	disableDates: [new Date(2021, 1, 12), new Date(2021, 4, 15)],
-	customWeekDays: ['Duminica', 'Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata'],
+	customWeekDays: ['Duminică', 'Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă'],
 	customMonths: [
 		'Ianuarie',
 		'Februarie',
@@ -42,6 +42,21 @@ const secundDatePicker = MCDatepicker.create({
 });
 const thirdDatePicker = MCDatepicker.create({
 	el: '#datepicker_three',
+	customWeekDays: ['Søndag', 'Måneder', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'],
+	customMonths: [
+		'Januar',
+		'Februar',
+		'Marts',
+		'April',
+		'Maj',
+		'Juni',
+		'Juli',
+		'August',
+		'September',
+		'Oktober',
+		'November',
+		'December'
+	],
 	minDate: new Date('2017-09-25'),
 	maxDate: new Date('2020-03-22'),
 	selectedDate: new Date('2020-03-22')

@@ -88,3 +88,79 @@ export const dateFormatParser = (
 export const valueOfDate = (date) => {
 	return date.setHours(0, 0, 0, 0).valueOf();
 };
+
+export const getRectProps = (element) => {
+	var rec = element.getBoundingClientRect();
+	return {
+		t: Math.ceil(rec.top),
+		l: Math.ceil(rec.left),
+		b: Math.ceil(rec.bottom),
+		r: Math.ceil(rec.right),
+		w: Math.ceil(rec.width),
+		h: Math.ceil(rec.height)
+	};
+};
+const getDimensions = (calendarDIV, linkedElement) => {
+	const vw = window.innerWidth;
+	const vh = window.innerHeight;
+	const dh = document.body.offsetHeight;
+	const elementOffsetTop = linkedElement.offsetTop;
+	const elementOffsetleft = linkedElement.offsetLeft;
+	const elementDimensions = getRectProps(linkedElement);
+	const calendarDimensions = getRectProps(calendarDIV);
+	return {
+		vw,
+		vh,
+		dh,
+		elementOffsetTop,
+		elementOffsetleft,
+		elem: elementDimensions,
+		cal: calendarDimensions
+	};
+};
+const getOffsetOnView = ({ elem, cal }) => {
+	const t = elem.t - cal.h - 10;
+	const b = elem.b + cal.h + 10;
+	const l = elem.l - cal.w;
+	const r = elem.r + cal.w;
+	return { t, b, l, r };
+};
+
+const getOffsetOnDoc = ({ elementOffsetTop, elem, cal }) => {
+	const t = elementOffsetTop - cal.h - 10;
+	const b = elementOffsetTop + elem.h + cal.h + 10;
+	return { t, b };
+};
+
+export const calculateCalendarPosition = (calendarDIV, linkedElement) => {
+	const allDimensions = getDimensions(calendarDIV, linkedElement);
+	const { cal, elem, vw, vh, dh, elementOffsetTop, elementOffsetleft } = allDimensions;
+	const offsetOnView = getOffsetOnView(allDimensions);
+	const offsetOnDoc = getOffsetOnDoc(allDimensions);
+	const moreThanViewMinW = offsetOnView.l > 0 ? true : false;
+	const lessThanViewMaxW = vw > offsetOnView.r ? true : false;
+	const moreThanViewMinH = offsetOnView.t > 0 ? true : false;
+	const lessThanViewMaxH = vh > offsetOnView.b ? true : false;
+
+	const moreThanDocMinH = offsetOnDoc.t > 0 ? true : false;
+	const lessThanDocMaxH = dh > offsetOnDoc.b ? true : false;
+
+	let top = null;
+	let left = null;
+	// calculate left position
+	if (lessThanViewMaxW) left = elementOffsetleft;
+	if (!lessThanViewMaxW && moreThanViewMinW) left = elementOffsetleft + elem.w - cal.w;
+	if (!lessThanViewMaxW && !moreThanViewMinW) left = (vw - cal.w) / 2;
+	console.log(left);
+
+	// calculate top position
+
+	if (lessThanViewMaxH) top = elementOffsetTop + elem.h + 5;
+	if (!lessThanViewMaxH && moreThanViewMinH) top = elementOffsetTop - cal.h - 5;
+	if (!lessThanViewMaxH && !moreThanViewMinH) {
+		if (lessThanDocMaxH) top = elementOffsetTop + elem.h + 5;
+		if (!lessThanDocMaxH && moreThanDocMinH) top = elementOffsetTop - cal.h - 5;
+		if (!lessThanDocMaxH && !moreThanDocMinH) top = (vh - cal.h) / 2;
+	}
+	return { top, left };
+};
