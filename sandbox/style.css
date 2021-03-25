@@ -45,7 +45,7 @@ body {
 
 .main__body {
 	min-height: 90vh;
-	/* height: 200vh; */
+	height: 200vh;
 	background-color: #e4eefa;
 }
 

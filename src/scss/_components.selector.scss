@@ -8,9 +8,12 @@
 	&__month,
 	&__year {
 		display: flex;
+		align-items: center;
 		padding: 0 0.2em;
 	}
 	&__nav {
+		display: flex;
+		align-items: center;
 		position: absolute;
 		text-decoration: none;
 		color: $month-year-color;
@@ -72,6 +75,7 @@
 		position: relative;
 
 		span {
+			line-height: 1;
 			text-align: center;
 			position: absolute;
 		}

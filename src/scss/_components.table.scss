@@ -4,19 +4,20 @@
 
 .mc-table {
 	height: 100%;
+	border-collapse: unset;
+	#{$modal} & {
+		@include for-desktop {
+			border-top: none;
+		}
+	}
 
-    #{$modal} & {
-        @include for-desktop {
-            border-top: none;
-        }
-    }
-
-    #{$inline} & {
-        border-top: none;
-    }
-    &__weekday {
-	    padding: 0.5em 0;
-	    color: $main-theme-color;
-    }
+	#{$inline} & {
+		border-top: none;
+	}
+	&__weekday {
+		text-align: center;
+		padding: 0.5em 0;
+		color: $main-theme-color;
+		width: calc(100% / 7);
+	}
 }
-
