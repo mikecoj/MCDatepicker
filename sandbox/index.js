@@ -23,6 +23,9 @@ const firstDatePicker = MCDatepicker.create({
 		'Noiembrie',
 		'Decembrie'
 	],
+	customOkLabel: 'ok',
+	customClearLabel: 'Șterge',
+	customCancelLabel: 'Anulează',
 	selectedDate: new Date(2021, 2, 22),
 	firstWeekday: 1,
 	minDate: new Date(2020, 2, 22),

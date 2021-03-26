@@ -90,6 +90,9 @@ const optionsSchema = {
 			Is(value).array() && value.length === 12 && value.every((elem) => /^[^\d\s]{2,}$/.test(elem))
 		);
 	},
+	customOkLabel: (value) => Is(value).string(),
+	customClearLabel: (value) => Is(value).string(),
+	customCancelLabel: (value) => Is(value).string(),
 	firstWeekday: (value) => Is(value).number() && /^[0-6]{1}$/.test(value),
 	selectedDate: (value) => Is(value).date(),
 	minDate: (value) => Is(value).date(),

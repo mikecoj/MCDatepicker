@@ -100,6 +100,12 @@ export function applyListeners(calendar, datepickers) {
 		}
 	};
 
+	const updateButtons = ({ customOkLabel, customClearLabel, customCancelLabel }) => {
+		okButton.innerText = customOkLabel;
+		clearButton.innerText = customClearLabel;
+		cancelButton.innerText = customCancelLabel;
+	};
+
 	const updateWeekdays = ({ customWeekDays, firstWeekday }) => {
 		weekdays.forEach((wDay, index) => {
 			const nextElement = (firstWeekday + index) % customWeekDays.length;
@@ -114,7 +120,6 @@ export function applyListeners(calendar, datepickers) {
 	};
 
 	const updateCalendarTable = (instance, date) => {
-		updateWeekdays(instance.options);
 		// render the new calendar array
 		const datesArray = renderCalendar(instance, date);
 		// Update clickable navs based on minDate and maxDate
@@ -149,6 +154,10 @@ export function applyListeners(calendar, datepickers) {
 		calendar.classList = 'mc-calendar';
 		// if the picketDate is null, render the calendar based on today's date
 		const activeDate = getActiveDate(pickedDate, minDate, maxDate);
+		// update the weekdays names
+		updateWeekdays(instance.options);
+		// update the buttons labels
+		updateButtons(instance.options);
 		// update the calendar table
 		updateCalendarTable(instance, activeDate);
 		// update calendar header
