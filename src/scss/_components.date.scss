@@ -31,12 +31,14 @@
 		}
 		&#{$root}--today {
 			@extend %colorShadow;
-			border: 1px solid $inactive-date-color;
+			// border: 1px solid $inactive-date-color;
+			box-shadow: 0 0 0 1px $inactive-date-color;
 		}
 
 		&#{$root}--picked {
 			@extend %colorShadow;
-			border: 1px solid $inactive-picked-bg;
+			// border: 1px solid $inactive-picked-bg;
+			box-shadow: 0 0 0 1px $inactive-picked-bg;
 			color: $inactive-picked-bg;
 		}
 	}
