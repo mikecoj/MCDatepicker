@@ -17,28 +17,7 @@ import {
 	dispatchDatePick
 } from './emiters';
 
-export const applyOnFocusListener = (calendarDiv, { linkedElement }) => {
-	linkedElement.onfocus = (e) => {
-		e.preventDefault();
-		dispatchCalendarShow(calendarDiv, '#' + linkedElement.id);
-	};
-};
-
-const updateCalendarPosition = (calendarDIV, { linkedElement, options: { bodyType } }) => {
-	if (bodyType === 'inline') {
-		const { top, left } = calculateCalendarPosition(calendarDIV, linkedElement);
-		calendarDIV.style.top = `${top}px`;
-		calendarDIV.style.left = `${left}px`;
-	} else {
-		if (calendarDIV.hasAttribute('style')) calendarDIV.removeAttribute('style');
-	}
-};
-
-export const removeOnFocusListener = ({ linkedElement }) => {
-	linkedElement.onfocus = null;
-};
-
-export function applyListeners(calendar, datepickers) {
+const getDOMNodes = (calendar) => {
 	const calendarDisplay = calendar.querySelector('.mc-display');
 	const displayDay = calendar.querySelector('.mc-display__day');
 	const displayDate = calendar.querySelector('.mc-display__date');
@@ -55,134 +34,192 @@ export function applyListeners(calendar, datepickers) {
 	const cancelButton = calendar.querySelector('#mc-btn__cancel');
 	const clearButton = calendar.querySelector('#mc-btn__clear');
 	const dateCells = calendar.querySelectorAll('.mc-date');
+	return {
+		calendar,
+		calendarDisplay,
+		displayDay,
+		displayDate,
+		displayMonth,
+		displayYear,
+		currentMonthSelect,
+		currentYearSelect,
+		monthNavPrev,
+		monthNavNext,
+		yearNavPrev,
+		yearNavNext,
+		weekdays,
+		okButton,
+		cancelButton,
+		clearButton,
+		dateCells
+	};
+};
+
+const getActiveDate = (pickedDate, minDate, maxDate) => {
+	let targetDate = pickedDate === null ? new Date() : pickedDate;
+	targetDate =
+		minDate !== null && valueOfDate(targetDate) < valueOfDate(minDate) ? minDate : targetDate;
+	targetDate =
+		maxDate !== null && valueOfDate(targetDate) > valueOfDate(maxDate) ? maxDate : targetDate;
+	return targetDate;
+};
+
+const updateCalendarPosition = (calendarNodes, instance) => {
+	const { calendar } = calendarNodes;
+	const { options, linkedElement } = instance;
+	const { bodyType } = options;
+	if (bodyType === 'inline') {
+		const { top, left } = calculateCalendarPosition(calendar, linkedElement);
+		calendar.style.top = `${top}px`;
+		calendar.style.left = `${left}px`;
+	} else {
+		if (calendar.hasAttribute('style')) calendar.removeAttribute('style');
+	}
+};
+
+const updateNavs = (calendarNodes, options, date) => {
+	const { monthNavPrev, monthNavNext, yearNavPrev, yearNavNext } = calendarNodes;
+	const { minDate, maxDate } = options;
+	const currentMonth = date.getMonth();
+	const currentYear = date.getFullYear();
+
+	const monthNavPrevState = HandleArrowClass(monthNavPrev);
+	const monthNavNextState = HandleArrowClass(monthNavNext);
+	const yearNavPrevState = HandleArrowClass(yearNavPrev);
+	const yearNavNextState = HandleArrowClass(yearNavNext);
+
+	if (minDate !== null) {
+		const minDateValue = valueOfDate(minDate);
+		const prevYearLastDay = valueOfDate(new Date(currentYear - 1, currentMonth + 1, 0));
+		const currentMonthFirstDay = valueOfDate(new Date(currentYear, currentMonth));
+		// check if the minDate is greater than the last day of the same month of the previous year
+		minDateValue > prevYearLastDay ? yearNavPrevState.inactive() : yearNavPrevState.active();
+		// check if the first day of the current month and year is greater that the minDate
+		currentMonthFirstDay > minDateValue ? monthNavPrevState.active() : monthNavPrevState.inactive();
+	} else {
+		yearNavPrevState.active();
+		monthNavPrevState.active();
+	}
+	if (maxDate !== null) {
+		const maxDateValue = valueOfDate(maxDate);
+		const currentMonthLastDay = valueOfDate(new Date(currentYear, currentMonth + 1, 0));
+		const nextYearFirstDay = valueOfDate(new Date(currentYear + 1, currentMonth, 1));
+		// check if maxDate is smaller than the first day of the same month of the next year
+		maxDateValue < nextYearFirstDay ? yearNavNextState.inactive() : yearNavNextState.active();
+		// check the last day of the current month and year is smaller than maxDate
+		currentMonthLastDay < maxDateValue ? monthNavNextState.active() : monthNavNextState.inactive();
+	} else {
+		// remove the inactive class from the month and year next arrow selectors if the maxDate is null
+		yearNavNextState.active();
+		monthNavNextState.active();
+	}
+};
+
+const updateButtons = (calendarNodes, options) => {
+	const { customOkLabel, customClearLabel, customCancelLabel } = options;
+	const { okButton, clearButton, cancelButton } = calendarNodes;
+	okButton.innerText = customOkLabel;
+	clearButton.innerText = customClearLabel;
+	cancelButton.innerText = customCancelLabel;
+};
+
+const updateWeekdays = (calendarNodes, options) => {
+	const { weekdays } = calendarNodes;
+	const { customWeekDays, firstWeekday } = options;
+	weekdays.forEach((wDay, index) => {
+		const nextElement = (firstWeekday + index) % customWeekDays.length;
+		wDay.innerText = customWeekDays[nextElement].substr(0, 2);
+	});
+};
+const updateDisplay = (calendarNodes, options, pickedDate) => {
+	const { displayDay, displayDate, displayMonth, displayYear } = calendarNodes;
+	const { customWeekDays, customMonths } = options;
+	displayDay.innerText = customWeekDays[pickedDate.getDay()];
+	displayDate.innerText = pickedDate.getDate();
+	displayMonth.innerText = customMonths[pickedDate.getMonth()];
+	displayYear.innerText = pickedDate.getFullYear();
+};
+
+const updateCalendarTable = (calendarNodes, instance, date) => {
+	const { dateCells } = calendarNodes;
+	const { options } = instance;
+	// render the new calendar array
+	const datesArray = renderCalendar(instance, date);
+	// Update clickable navs based on minDate and maxDate
+	updateNavs(calendarNodes, options, date);
+	// update the DOM for each date cell
+	dateCells.forEach((cell, index) => {
+		cell.innerText = datesArray[index].dateNumb;
+		cell.classList = datesArray[index].classList;
+		cell.setAttribute('data-val-date', datesArray[index].date);
+	});
+};
+
+const updateCalendarHeader = (calendarNodes, options, date) => {
+	const { currentMonthSelect, currentYearSelect } = calendarNodes;
+	const { customMonths } = options;
+	currentMonthSelect.innerHTML = `<span>${customMonths[date.getMonth()]}</span>`;
+	currentYearSelect.innerHTML = `<span>${date.getFullYear()}</span>`;
+};
+
+const updateCalendarUI = (calendarNodes, instance) => {
+	const { options, pickedDate } = instance;
+	const { showCalendarDisplay, bodyType, minDate, maxDate } = options;
+	const { calendar, calendarDisplay } = calendarNodes;
+
+	calendar.classList = 'mc-calendar';
+	// if the picketDate is null, render the calendar based on today's date
+	const activeDate = getActiveDate(pickedDate, minDate, maxDate);
+	// update the weekdays names
+	updateWeekdays(calendarNodes, options);
+	// update the buttons labels
+	updateButtons(calendarNodes, options);
+	// update the calendar table
+	updateCalendarTable(calendarNodes, instance, activeDate);
+	// update calendar header
+	updateCalendarHeader(calendarNodes, options, activeDate);
+	// update calendar display UI based on custom options
+	if (!showCalendarDisplay) {
+		calendarDisplay.classList.add('u-display-none');
+	} else {
+		calendarDisplay.classList.remove('u-display-none');
+	}
+	updateDisplay(calendarNodes, options, pickedDate || new Date());
+	// update the calendar classlist based on options.bodytype
+	calendar.classList.add(`mc-calendar--${bodyType}`);
+};
+
+export const applyListeners = (calendarNode, datepickers) => {
+	const calendarNodes = getDOMNodes(calendarNode);
+	const {
+		calendar,
+		currentMonthSelect,
+		currentYearSelect,
+		monthNavPrev,
+		monthNavNext,
+		yearNavPrev,
+		yearNavNext,
+		dateCells,
+		cancelButton,
+		okButton,
+		clearButton
+	} = calendarNodes;
+
 	let activeCell = null;
 	let activeInstance = null;
 	let clickable = true;
 
-	const updateNavs = ({ options: { minDate, maxDate, customMonths } }, date) => {
-		const currentMonth = date.getMonth();
-		const currentYear = date.getFullYear();
-
-		const monthNavPrevState = HandleArrowClass(monthNavPrev);
-		const monthNavNextState = HandleArrowClass(monthNavNext);
-		const yearNavPrevState = HandleArrowClass(yearNavPrev);
-		const yearNavNextState = HandleArrowClass(yearNavNext);
-
-		if (minDate !== null) {
-			const minDateValue = valueOfDate(minDate);
-			const prevYearLastDay = valueOfDate(new Date(currentYear - 1, currentMonth + 1, 0));
-			const currentMonthFirstDay = valueOfDate(new Date(currentYear, currentMonth));
-			// check if the minDate is greater than the last day of the same month of the previous year
-			minDateValue > prevYearLastDay ? yearNavPrevState.inactive() : yearNavPrevState.active();
-			// check if the first day of the current month and year is greater that the minDate
-			currentMonthFirstDay > minDateValue
-				? monthNavPrevState.active()
-				: monthNavPrevState.inactive();
-		} else {
-			yearNavPrevState.active();
-			monthNavPrevState.active();
-		}
-		if (maxDate !== null) {
-			const maxDateValue = valueOfDate(maxDate);
-			const currentMonthLastDay = valueOfDate(new Date(currentYear, currentMonth + 1, 0));
-			const nextYearFirstDay = valueOfDate(new Date(currentYear + 1, currentMonth, 1));
-			// check if maxDate is smaller than the first day of the same month of the next year
-			maxDateValue < nextYearFirstDay ? yearNavNextState.inactive() : yearNavNextState.active();
-			// check the last day of the current month and year is smaller than maxDate
-			currentMonthLastDay < maxDateValue
-				? monthNavNextState.active()
-				: monthNavNextState.inactive();
-		} else {
-			// remove the inactive class from the month and year next arrow selectors if the maxDate is null
-			yearNavNextState.active();
-			monthNavNextState.active();
-		}
-	};
-
-	const updateButtons = ({ customOkLabel, customClearLabel, customCancelLabel }) => {
-		okButton.innerText = customOkLabel;
-		clearButton.innerText = customClearLabel;
-		cancelButton.innerText = customCancelLabel;
-	};
-
-	const updateWeekdays = ({ customWeekDays, firstWeekday }) => {
-		weekdays.forEach((wDay, index) => {
-			const nextElement = (firstWeekday + index) % customWeekDays.length;
-			wDay.innerText = customWeekDays[nextElement].substr(0, 2);
-		});
-	};
-	const updateDisplay = (pickedDate, { customWeekDays, customMonths }) => {
-		displayDay.innerText = customWeekDays[pickedDate.getDay()];
-		displayDate.innerText = pickedDate.getDate();
-		displayMonth.innerText = customMonths[pickedDate.getMonth()];
-		displayYear.innerText = pickedDate.getFullYear();
-	};
-
-	const updateCalendarTable = (instance, date) => {
-		// render the new calendar array
-		const datesArray = renderCalendar(instance, date);
-		// Update clickable navs based on minDate and maxDate
-		updateNavs(instance, date);
-		// update the DOM for each date cell
-		dateCells.forEach((cell, index) => {
-			cell.innerText = datesArray[index].dateNumb;
-			cell.classList = datesArray[index].classList;
-			cell.setAttribute('data-val-date', datesArray[index].date);
-		});
-	};
-
-	const updateCalendarHeader = (date, { customMonths }) => {
-		currentMonthSelect.innerHTML = `<span>${customMonths[date.getMonth()]}</span>`;
-		currentYearSelect.innerHTML = `<span>${date.getFullYear()}</span>`;
-	};
-
-	const getActiveDate = (pickedDate, minDate, maxDate) => {
-		let targetDate = pickedDate === null ? new Date() : pickedDate;
-		targetDate =
-			minDate !== null && valueOfDate(targetDate) < valueOfDate(minDate) ? minDate : targetDate;
-		targetDate =
-			maxDate !== null && valueOfDate(targetDate) > valueOfDate(maxDate) ? maxDate : targetDate;
-		return targetDate;
-	};
-
-	const updateCalendarUI = (instance) => {
-		const {
-			options: { showCalendarDisplay, bodyType, minDate, maxDate },
-			pickedDate
-		} = instance;
-		calendar.classList = 'mc-calendar';
-		// if the picketDate is null, render the calendar based on today's date
-		const activeDate = getActiveDate(pickedDate, minDate, maxDate);
-		// update the weekdays names
-		updateWeekdays(instance.options);
-		// update the buttons labels
-		updateButtons(instance.options);
-		// update the calendar table
-		updateCalendarTable(instance, activeDate);
-		// update calendar header
-		updateCalendarHeader(activeDate, instance.options);
-		// update calendar display UI based on custom options
-		if (!showCalendarDisplay) {
-			calendarDisplay.classList.add('u-display-none');
-		} else {
-			calendarDisplay.classList.remove('u-display-none');
-		}
-		updateDisplay(pickedDate || new Date(), instance.options);
-		// update the calendar classlist based on options.bodytype
-		calendar.classList.add(`mc-calendar--${bodyType}`);
-	};
-	// add click event that dispatch a custom DATE_PICK event, to every calendar cell
-	dateCells.forEach((cell) => cell.addEventListener('click', (e) => dispatchDatePick(e.target)));
+	// listen for custom events
 
 	calendar.addEventListener(CALENDAR_SHOW, (e) => {
 		// get the instance of the input that fired CALENDAR_SHOW event
 		activeInstance = datepickers.find(({ el }) => el === e.detail.input);
 		// update the calendar display
-		updateCalendarUI(activeInstance);
+		updateCalendarUI(calendarNodes, activeInstance);
 		// show the calendar
 		calendar.classList.add('mc-calendar--opened');
 		// update the calendar position based on calendar type
-		updateCalendarPosition(calendar, activeInstance);
+		updateCalendarPosition(calendarNodes, activeInstance);
 		// run all custom onOpen callbacks added by the user
 		activeInstance.onOpenCallbacks.forEach((callback) => callback.apply(null));
 		// get the active cell
@@ -202,11 +239,12 @@ export function applyListeners(calendar, datepickers) {
 	});
 	calendar.addEventListener(DATE_PICK, function (e) {
 		if (e.target.classList.contains('mc-date--inactive')) return;
+		const { options, pickedDate } = activeInstance;
 		activeCell !== null && activeCell.classList.remove('mc-date--picked');
 		// update the instance picked date
 		activeInstance.pickedDate = e.detail.date;
 		// update the display
-		updateDisplay(activeInstance.pickedDate, activeInstance.options);
+		updateDisplay(calendarNodes, options, activeInstance.pickedDate);
 		// update the classlist of the picked cell
 		e.target.classList.add('mc-date--picked');
 		// add a new activeCell
@@ -258,7 +296,7 @@ export function applyListeners(calendar, datepickers) {
 				1
 			);
 			// update the calendar table
-			updateCalendarTable(activeInstance, nextCalendarDate);
+			updateCalendarTable(calendarNodes, activeInstance, nextCalendarDate);
 			// get the active cell
 			activeCell = calendar.querySelector('.mc-date--picked');
 			// run all custom onMonthChangeCallbacks added by the user
@@ -293,7 +331,7 @@ export function applyListeners(calendar, datepickers) {
 				1
 			);
 			// update the calendar table
-			updateCalendarTable(activeInstance, nextCalendarDate);
+			updateCalendarTable(calendarNodes, activeInstance, nextCalendarDate);
 			// get the active cell
 			activeCell = calendar.querySelector('.mc-date--picked');
 			// run every custom callback added by user
@@ -302,6 +340,11 @@ export function applyListeners(calendar, datepickers) {
 			clickable = !clickable;
 		});
 	});
+
+	// Dispatch custom events
+
+	// add click event that dispatch a custom DATE_PICK event, to every calendar cell
+	dateCells.forEach((cell) => cell.addEventListener('click', (e) => dispatchDatePick(e.target)));
 
 	monthNavPrev.addEventListener('click', (e) => {
 		if (e.currentTarget.classList.contains('mc-select__nav--inactive')) return;
@@ -353,4 +396,14 @@ export function applyListeners(calendar, datepickers) {
 			activeInstance.linkedElement.value = null;
 		}
 	});
-}
+};
+
+export const applyOnFocusListener = (calendarDiv, { linkedElement }) => {
+	linkedElement.onfocus = (e) => {
+		e.preventDefault();
+		dispatchCalendarShow(calendarDiv, '#' + linkedElement.id);
+	};
+};
+export const removeOnFocusListener = ({ linkedElement }) => {
+	linkedElement.onfocus = null;
+};
