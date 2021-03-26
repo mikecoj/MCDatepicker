@@ -103,16 +103,7 @@ export const getRectProps = (element) => {
 const getDimensions = (calendarDIV, linkedElement) => {
 	const vw = window.innerWidth;
 	const vh = window.innerHeight;
-	// function getOffset(el) {
-	// 	const rect = el.getBoundingClientRect();
-	// 	return {
-	// 		left: rect.left + window.scrollX,
-	// 		top: rect.top + window.scrollY
-	// 	};
-	// }
 	const dh = document.body.offsetHeight;
-	// const elementOffsetTop = linkedElement.offsetTop;
-	// const elementOffsetleft = linkedElement.offsetLeft;
 	const elementDimensions = getRectProps(linkedElement);
 	const calendarDimensions = getRectProps(calendarDIV);
 	const elementOffsetTop = elementDimensions.t + +window.scrollY;
@@ -160,7 +151,6 @@ export const calculateCalendarPosition = (calendarDIV, linkedElement) => {
 	if (lessThanViewMaxW) left = elementOffsetleft;
 	if (!lessThanViewMaxW && moreThanViewMinW) left = elementOffsetleft + elem.w - cal.w;
 	if (!lessThanViewMaxW && !moreThanViewMinW) left = (vw - cal.w) / 2;
-	console.log(left);
 
 	// calculate top position
 
@@ -172,4 +162,15 @@ export const calculateCalendarPosition = (calendarDIV, linkedElement) => {
 		if (!lessThanDocMaxH && !moreThanDocMinH) top = (vh - cal.h) / 2;
 	}
 	return { top, left };
+};
+
+export const HandleArrowClass = (arrow) => {
+	const active = () => {
+		arrow.classList.remove('mc-select__nav--inactive');
+	};
+	const inactive = () => {
+		arrow.classList.add('mc-select__nav--inactive');
+	};
+
+	return { active, inactive };
 };
