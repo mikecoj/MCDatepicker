@@ -5,7 +5,8 @@ import {
 	slide,
 	dateFormatParser,
 	valueOfDate,
-	calculateCalendarPosition
+	calculateCalendarPosition,
+	HandleArrowClass
 } from './utils';
 import { CALENDAR_HIDE, CALENDAR_SHOW, CHANGE_MONTH, CHANGE_YEAR, DATE_PICK } from './events';
 import {
@@ -62,41 +63,39 @@ export function applyListeners(calendar, datepickers) {
 		const currentMonth = date.getMonth();
 		const currentYear = date.getFullYear();
 
+		const monthNavPrevState = HandleArrowClass(monthNavPrev);
+		const monthNavNextState = HandleArrowClass(monthNavNext);
+		const yearNavPrevState = HandleArrowClass(yearNavPrev);
+		const yearNavNextState = HandleArrowClass(yearNavNext);
+
 		if (minDate !== null) {
+			const minDateValue = valueOfDate(minDate);
+			const prevYearLastDay = valueOfDate(new Date(currentYear - 1, currentMonth + 1, 0));
+			const currentMonthFirstDay = valueOfDate(new Date(currentYear, currentMonth));
 			// check if the minDate is greater than the last day of the same month of the previous year
-			valueOfDate(minDate) > valueOfDate(new Date(currentYear - 1, currentMonth + 1, 0))
-				? // add the inactive class to prev year selector arrow if the condition is true
-				  yearNavPrev.classList.add('mc-select__nav--inactive')
-				: // remove the inactive class if the condition is false
-				  yearNavPrev.classList.remove('mc-select__nav--inactive');
+			minDateValue > prevYearLastDay ? yearNavPrevState.inactive() : yearNavPrevState.active();
 			// check if the first day of the current month and year is greater that the minDate
-			valueOfDate(new Date(currentYear, currentMonth)) > valueOfDate(minDate)
-				? // remove the inactive class from prev month selector arrow if the condition is true
-				  monthNavPrev.classList.remove('mc-select__nav--inactive')
-				: // add the inactive class if the condition is false
-				  monthNavPrev.classList.add('mc-select__nav--inactive');
+			currentMonthFirstDay > minDateValue
+				? monthNavPrevState.active()
+				: monthNavPrevState.inactive();
 		} else {
-			// remove the inactive class from month and year prev arrow selectors if the minDate is null
-			yearNavPrev.classList.remove('mc-select__nav--inactive');
-			monthNavPrev.classList.remove('mc-select__nav--inactive');
+			yearNavPrevState.active();
+			monthNavPrevState.active();
 		}
 		if (maxDate !== null) {
+			const maxDateValue = valueOfDate(maxDate);
+			const currentMonthLastDay = valueOfDate(new Date(currentYear, currentMonth + 1, 0));
+			const nextYearFirstDay = valueOfDate(new Date(currentYear + 1, currentMonth, 1));
 			// check if maxDate is smaller than the first day of the same month of the next year
-			valueOfDate(maxDate) < valueOfDate(new Date(currentYear + 1, currentMonth, 1))
-				? // add the inactive class to next year selector arrow if the condition is true
-				  yearNavNext.classList.add('mc-select__nav--inactive')
-				: // remove the inactive class if the condition is false
-				  yearNavNext.classList.remove('mc-select__nav--inactive');
+			maxDateValue < nextYearFirstDay ? yearNavNextState.inactive() : yearNavNextState.active();
 			// check the last day of the current month and year is smaller than maxDate
-			valueOfDate(new Date(currentYear, currentMonth + 1, 0)) < valueOfDate(maxDate)
-				? // remove the inactive class from the next month selector arrow if the condition is true
-				  monthNavNext.classList.remove('mc-select__nav--inactive')
-				: // add the inactive class if the condition is false
-				  monthNavNext.classList.add('mc-select__nav--inactive');
+			currentMonthLastDay < maxDateValue
+				? monthNavNextState.active()
+				: monthNavNextState.inactive();
 		} else {
 			// remove the inactive class from the month and year next arrow selectors if the maxDate is null
-			yearNavNext.classList.remove('mc-select__nav--inactive');
-			monthNavNext.classList.remove('mc-select__nav--inactive');
+			yearNavNextState.active();
+			monthNavNextState.active();
 		}
 	};
 
@@ -286,6 +285,7 @@ export function applyListeners(calendar, datepickers) {
 			e.target.children[1].style.transform = 'translateX(0)';
 			// delete the old span tag
 			e.target.children[0].remove();
+			// TODO: Change the month if the next year is out of min or max date
 			// generate a new date based on the current month and new generated year
 			const nextCalendarDate = new Date(
 				e.target.children[0].innerText,
