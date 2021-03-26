@@ -103,11 +103,20 @@ export const getRectProps = (element) => {
 const getDimensions = (calendarDIV, linkedElement) => {
 	const vw = window.innerWidth;
 	const vh = window.innerHeight;
+	// function getOffset(el) {
+	// 	const rect = el.getBoundingClientRect();
+	// 	return {
+	// 		left: rect.left + window.scrollX,
+	// 		top: rect.top + window.scrollY
+	// 	};
+	// }
 	const dh = document.body.offsetHeight;
-	const elementOffsetTop = linkedElement.offsetTop;
-	const elementOffsetleft = linkedElement.offsetLeft;
+	// const elementOffsetTop = linkedElement.offsetTop;
+	// const elementOffsetleft = linkedElement.offsetLeft;
 	const elementDimensions = getRectProps(linkedElement);
 	const calendarDimensions = getRectProps(calendarDIV);
+	const elementOffsetTop = elementDimensions.t + +window.scrollY;
+	const elementOffsetleft = elementDimensions.l + window.scrollX;
 	return {
 		vw,
 		vh,
@@ -121,8 +130,8 @@ const getDimensions = (calendarDIV, linkedElement) => {
 const getOffsetOnView = ({ elem, cal }) => {
 	const t = elem.t - cal.h - 10;
 	const b = elem.b + cal.h + 10;
-	const l = elem.l - cal.w;
-	const r = elem.r + cal.w;
+	const l = elem.w > cal.w ? elem.l : elem.l - cal.w;
+	const r = elem.w > cal.w ? elem.r : elem.r + cal.w;
 	return { t, b, l, r };
 };
 
