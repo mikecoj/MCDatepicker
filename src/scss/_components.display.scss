@@ -46,7 +46,7 @@
 	&__day {
 		text-align: center;
 		background-color: $dark-bg-color;
-		font-size: clamp(1.2rem, 9vw, 1.375rem);
+		font-size: clamp(1rem, 8vw, 1.25rem);
 		line-height: 1;
 		padding: 0.5em 0;
 		@include for-desktop {

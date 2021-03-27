@@ -64,7 +64,7 @@
 				display: none;
 			}
 			@include for-desktop {
-				display: inline-block;
+				display: flex;
 			}
 		}
 	}
