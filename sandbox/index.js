@@ -23,7 +23,10 @@ const firstDatePicker = MCDatepicker.create({
 		'Noiembrie',
 		'Decembrie'
 	],
-	selectedDate: new Date(2021, 2, 22),
+	customOkBTN: 'ok',
+	customClearBTN: 'Șterge',
+	customCancelBTN: 'Anulează',
+	selectedDate: new Date(2021, 1, 18),
 	firstWeekday: 1,
 	minDate: new Date(2020, 2, 22),
 	maxDate: new Date(2021, 3, 22),
@@ -38,10 +41,13 @@ firstDatePicker.onSelect((date) => console.log(date));
 const secundDatePicker = MCDatepicker.create({
 	el: '#datepicker_two',
 	bodyType: 'modal',
-	showCalendarDisplay: false
+	showCalendarDisplay: false,
+	minDate: new Date(2020, 11, 5),
+	maxDate: new Date(2021, 0, 16)
 });
 const thirdDatePicker = MCDatepicker.create({
 	el: '#datepicker_three',
+	dateFormat: 'dddd, dd mmmm yyyy',
 	customWeekDays: ['Søndag', 'Måneder', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'],
 	customMonths: [
 		'Januar',
@@ -59,5 +65,6 @@ const thirdDatePicker = MCDatepicker.create({
 	],
 	minDate: new Date('2017-09-25'),
 	maxDate: new Date('2020-03-22'),
+	jumpToMinMax: false,
 	selectedDate: new Date('2020-03-22')
 });

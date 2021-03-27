@@ -55,7 +55,11 @@ export function slide(
 			],
 			animationOptions
 		).finished
-	]);
+	]).then(() => {
+		newElem.style.transform = 'translateX(0)';
+		// remove the old span tag
+		activeElem.remove();
+	});
 }
 
 export const dateFormatParser = (
@@ -104,10 +108,10 @@ const getDimensions = (calendarDIV, linkedElement) => {
 	const vw = window.innerWidth;
 	const vh = window.innerHeight;
 	const dh = document.body.offsetHeight;
-	const elementOffsetTop = linkedElement.offsetTop;
-	const elementOffsetleft = linkedElement.offsetLeft;
 	const elementDimensions = getRectProps(linkedElement);
 	const calendarDimensions = getRectProps(calendarDIV);
+	const elementOffsetTop = elementDimensions.t + +window.scrollY;
+	const elementOffsetleft = elementDimensions.l + window.scrollX;
 	return {
 		vw,
 		vh,
@@ -121,8 +125,8 @@ const getDimensions = (calendarDIV, linkedElement) => {
 const getOffsetOnView = ({ elem, cal }) => {
 	const t = elem.t - cal.h - 10;
 	const b = elem.b + cal.h + 10;
-	const l = elem.l - cal.w;
-	const r = elem.r + cal.w;
+	const l = elem.w > cal.w ? elem.l : elem.l - cal.w;
+	const r = elem.w > cal.w ? elem.r : elem.r + cal.w;
 	return { t, b, l, r };
 };
 
@@ -151,7 +155,6 @@ export const calculateCalendarPosition = (calendarDIV, linkedElement) => {
 	if (lessThanViewMaxW) left = elementOffsetleft;
 	if (!lessThanViewMaxW && moreThanViewMinW) left = elementOffsetleft + elem.w - cal.w;
 	if (!lessThanViewMaxW && !moreThanViewMinW) left = (vw - cal.w) / 2;
-	console.log(left);
 
 	// calculate top position
 
@@ -163,4 +166,15 @@ export const calculateCalendarPosition = (calendarDIV, linkedElement) => {
 		if (!lessThanDocMaxH && !moreThanDocMinH) top = (vh - cal.h) / 2;
 	}
 	return { top, left };
+};
+
+export const HandleArrowClass = (arrow) => {
+	const active = () => {
+		arrow.classList.remove('mc-select__nav--inactive');
+	};
+	const inactive = () => {
+		arrow.classList.add('mc-select__nav--inactive');
+	};
+
+	return { active, inactive };
 };

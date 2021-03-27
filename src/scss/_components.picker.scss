@@ -29,10 +29,11 @@
 		display: flex;
 		font-size: 1.25rem;
 		justify-content: center;
-		padding: 1em 0;
+		padding: 1em 0 0.5em;
 		color: $month-year-color;
 		#{$modal} & {
 			@include for-desktop {
+				padding: 1em 0;
 				justify-content: space-between;
 			}
 		}
@@ -40,6 +41,10 @@
 		#{$inline} & {
 			font-size: 1rem;
 			padding: 1em 0 0.5em;
+		}
+
+		.icon-angle {
+			height: clamp(1rem, 8vw, 1.25rem);
 		}
 	}
 

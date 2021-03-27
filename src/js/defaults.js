@@ -37,10 +37,14 @@ const defaultOptions = {
 	showCalendarDisplay: true,
 	customWeekDays: weekDays,
 	customMonths: months,
+	customOkBTN: 'OK',
+	customClearBTN: 'Clear',
+	customCancelBTN: 'CANCEL',
 	firstWeekday: 0, // ex: 1 accept numbers 0-6;
 	selectedDate: null,
 	minDate: null,
 	maxDate: null,
+	jumpToMinMax: true,
 	disableWeekends: false,
 	disableWeekDays: [], // ex: [0,2,5] accept numbers 0-6;
 	disableDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
