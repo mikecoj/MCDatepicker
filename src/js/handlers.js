@@ -18,40 +18,24 @@ import {
 } from './emiters';
 
 const getDOMNodes = (calendar) => {
-	const calendarDisplay = calendar.querySelector('.mc-display');
-	const displayDay = calendar.querySelector('.mc-display__day');
-	const displayDate = calendar.querySelector('.mc-display__date');
-	const displayMonth = calendar.querySelector('.mc-display__month');
-	const displayYear = calendar.querySelector('.mc-display__year');
-	const currentMonthSelect = calendar.querySelector('#mc-current--month');
-	const currentYearSelect = calendar.querySelector('#mc-current--year');
-	const monthNavPrev = calendar.querySelector('#mc-picker__month--prev');
-	const monthNavNext = calendar.querySelector('#mc-picker__month--next');
-	const yearNavPrev = calendar.querySelector('#mc-picker__year--prev');
-	const yearNavNext = calendar.querySelector('#mc-picker__year--next');
-	const weekdays = calendar.querySelectorAll('.mc-table__weekday');
-	const okButton = calendar.querySelector('#mc-btn__ok');
-	const cancelButton = calendar.querySelector('#mc-btn__cancel');
-	const clearButton = calendar.querySelector('#mc-btn__clear');
-	const dateCells = calendar.querySelectorAll('.mc-date');
 	return {
 		calendar,
-		calendarDisplay,
-		displayDay,
-		displayDate,
-		displayMonth,
-		displayYear,
-		currentMonthSelect,
-		currentYearSelect,
-		monthNavPrev,
-		monthNavNext,
-		yearNavPrev,
-		yearNavNext,
-		weekdays,
-		okButton,
-		cancelButton,
-		clearButton,
-		dateCells
+		calendarDisplay: calendar.querySelector('.mc-display'),
+		displayDay: calendar.querySelector('.mc-display__day'),
+		displayDate: calendar.querySelector('.mc-display__date'),
+		displayMonth: calendar.querySelector('.mc-display__month'),
+		displayYear: calendar.querySelector('.mc-display__year'),
+		currentMonthSelect: calendar.querySelector('#mc-current--month'),
+		currentYearSelect: calendar.querySelector('#mc-current--year'),
+		monthNavPrev: calendar.querySelector('#mc-picker__month--prev'),
+		monthNavNext: calendar.querySelector('#mc-picker__month--next'),
+		yearNavPrev: calendar.querySelector('#mc-picker__year--prev'),
+		yearNavNext: calendar.querySelector('#mc-picker__year--next'),
+		weekdays: calendar.querySelectorAll('.mc-table__weekday'),
+		okButton: calendar.querySelector('#mc-btn__ok'),
+		cancelButton: calendar.querySelector('#mc-btn__cancel'),
+		clearButton: calendar.querySelector('#mc-btn__clear'),
+		dateCells: calendar.querySelectorAll('.mc-date')
 	};
 };
 
@@ -79,7 +63,7 @@ const updateCalendarPosition = (calendarNodes, instance) => {
 
 const updateNavs = (calendarNodes, options, date) => {
 	const { monthNavPrev, monthNavNext, yearNavPrev, yearNavNext } = calendarNodes;
-	const { minDate, maxDate } = options;
+	const { minDate, maxDate, jumpToMinMax } = options;
 	const currentMonth = date.getMonth();
 	const currentYear = date.getFullYear();
 
@@ -93,7 +77,15 @@ const updateNavs = (calendarNodes, options, date) => {
 		const prevYearLastDay = valueOfDate(new Date(currentYear - 1, currentMonth + 1, 0));
 		const currentMonthFirstDay = valueOfDate(new Date(currentYear, currentMonth));
 		// check if the minDate is greater than the last day of the same month of the previous year
-		minDateValue > prevYearLastDay ? yearNavPrevState.inactive() : yearNavPrevState.active();
+		// jumpToMinMax && currentMonthFirstDay > minDateValue
+		// 	? yearNavPrevState.active()
+		// 	: yearNavPrevState.inactive();
+		if (jumpToMinMax) {
+			currentMonthFirstDay > minDateValue ? yearNavPrevState.active() : yearNavPrevState.inactive();
+		} else {
+			minDateValue > prevYearLastDay ? yearNavPrevState.inactive() : yearNavPrevState.active();
+		}
+
 		// check if the first day of the current month and year is greater that the minDate
 		currentMonthFirstDay > minDateValue ? monthNavPrevState.active() : monthNavPrevState.inactive();
 	} else {
@@ -105,7 +97,11 @@ const updateNavs = (calendarNodes, options, date) => {
 		const currentMonthLastDay = valueOfDate(new Date(currentYear, currentMonth + 1, 0));
 		const nextYearFirstDay = valueOfDate(new Date(currentYear + 1, currentMonth, 1));
 		// check if maxDate is smaller than the first day of the same month of the next year
-		maxDateValue < nextYearFirstDay ? yearNavNextState.inactive() : yearNavNextState.active();
+		if (jumpToMinMax) {
+			currentMonthLastDay < maxDateValue ? yearNavNextState.active() : yearNavNextState.inactive();
+		} else {
+			maxDateValue < nextYearFirstDay ? yearNavNextState.inactive() : yearNavNextState.active();
+		}
 		// check the last day of the current month and year is smaller than maxDate
 		currentMonthLastDay < maxDateValue ? monthNavNextState.active() : monthNavNextState.inactive();
 	} else {
@@ -299,19 +295,58 @@ export const applyListeners = (calendarNode, datepickers) => {
 	});
 
 	currentYearSelect.addEventListener(CHANGE_YEAR, function (e) {
+		const { minDate, maxDate } = activeInstance.options;
 		if (!clickable) return;
 		clickable = !clickable;
 		const { customMonths } = activeInstance.options;
 		const selectedMonth = currentMonthSelect.children[0].innerText;
 		const selectedYear = e.target.children[0].innerText;
-		// get the next or prev Year, based on the direction property
-		const newYear =
-			e.detail.direction === 'next' ? Number(selectedYear) + 1 : Number(selectedYear) - 1;
+		const next = e.detail.direction === 'next' ? true : false;
+		const newYear = next ? Number(selectedYear) + 1 : Number(selectedYear) - 1;
+		const currentMonthIndex = customMonths.indexOf(currentMonthSelect.children[0].innerHTML);
+		const prevDateLastDay = new Date(Number(selectedYear) - 1, currentMonthIndex + 1, 0);
+		const nextDateFirstDay = new Date(Number(selectedYear) + 1, currentMonthIndex);
+		const lessThanMinDate =
+			minDate !== null && !next && valueOfDate(prevDateLastDay) < valueOfDate(minDate);
+		const moreThanMaxDate =
+			maxDate !== null && next && valueOfDate(maxDate) < valueOfDate(nextDateFirstDay);
+
+		if (lessThanMinDate || moreThanMaxDate) {
+			const newActiveDate = (lessThanMinDate && minDate) || (moreThanMaxDate && maxDate);
+			const newActiveMonth = newActiveDate.getMonth();
+			const newActiveYear = newActiveDate.getFullYear();
+
+			currentMonthSelect.innerHTML += spanTemplate(
+				e.detail.direction,
+				customMonths[newActiveMonth]
+			);
+
+			if (newActiveYear !== Number(selectedYear)) {
+				currentYearSelect.innerHTML += spanTemplate(e.detail.direction, newActiveYear);
+				slide(currentYearSelect.children[0], currentYearSelect.children[1], e.detail.direction);
+			}
+
+			slide(
+				currentMonthSelect.children[0],
+				currentMonthSelect.children[1],
+				e.detail.direction
+			).then(() => {
+				// update the calendar table
+				updateCalendarTable(calendarNodes, activeInstance, newActiveDate);
+				// get the active cell
+				activeCell = calendar.querySelector('.mc-date--picked');
+				// run all custom onMonthChangeCallbacks added by the user
+				activeInstance.onMonthChangeCallbacks.forEach((callback) => callback.apply(null));
+
+				clickable = !clickable;
+			});
+			return;
+		}
 		// append a new span tag to the targeted div
+
 		e.target.innerHTML += spanTemplate(e.detail.direction, newYear);
 		// apply slide animation
 		slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
-			// TODO: Change the month if the next year is out of min or max date
 			// generate a new date based on the current month and new generated year
 			const nextCalendarDate = new Date(
 				e.target.children[0].innerText,
