@@ -267,6 +267,7 @@ export const applyListeners = (calendarNode, datepickers) => {
 			selectedMonth,
 			e.detail.direction
 		);
+
 		// add a new span tah with the new month to the months div
 		e.target.innerHTML += spanTemplate(e.detail.direction, newElement);
 
@@ -276,19 +277,10 @@ export const applyListeners = (calendarNode, datepickers) => {
 			// add a new span with the new year to the years div
 			currentYearSelect.innerHTML += spanTemplate(e.detail.direction, newYear);
 			// apply slide animation to years span tags
-			slide(currentYearSelect.children[0], currentYearSelect.children[1], e.detail.direction).then(
-				() => {
-					currentYearSelect.children[1].style.transform = 'translateX(0)';
-					// remove the old span tag
-					currentYearSelect.children[0].remove();
-				}
-			);
+			slide(currentYearSelect.children[0], currentYearSelect.children[1], e.detail.direction);
 		}
 		// apply slide animation to months span tags
 		slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
-			e.target.children[1].style.transform = 'translateX(0)';
-			// remove the old span tag
-			e.target.children[0].remove();
 			// get new date for the new calendar array
 			const nextCalendarDate = new Date(
 				currentYearSelect.children[0].innerText,
@@ -319,10 +311,6 @@ export const applyListeners = (calendarNode, datepickers) => {
 		e.target.innerHTML += spanTemplate(e.detail.direction, newYear);
 		// apply slide animation
 		slide(e.target.children[0], e.target.children[1], e.detail.direction).then(() => {
-			// reset the style of the new created span tag
-			e.target.children[1].style.transform = 'translateX(0)';
-			// delete the old span tag
-			e.target.children[0].remove();
 			// TODO: Change the month if the next year is out of min or max date
 			// generate a new date based on the current month and new generated year
 			const nextCalendarDate = new Date(

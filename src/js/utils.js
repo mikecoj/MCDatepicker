@@ -55,7 +55,11 @@ export function slide(
 			],
 			animationOptions
 		).finished
-	]);
+	]).then(() => {
+		newElem.style.transform = 'translateX(0)';
+		// remove the old span tag
+		activeElem.remove();
+	});
 }
 
 export const dateFormatParser = (
