@@ -27,24 +27,24 @@
 
 	&__header {
 		display: flex;
-		font-size: 1.25rem;
+		font-size: clamp(1rem, 8vw, 1.25rem);
 		justify-content: center;
 		padding: 1em 0 0.5em;
 		color: $month-year-color;
 		#{$modal} & {
 			@include for-desktop {
-				padding: 1em 0;
+				padding: 0.7em 0;
 				justify-content: space-between;
 			}
 		}
 
 		#{$inline} & {
 			font-size: 1rem;
-			padding: 1em 0 0.5em;
+			padding: 0.7em 0 0;
 		}
 
 		.icon-angle {
-			height: clamp(1rem, 8vw, 1.25rem);
+			height: clamp(1.75rem, calc(8vw + 0.25rem), 2rem);
 		}
 	}
 
@@ -59,7 +59,7 @@
 		padding: 1em 0 2em;
 
 		#{$inline} & {
-			padding: 1em 0;
+			padding: 0.5em 0 1em;
 		}
 	}
 }
