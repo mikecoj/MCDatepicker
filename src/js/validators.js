@@ -97,6 +97,7 @@ const optionsSchema = {
 	selectedDate: (value) => Is(value).date(),
 	minDate: (value) => Is(value).date(),
 	maxDate: (value) => Is(value).date(),
+	jumpToMinMax: (value) => Is(value).boolean(),
 	disableWeekends: (value) => Is(value).boolean(),
 	disableWeekDays: (value) => Is(value).array() && value.every((elem) => /^[0-6]{1}$/.test(elem)), // ex: [0,2,5] accept numbers 0-6;
 	disableDates: (value) => Is(value).array() && value.every((elem) => Is(elem).date()), // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
