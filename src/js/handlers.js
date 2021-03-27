@@ -112,11 +112,11 @@ const updateNavs = (calendarNodes, options, date) => {
 };
 
 const updateButtons = (calendarNodes, options) => {
-	const { customOkLabel, customClearLabel, customCancelLabel } = options;
+	const { customOkBTN, customClearBTN, customCancelBTN } = options;
 	const { okButton, clearButton, cancelButton } = calendarNodes;
-	okButton.innerText = customOkLabel;
-	clearButton.innerText = customClearLabel;
-	cancelButton.innerText = customCancelLabel;
+	okButton.innerText = customOkBTN;
+	clearButton.innerText = customClearBTN;
+	cancelButton.innerText = customCancelBTN;
 };
 
 const updateWeekdays = (calendarNodes, options) => {

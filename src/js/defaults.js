@@ -37,9 +37,9 @@ const defaultOptions = {
 	showCalendarDisplay: true,
 	customWeekDays: weekDays,
 	customMonths: months,
-	customOkLabel: 'OK',
-	customClearLabel: 'Clear',
-	customCancelLabel: 'CANCEL',
+	customOkBTN: 'OK',
+	customClearBTN: 'Clear',
+	customCancelBTN: 'CANCEL',
 	firstWeekday: 0, // ex: 1 accept numbers 0-6;
 	selectedDate: null,
 	minDate: null,
