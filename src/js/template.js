@@ -3,6 +3,9 @@ export const spanTemplate = (direction, content) => {
 	return `<span style="transform: translateX(${units}px);">${content}</span>`;
 };
 
+export const previewCellTemplate = (classList, content) =>
+	`<div class="${classList}"><span>${content}</span></div>`;
+
 export default `<div class="mc-display">
 <div class="mc-display__header">
 <h3 class="mc-display__day">Thursday</h3>
@@ -120,6 +123,20 @@ export default `<div class="mc-display">
 </tr>
 </tbody>
 </table>
+<div class="mc-month-year__preview mc-month-year__preview--opened">
+<div class="mc-month-year__cell"><span>Jan</span></div>
+<div class="mc-month-year__cell"><span>Feb</span></div>
+<div class="mc-month-year__cell mc-month-year__cell--picked"><span>Mar</span></div>
+<div class="mc-month-year__cell"><span>Apr</span></div>
+<div class="mc-month-year__cell"><span>May</span></div>
+<div class="mc-month-year__cell"><span>Jun</span></div>
+<div class="mc-month-year__cell"><span>Jul</span></div>
+<div class="mc-month-year__cell mc-month-year__cell--inactive"><span>Aug</span></div>
+<div class="mc-month-year__cell"><span>Sep</span></div>
+<div class="mc-month-year__cell"><span>Oct</span></div>
+<div class="mc-month-year__cell"><span>Nov</span></div>
+<div class="mc-month-year__cell"><span>Dec</span></div>
+</div>
 </div>
 <div class="mc-picker__footer mc-container">
 <div class="mc-footer__section mc-footer__section--primary">
