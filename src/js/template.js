@@ -123,19 +123,19 @@ export default `<div class="mc-display">
 </tr>
 </tbody>
 </table>
-<div class="mc-month-year__preview mc-month-year__preview--opened">
-<div class="mc-month-year__cell"><span>Jan</span></div>
-<div class="mc-month-year__cell"><span>Feb</span></div>
-<div class="mc-month-year__cell mc-month-year__cell--picked"><span>Mar</span></div>
-<div class="mc-month-year__cell"><span>Apr</span></div>
-<div class="mc-month-year__cell"><span>May</span></div>
-<div class="mc-month-year__cell"><span>Jun</span></div>
-<div class="mc-month-year__cell"><span>Jul</span></div>
-<div class="mc-month-year__cell mc-month-year__cell--inactive"><span>Aug</span></div>
-<div class="mc-month-year__cell"><span>Sep</span></div>
-<div class="mc-month-year__cell"><span>Oct</span></div>
-<div class="mc-month-year__cell"><span>Nov</span></div>
-<div class="mc-month-year__cell"><span>Dec</span></div>
+<div class="mc-month-year__preview">
+<div class="mc-month-year__cell"></div>
+<div class="mc-month-year__cell"></div>
+<div class="mc-month-year__cell"></div>
+<div class="mc-month-year__cell"></div>
+<div class="mc-month-year__cell"></div>
+<div class="mc-month-year__cell"></div>
+<div class="mc-month-year__cell"></div>
+<div class="mc-month-year__cell"></div>
+<div class="mc-month-year__cell"></div>
+<div class="mc-month-year__cell"></div>
+<div class="mc-month-year__cell"></div>
+<div class="mc-month-year__cell"></div>
 </div>
 </div>
 <div class="mc-picker__footer mc-container">
