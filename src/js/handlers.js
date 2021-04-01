@@ -1,4 +1,4 @@
-import { renderCalendar } from './render';
+import { renderCalendar, renderMonthPreview } from './render';
 import { spanTemplate } from './template';
 import {
 	arrayInfiniteLooper,
@@ -35,7 +35,9 @@ const getDOMNodes = (calendar) => {
 		okButton: calendar.querySelector('#mc-btn__ok'),
 		cancelButton: calendar.querySelector('#mc-btn__cancel'),
 		clearButton: calendar.querySelector('#mc-btn__clear'),
-		dateCells: calendar.querySelectorAll('.mc-date')
+		dateCells: calendar.querySelectorAll('.mc-date'),
+		monthYearPreview: calendar.querySelector('.mc-month-year__preview'),
+		previewCells: calendar.querySelectorAll('.mc-month-year__cell')
 	};
 };
 
@@ -151,6 +153,13 @@ const updateCalendarTable = (calendarNodes, instance, date) => {
 	});
 };
 
+const renderPreview = ({ previewCells }, previewArray) => {
+	previewCells.forEach((previewCell, index) => {
+		previewCell.classList = previewArray[index].classList;
+		previewCell.innerHTML = previewArray[index].content;
+	});
+};
+
 const updateCalendarHeader = (calendarNodes, options, date) => {
 	const { currentMonthSelect, currentYearSelect } = calendarNodes;
 	const { customMonths } = options;
@@ -191,6 +200,7 @@ export const applyListeners = (calendarNode, datepickers) => {
 		calendar,
 		currentMonthSelect,
 		currentYearSelect,
+		monthYearPreview,
 		monthNavPrev,
 		monthNavNext,
 		yearNavPrev,
@@ -204,6 +214,15 @@ export const applyListeners = (calendarNode, datepickers) => {
 	let activeCell = null;
 	let activeInstance = null;
 	let clickable = true;
+
+	currentMonthSelect.onclick = () => {
+		renderMonthPreview(calendarNodes, activeInstance.options);
+		monthYearPreview.classList.toggle('mc-month-year__preview--opened');
+	};
+
+	currentYearSelect.onclick = () => {
+		monthYearPreview.classList.toggle('mc-month-year__preview--opened');
+	};
 
 	// listen for custom events
 
