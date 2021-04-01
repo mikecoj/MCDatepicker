@@ -1,4 +1,4 @@
-import { renderCalendar, renderMonthPreview } from './render';
+import { renderCalendar, renderMonthPreview, renderYearPreview } from './render';
 import { spanTemplate } from './template';
 import {
 	arrayInfiniteLooper,
@@ -14,7 +14,8 @@ import {
 	dispatchCalendarHide,
 	dispatchChangeMonth,
 	dispatchChangeYear,
-	dispatchDatePick
+	dispatchDatePick,
+	dispatchPreviewCellPick
 } from './emiters';
 
 const getDOMNodes = (calendar) => {
@@ -153,11 +154,17 @@ const updateCalendarTable = (calendarNodes, instance, date) => {
 	});
 };
 
-const renderPreview = ({ previewCells }, previewArray) => {
-	previewCells.forEach((previewCell, index) => {
-		previewCell.classList = previewArray[index].classList;
-		previewCell.innerHTML = previewArray[index].content;
-	});
+const updateMonthYearPreview = (calendarNodes, options) => {
+	const { monthYearPreview, currentYearSelect, currentMonthSelect } = calendarNodes;
+	console.log(currentMonthSelect);
+	const previewTarget = monthYearPreview.getAttribute('data-preview');
+	if (previewTarget == 'month') renderMonthPreview(calendarNodes, options);
+	if (previewTarget == 'year') {
+		const currentYear = Number(currentYearSelect.children[0].innerHTML);
+		renderYearPreview(calendarNodes, options, currentYear - 4);
+	}
+	return;
+	// monthYearPreview.classList.remove('mc-month-year__preview--opened');
 };
 
 const updateCalendarHeader = (calendarNodes, options, date) => {
@@ -190,6 +197,8 @@ const updateCalendarUI = (calendarNodes, instance) => {
 		calendarDisplay.classList.remove('u-display-none');
 	}
 	updateDisplay(calendarNodes, options, pickedDate || new Date());
+	// update month year preview
+	updateMonthYearPreview(calendarNodes, options);
 	// update the calendar classlist based on options.bodytype
 	calendar.classList.add(`mc-calendar--${bodyType}`);
 };
@@ -206,6 +215,7 @@ export const applyListeners = (calendarNode, datepickers) => {
 		yearNavPrev,
 		yearNavNext,
 		dateCells,
+		previewCells,
 		cancelButton,
 		okButton,
 		clearButton
@@ -216,12 +226,36 @@ export const applyListeners = (calendarNode, datepickers) => {
 	let clickable = true;
 
 	currentMonthSelect.onclick = () => {
+		const isOpened = monthYearPreview.classList.contains('mc-month-year__preview--opened');
+		const isMonthTarget = monthYearPreview.getAttribute('data-preview') === 'month' ? true : false;
+		const isYearTarget = monthYearPreview.getAttribute('data-preview') === 'year' ? true : false;
 		renderMonthPreview(calendarNodes, activeInstance.options);
-		monthYearPreview.classList.toggle('mc-month-year__preview--opened');
+		if (!isOpened) {
+			monthYearPreview.setAttribute('data-preview', 'month');
+			monthYearPreview.classList.add('mc-month-year__preview--opened');
+		}
+		if (isOpened && isMonthTarget) {
+			monthYearPreview.setAttribute('data-preview', null);
+			monthYearPreview.classList.remove('mc-month-year__preview--opened');
+		}
+		if (isOpened && isYearTarget) monthYearPreview.setAttribute('data-preview', 'month');
 	};
 
 	currentYearSelect.onclick = () => {
-		monthYearPreview.classList.toggle('mc-month-year__preview--opened');
+		const isOpened = monthYearPreview.classList.contains('mc-month-year__preview--opened');
+		const isMonthTarget = monthYearPreview.getAttribute('data-preview') === 'month' ? true : false;
+		const isYearTarget = monthYearPreview.getAttribute('data-preview') === 'year' ? true : false;
+		const currentYear = Number(currentYearSelect.children[0].innerText);
+		renderYearPreview(calendarNodes, activeInstance.options, currentYear - 4);
+		if (!isOpened) {
+			monthYearPreview.setAttribute('data-preview', 'year');
+			monthYearPreview.classList.add('mc-month-year__preview--opened');
+		}
+		if (isOpened && isYearTarget) {
+			monthYearPreview.setAttribute('data-preview', null);
+			monthYearPreview.classList.remove('mc-month-year__preview--opened');
+		}
+		if (isOpened && isMonthTarget) monthYearPreview.setAttribute('data-preview', 'year');
 	};
 
 	// listen for custom events
@@ -247,10 +281,15 @@ export const applyListeners = (calendarNode, datepickers) => {
 		if (activeInstance.options.bodyType == 'inline') {
 			calendar.removeAttribute('style');
 		}
+
 		// run all custom onClose callbacks added by the user
 		activeInstance.onCloseCallbacks.forEach((callback) => callback.apply(null));
 		// reset the active instance
 		activeInstance = null;
+
+		Promise.all(
+			calendar.getAnimations({ subtree: true }).map((animation) => animation.finished)
+		).then(() => monthYearPreview.classList.remove('mc-month-year__preview--opened'));
 	});
 	calendar.addEventListener(DATE_PICK, function (e) {
 		if (e.target.classList.contains('mc-date--inactive')) return;
@@ -264,6 +303,10 @@ export const applyListeners = (calendarNode, datepickers) => {
 		e.target.classList.add('mc-date--picked');
 		// add a new activeCell
 		activeCell = e.target;
+	});
+
+	calendar.addEventListener(DATE_PICK, (e) => {
+		const { target } = e.detail;
 	});
 
 	currentMonthSelect.addEventListener(CHANGE_MONTH, function (e) {
@@ -385,6 +428,9 @@ export const applyListeners = (calendarNode, datepickers) => {
 
 	// Dispatch custom events
 
+	previewCells.forEach((cell) =>
+		cell.addEventListener('click', (e) => dispatchPreviewCellPick(e.currentTarget))
+	);
 	// add click event that dispatch a custom DATE_PICK event, to every calendar cell
 	dateCells.forEach((cell) => cell.addEventListener('click', (e) => dispatchDatePick(e.target)));
 
