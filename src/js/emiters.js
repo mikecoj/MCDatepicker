@@ -1,4 +1,11 @@
-import { CALENDAR_HIDE, CALENDAR_SHOW, CHANGE_MONTH, CHANGE_YEAR, DATE_PICK } from './events';
+import {
+	CALENDAR_HIDE,
+	CALENDAR_SHOW,
+	CHANGE_MONTH,
+	CHANGE_YEAR,
+	DATE_PICK,
+	PREVIEW_PICK
+} from './events';
 
 export const dispatchCalendarShow = (elem, input) => {
 	elem.dispatchEvent(
@@ -43,6 +50,21 @@ export const dispatchChangeYear = (elem, direction) => {
 			bubbles: true,
 			detail: {
 				direction: direction
+			}
+		})
+	);
+};
+
+export const dispatchPreviewCellPick = (elem) => {
+	console.dir(elem);
+	const target = elem.offsetParent.getAttribute('data-preview');
+	console.log(target);
+	elem.dispatchEvent(
+		new CustomEvent(PREVIEW_PICK, {
+			bubbles: true,
+			detail: {
+				target,
+				data: elem.children[0].innerHTML
 			}
 		})
 	);
