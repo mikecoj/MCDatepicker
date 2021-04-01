@@ -74,6 +74,7 @@
 		height: clamp(1.75rem, calc(8vw + 0.25rem), 2rem);
 		overflow: hidden;
 		position: relative;
+		cursor: pointer;
 
 		span {
 			line-height: 1.2;
