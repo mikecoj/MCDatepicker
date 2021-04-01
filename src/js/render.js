@@ -35,13 +35,12 @@ const getCalendarArray = (options, firstMonthDate) => {
 export const renderMonthPreview = (calendarNodes, options) => {
 	const { currentMonthSelect, currentYearSelect, previewCells } = calendarNodes;
 	const { customMonths, minDate, maxDate } = options;
-	const currentMonth = currentMonthSelect.children[0].innerText;
-	const selectedYear = currentYearSelect.children[0].innerText;
+	const currentMonth = currentMonthSelect.children[0].innerHTML;
+	const selectedYear = currentYearSelect.children[0].innerHTML;
 	const monthPreviewArray = customMonths.map((month, index) => {
 		let monthClasslist = ['mc-month-year__cell'];
 		const firstMonthDate = new Date(Number(selectedYear), customMonths.indexOf(month));
 		const lastMonthDate = new Date(Number(selectedYear), customMonths.indexOf(month) + 1, 0);
-		console.log(lastMonthDate);
 		const lessThanMinDate = minDate !== null && valueOfDate(lastMonthDate) < valueOfDate(minDate);
 		const moreThanMaxDate = maxDate !== null && valueOfDate(firstMonthDate) > valueOfDate(maxDate);
 
@@ -49,24 +48,25 @@ export const renderMonthPreview = (calendarNodes, options) => {
 		if (lessThanMinDate || moreThanMaxDate) monthClasslist.push('mc-month-year__cell--inactive');
 
 		previewCells[index].classList = monthClasslist.join(' ');
-		previewCells[index].innerHTML = `<span>${month}</span>`;
+		previewCells[index].innerHTML = `<span>${month.substr(0, 3)}</span>`;
 	});
 };
 
 export const renderYearPreview = (calendarNodes, options, year) => {
-	const { currentYearSelect } = calendarNodes;
+	const { currentYearSelect, previewCells } = calendarNodes;
 	const { minDate, maxDate } = options;
-	const currentYear = currentYearSelect.children[0].innerText;
-	let yearPreviewArray = [];
-	while (yearPreviewArray.length < 12) {
+	const minYear = minDate && minDate.getFullYear();
+	const maxYear = maxDate && maxDate.getFullYear();
+	const currentYear = Number(currentYearSelect.children[0].innerHTML);
+	previewCells.forEach((cell, index) => {
 		let yearClasslist = ['mc-month-year__cell'];
-		if (year === currentYear) yearClasslist.push('mc-month-year__cell--picked');
-		if (year < minDate.getFullYear() || year > maxDate.getFullYear())
+		let customYear = year + index;
+		if (customYear === currentYear) yearClasslist.push('mc-month-year__cell--picked');
+		if (customYear < minYear || customYear > maxYear)
 			yearClasslist.push('mc-month-year__cell--inactive');
-		yearPreviewArray.push({ classList: yearClasslist.join(' '), content: year });
-		year++;
-	}
-	return yearPreviewArray;
+		cell.classList = yearClasslist.join(' ');
+		cell.innerHTML = `<span>${customYear}</span>`;
+	});
 };
 
 export const renderCalendar = (instance, date) => {
