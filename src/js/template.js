@@ -123,7 +123,7 @@ export default `<div class="mc-display">
 </tr>
 </tbody>
 </table>
-<div class="mc-month-year__preview">
+<div class="mc-month-year__preview" data-preview=null>
 <div class="mc-month-year__cell"></div>
 <div class="mc-month-year__cell"></div>
 <div class="mc-month-year__cell"></div>
