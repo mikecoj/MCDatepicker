@@ -1,4 +1,4 @@
-import template from './template';
+import template, { previewCellTemplate } from './template';
 import { valueOfDate } from './utils';
 import { applyListeners } from './handlers';
 
@@ -30,6 +30,43 @@ const getCalendarArray = (options, firstMonthDate) => {
 		calendarArray.push(dayObj(newDate));
 	}
 	return calendarArray;
+};
+
+export const renderMonthPreview = (calendarNodes, options) => {
+	const { currentMonthSelect, currentYearSelect, previewCells } = calendarNodes;
+	const { customMonths, minDate, maxDate } = options;
+	const currentMonth = currentMonthSelect.children[0].innerText;
+	const selectedYear = currentYearSelect.children[0].innerText;
+	const monthPreviewArray = customMonths.map((month, index) => {
+		let monthClasslist = ['mc-month-year__cell'];
+		const firstMonthDate = new Date(Number(selectedYear), customMonths.indexOf(month));
+		const lastMonthDate = new Date(Number(selectedYear), customMonths.indexOf(month) + 1, 0);
+		console.log(lastMonthDate);
+		const lessThanMinDate = minDate !== null && valueOfDate(lastMonthDate) < valueOfDate(minDate);
+		const moreThanMaxDate = maxDate !== null && valueOfDate(firstMonthDate) > valueOfDate(maxDate);
+
+		if (month === currentMonth) monthClasslist.push('mc-month-year__cell--picked');
+		if (lessThanMinDate || moreThanMaxDate) monthClasslist.push('mc-month-year__cell--inactive');
+
+		previewCells[index].classList = monthClasslist.join(' ');
+		previewCells[index].innerHTML = `<span>${month}</span>`;
+	});
+};
+
+export const renderYearPreview = (calendarNodes, options, year) => {
+	const { currentYearSelect } = calendarNodes;
+	const { minDate, maxDate } = options;
+	const currentYear = currentYearSelect.children[0].innerText;
+	let yearPreviewArray = [];
+	while (yearPreviewArray.length < 12) {
+		let yearClasslist = ['mc-month-year__cell'];
+		if (year === currentYear) yearClasslist.push('mc-month-year__cell--picked');
+		if (year < minDate.getFullYear() || year > maxDate.getFullYear())
+			yearClasslist.push('mc-month-year__cell--inactive');
+		yearPreviewArray.push({ classList: yearClasslist.join(' '), content: year });
+		year++;
+	}
+	return yearPreviewArray;
 };
 
 export const renderCalendar = (instance, date) => {
