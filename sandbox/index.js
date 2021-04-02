@@ -35,8 +35,9 @@ const firstDatePicker = MCDatepicker.create({
 
 firstDatePicker.markDatesCustom((date) => date.getDate() == 5);
 
-firstDatePicker.onSelect((date) => console.log('this is onSelect method'));
+firstDatePicker.onSelect((date) => console.log('OK button clicked!'));
 firstDatePicker.onSelect((date) => console.log(date));
+firstDatePicker.onCancel(() => console.log('Cancel button clicked!'));
 
 const secundDatePicker = MCDatepicker.create({
 	el: '#datepicker_two',
