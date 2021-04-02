@@ -8,7 +8,14 @@ import {
 	calculateCalendarPosition,
 	HandleArrowClass
 } from './utils';
-import { CALENDAR_HIDE, CALENDAR_SHOW, CHANGE_MONTH, CHANGE_YEAR, DATE_PICK } from './events';
+import {
+	CALENDAR_HIDE,
+	CALENDAR_SHOW,
+	CHANGE_MONTH,
+	CHANGE_YEAR,
+	DATE_PICK,
+	PREVIEW_PICK
+} from './events';
 import {
 	dispatchCalendarShow,
 	dispatchCalendarHide,
@@ -156,7 +163,6 @@ const updateCalendarTable = (calendarNodes, instance, date) => {
 
 const updateMonthYearPreview = (calendarNodes, options) => {
 	const { monthYearPreview, currentYearSelect, currentMonthSelect } = calendarNodes;
-	console.log(currentMonthSelect);
 	const previewTarget = monthYearPreview.getAttribute('data-preview');
 	if (previewTarget == 'month') renderMonthPreview(calendarNodes, options);
 	if (previewTarget == 'year') {
@@ -305,8 +311,25 @@ export const applyListeners = (calendarNode, datepickers) => {
 		activeCell = e.target;
 	});
 
-	calendar.addEventListener(DATE_PICK, (e) => {
-		const { target } = e.detail;
+	calendar.addEventListener(PREVIEW_PICK, (e) => {
+		const { target, data } = e.detail;
+		const { customMonths } = activeInstance.options;
+		if (e.target.classList.contains('mc-month-year__cell--inactive')) return;
+		previewCells.forEach((cell) => {
+			if (cell.classList.contains('mc-month-year__cell--picked'))
+				cell.classList.remove('mc-month-year__cell--picked');
+		});
+		e.target.classList.add('mc-month-year__cell--picked');
+		const currentYear =
+			target === 'month' ? Number(currentYearSelect.children[0].innerHTML) : Number(data);
+		const currentMonth =
+			target === 'year'
+				? currentMonthSelect.children[0].innerHTML
+				: customMonths.find((month) => month.includes(data));
+		const nextCalendarDate = new Date(currentYear, customMonths.indexOf(currentMonth), 1);
+		updateCalendarTable(calendarNodes, activeInstance, nextCalendarDate);
+		updateCalendarHeader(calendarNodes, activeInstance.options, nextCalendarDate);
+		monthYearPreview.classList.remove('mc-month-year__preview--opened');
 	});
 
 	currentMonthSelect.addEventListener(CHANGE_MONTH, function (e) {
@@ -454,7 +477,10 @@ export const applyListeners = (calendarNode, datepickers) => {
 		dispatchChangeYear(currentYearSelect, 'next');
 	});
 
-	cancelButton.addEventListener('click', (e) => dispatchCalendarHide(e.target));
+	cancelButton.addEventListener('click', (e) => {
+		activeInstance.onCancelCallbacks.forEach((callback) => callback.apply(null));
+		dispatchCalendarHide(e.target);
+	});
 
 	okButton.addEventListener('click', (e) => {
 		// if the value of picked date is not null then get formated date
