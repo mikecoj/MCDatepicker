@@ -101,6 +101,12 @@ const optionsSchema = {
 	disableWeekends: (value) => Is(value).boolean(),
 	disableWeekDays: (value) => Is(value).array() && value.every((elem) => /^[0-6]{1}$/.test(elem)), // ex: [0,2,5] accept numbers 0-6;
 	disableDates: (value) => Is(value).array() && value.every((elem) => Is(elem).date()), // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
+	allowMonths: (value) =>
+		Is(value).array() && value.length < 12 && value.every((elem) => Is(elem).number() && elem < 12),
+	allowYears: (value) => Is(value).array() && value.every((elem) => Is(elem).number()),
+	disableMonths: (value) =>
+		Is(value).array() && value.length < 12 && value.every((elem) => Is(elem).number() && elem < 12),
+	disableYears: (value) => Is(value).array() && value.every((elem) => Is(elem).number()),
 	markDates: (value) => Is(value).array() && value.every((elem) => Is(elem).date()), // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
 	markDatesCustom: (value) => Is(value).func(), // ex: (day) => (date.getDay() === 10)
 	daterange: (value) => Is(value).boolean(),
