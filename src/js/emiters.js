@@ -56,9 +56,7 @@ export const dispatchChangeYear = (elem, direction) => {
 };
 
 export const dispatchPreviewCellPick = (elem) => {
-	console.dir(elem);
 	const target = elem.offsetParent.getAttribute('data-preview');
-	console.log(target);
 	elem.dispatchEvent(
 		new CustomEvent(PREVIEW_PICK, {
 			bubbles: true,
