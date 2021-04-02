@@ -28,9 +28,11 @@ const firstDatePicker = MCDatepicker.create({
 	customCancelBTN: 'Anulează',
 	selectedDate: new Date(2021, 1, 18),
 	firstWeekday: 1,
-	minDate: new Date(2020, 2, 22),
-	maxDate: new Date(2021, 3, 22),
-	markDates: [new Date(2021, 2, 21), new Date(2021, 3, 1)]
+	minDate: new Date(2019, 2, 22),
+	maxDate: new Date(2023, 3, 22),
+	markDates: [new Date(2021, 2, 21), new Date(2021, 3, 1)],
+	disableYears: [2020],
+	disableMonths: [8]
 });
 
 firstDatePicker.markDatesCustom((date) => date.getDate() == 5);
