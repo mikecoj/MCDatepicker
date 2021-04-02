@@ -34,9 +34,12 @@ const getCalendarArray = (options, firstMonthDate) => {
 
 export const renderMonthPreview = (calendarNodes, options) => {
 	const { currentMonthSelect, currentYearSelect, previewCells } = calendarNodes;
-	const { customMonths, minDate, maxDate } = options;
+	const { customMonths, minDate, maxDate, allowMonths, disableMonths } = options;
 	const currentMonth = currentMonthSelect.children[0].innerHTML;
 	const selectedYear = currentYearSelect.children[0].innerHTML;
+	const isDisabledMonth = (monthTarget) =>
+		disableMonths.includes(customMonths.indexOf(monthTarget));
+	const isAllowedMonth = (monthTarget) => allowMonths.includes(customMonths.indexOf(monthTarget));
 	const monthPreviewArray = customMonths.map((month, index) => {
 		let monthClasslist = ['mc-month-year__cell'];
 		const firstMonthDate = new Date(Number(selectedYear), customMonths.indexOf(month));
@@ -45,7 +48,9 @@ export const renderMonthPreview = (calendarNodes, options) => {
 		const moreThanMaxDate = maxDate !== null && valueOfDate(firstMonthDate) > valueOfDate(maxDate);
 
 		if (month === currentMonth) monthClasslist.push('mc-month-year__cell--picked');
-		if (lessThanMinDate || moreThanMaxDate) monthClasslist.push('mc-month-year__cell--inactive');
+		if (lessThanMinDate || moreThanMaxDate || isDisabledMonth(month)) {
+			monthClasslist.push('mc-month-year__cell--inactive');
+		}
 
 		previewCells[index].classList = monthClasslist.join(' ');
 		previewCells[index].innerHTML = `<span>${month.substr(0, 3)}</span>`;
@@ -54,16 +59,19 @@ export const renderMonthPreview = (calendarNodes, options) => {
 
 export const renderYearPreview = (calendarNodes, options, year) => {
 	const { currentYearSelect, previewCells } = calendarNodes;
-	const { minDate, maxDate } = options;
+	const { minDate, maxDate, disableYears, allowYears } = options;
 	const minYear = minDate && minDate.getFullYear();
 	const maxYear = maxDate && maxDate.getFullYear();
 	const currentYear = Number(currentYearSelect.children[0].innerHTML);
+	const isDisabledYear = (yearTarget) => disableYears.includes(yearTarget);
+	const isAllowedYear = (yearTarget) => allowYears.includes(yearTarget);
 	previewCells.forEach((cell, index) => {
 		let yearClasslist = ['mc-month-year__cell'];
 		let customYear = year + index;
 		if (customYear === currentYear) yearClasslist.push('mc-month-year__cell--picked');
-		if (customYear < minYear || customYear > maxYear)
+		if (customYear < minYear || customYear > maxYear || isDisabledYear(customYear)) {
 			yearClasslist.push('mc-month-year__cell--inactive');
+		}
 		cell.classList = yearClasslist.join(' ');
 		cell.innerHTML = `<span>${customYear}</span>`;
 	});
