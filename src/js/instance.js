@@ -11,6 +11,7 @@ export default function createInstance(instanceOptions, datepicker) {
 		onOpenCallbacks: [],
 		onCloseCallbacks: [],
 		onSelectCallbacks: [],
+		onCancelCallbacks: [],
 		onMonthChangeCallbacks: [],
 		onYearChangeCallbacks: [],
 		markCustomCallbacks: [],
@@ -37,6 +38,9 @@ export default function createInstance(instanceOptions, datepicker) {
 		},
 		onSelect: (callback) => {
 			instance.onSelectCallbacks.push(callback);
+		},
+		onCancel: (callback) => {
+			instance.onCancelCallbacks.push(callback);
 		},
 		onMonthChange: (callback) => {
 			instance.onMonthChangeCallbacks.push(callback);
