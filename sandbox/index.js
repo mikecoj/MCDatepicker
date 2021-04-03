@@ -3,6 +3,8 @@ import './style.css';
 
 window.MCDatepicker = MCDatepicker;
 
+const datepickerBTN = document.querySelector('#datepicker_btn');
+
 const firstDatePicker = MCDatepicker.create({
 	el: '#datepicker_one',
 	bodyType: 'inline',
@@ -71,3 +73,13 @@ const thirdDatePicker = MCDatepicker.create({
 	jumpToMinMax: false,
 	selectedDate: new Date('2020-03-22')
 });
+
+const forthDatePicker = MCDatepicker.create({ selectedDate: new Date('2020-04-04') });
+
+forthDatePicker.onSelect((date) => {
+	alert(date);
+});
+
+datepickerBTN.onclick = () => {
+	forthDatePicker.open();
+};
