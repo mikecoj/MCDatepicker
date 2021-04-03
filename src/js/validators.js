@@ -130,8 +130,8 @@ export const validateOptions = (customOptions, defaultOptions) => {
 		.filter((key) => !defaultOptions.hasOwnProperty(key))
 		.map((key) => new Error(`Property "${key}" is not recognized`));
 	// check if the customOption object has the property "el", that is required
-	if (!customOptions.hasOwnProperty('el'))
-		errors.unshift(new Error(`Missing required property: "el"`));
+	// if (!customOptions.hasOwnProperty('el'))
+	// 	errors.unshift(new Error(`Missing required property: "el"`));
 	// check if all object properied match the schema
 	const schemaErrors = Object.keys(customOptions)
 		.filter((key) => defaultOptions.hasOwnProperty(key) && !optionsSchema[key](customOptions[key]))
