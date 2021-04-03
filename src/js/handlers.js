@@ -161,8 +161,24 @@ const updateCalendarTable = (calendarNodes, instance, date) => {
 	});
 };
 
+const updateCalendarHeader = (calendarNodes, options, date) => {
+	const { currentMonthSelect, currentYearSelect, monthYearPreview } = calendarNodes;
+	const { customMonths } = options;
+	// const previewTarget = monthYearPreview.getAttribute('data-preview');
+	// if (previewTarget === 'year') {
+	// 	const firstYear = date.getFullYear() - 4;
+	// 	currentYearSelect.innerHTML = `<span>${firstYear}</span><span> - </span><span>${
+	// 		firstYear + 11
+	// 	}</span>`;
+	// 	// currentMonthSelect.style.display = 'none';
+	// 	return;
+	// }
+	currentMonthSelect.innerHTML = `<span>${customMonths[date.getMonth()]}</span>`;
+	currentYearSelect.innerHTML = `<span>${date.getFullYear()}</span>`;
+};
+
 const updateMonthYearPreview = (calendarNodes, options) => {
-	const { monthYearPreview, currentYearSelect, currentMonthSelect } = calendarNodes;
+	const { monthYearPreview, currentYearSelect } = calendarNodes;
 	const previewTarget = monthYearPreview.getAttribute('data-preview');
 	if (previewTarget == 'month') renderMonthPreview(calendarNodes, options);
 	if (previewTarget == 'year') {
@@ -171,13 +187,6 @@ const updateMonthYearPreview = (calendarNodes, options) => {
 	}
 	return;
 	// monthYearPreview.classList.remove('mc-month-year__preview--opened');
-};
-
-const updateCalendarHeader = (calendarNodes, options, date) => {
-	const { currentMonthSelect, currentYearSelect } = calendarNodes;
-	const { customMonths } = options;
-	currentMonthSelect.innerHTML = `<span>${customMonths[date.getMonth()]}</span>`;
-	currentYearSelect.innerHTML = `<span>${date.getFullYear()}</span>`;
 };
 
 const updateCalendarUI = (calendarNodes, instance) => {
@@ -254,8 +263,12 @@ export const applyListeners = (calendarNode, datepickers) => {
 		const currentYear = Number(currentYearSelect.children[0].innerText);
 		renderYearPreview(calendarNodes, activeInstance.options, currentYear - 4);
 		if (!isOpened) {
+			// const { customMonths } = activeInstance.options;
+			// const currentMonth = customMonths.indexOf(currentMonthSelect.children[0].innerHTML);
+			// const newDate = new Date(currentYear - 4, currentMonth, 1);
 			monthYearPreview.setAttribute('data-preview', 'year');
 			monthYearPreview.classList.add('mc-month-year__preview--opened');
+			// updateCalendarHeader(calendarNodes, activeInstance.options, newDate);
 		}
 		if (isOpened && isYearTarget) {
 			monthYearPreview.setAttribute('data-preview', null);
@@ -370,6 +383,7 @@ export const applyListeners = (calendarNode, datepickers) => {
 			);
 			// update the calendar table
 			updateCalendarTable(calendarNodes, activeInstance, nextCalendarDate);
+			updateMonthYearPreview(calendarNodes, activeInstance.options);
 			// get the active cell
 			activeCell = calendar.querySelector('.mc-date--picked');
 			// run all custom onMonthChangeCallbacks added by the user
@@ -440,6 +454,7 @@ export const applyListeners = (calendarNode, datepickers) => {
 			);
 			// update the calendar table
 			updateCalendarTable(calendarNodes, activeInstance, nextCalendarDate);
+			// updateMonthYearPreview(calendarNodes, activeInstance.options);
 			// get the active cell
 			activeCell = calendar.querySelector('.mc-date--picked');
 			// run every custom callback added by user
