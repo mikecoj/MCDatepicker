@@ -5,7 +5,7 @@ export default function createInstance(instanceOptions, datepicker) {
 	const instance = {
 		datepicker: datepicker,
 		el: instanceOptions.el,
-		linkedElement: document.querySelector(instanceOptions.el),
+		linkedElement: instanceOptions.el !== null ? document.querySelector(instanceOptions.el) : null,
 		pickedDate: instanceOptions.selectedDate,
 		options: instanceOptions,
 		onOpenCallbacks: [],
@@ -17,7 +17,8 @@ export default function createInstance(instanceOptions, datepicker) {
 		markCustomCallbacks: [],
 		// Methods
 		open: () => {
-			datepicker.open(instance.el);
+			// datepicker.open(instance.el);
+			datepicker.open(instance);
 		},
 		close: () => {
 			datepicker.close();
