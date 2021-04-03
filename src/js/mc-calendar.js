@@ -35,13 +35,17 @@ const MCDatepicker = (() => {
 		// push fresh created instance to instances array
 		datepickers.push(instance);
 		// add event listener to the linked input
-		applyOnFocusListener(calendarDiv, instance);
+		if (options.hasOwnProperty('el')) {
+			applyOnFocusListener(calendarDiv, instance);
+		}
 
 		return instance;
 	};
 	const remove = (instance) => {
 		// remove the onFocus listener
-		removeOnFocusListener(instance);
+		if (options.hasOwnProperty('el')) {
+			removeOnFocusListener(instance);
+		}
 		// Remove the instance from the datepickers array
 		datepickers.splice(datepickers.indexOf(instance), 1);
 	};
