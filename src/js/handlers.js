@@ -281,7 +281,9 @@ export const applyListeners = (calendarNode, datepickers) => {
 
 	calendar.addEventListener(CALENDAR_SHOW, (e) => {
 		// get the instance of the input that fired CALENDAR_SHOW event
-		activeInstance = datepickers.find(({ el }) => el === e.detail.input);
+		activeInstance = datepickers.find(
+			(datepicker) => JSON.stringify(datepicker) === JSON.stringify(e.detail.input)
+		);
 		// update the calendar display
 		updateCalendarUI(calendarNodes, activeInstance);
 		// show the calendar
@@ -508,7 +510,7 @@ export const applyListeners = (calendarNode, datepickers) => {
 				  )
 				: null;
 		// set the value of the picked date to the linked input
-		activeInstance.linkedElement.value = pickedDateValue;
+		if (activeInstance.el !== null) activeInstance.linkedElement.value = pickedDateValue;
 		// run all custom onSelect callbacks added by the user
 		activeInstance.onSelectCallbacks.forEach((callback) =>
 			callback.apply(null, [activeInstance.pickedDate])
@@ -522,15 +524,15 @@ export const applyListeners = (calendarNode, datepickers) => {
 			activeCell.classList.remove('mc-date--picked');
 			activeCell = null;
 			activeInstance.pickedDate = null;
-			activeInstance.linkedElement.value = null;
+			if (activeInstance.el !== null) activeInstance.linkedElement.value = null;
 		}
 	});
 };
 
-export const applyOnFocusListener = (calendarDiv, { linkedElement }) => {
-	linkedElement.onfocus = (e) => {
+export const applyOnFocusListener = (calendarDiv, instance) => {
+	instance.linkedElement.onfocus = (e) => {
 		e.preventDefault();
-		dispatchCalendarShow(calendarDiv, '#' + linkedElement.id);
+		dispatchCalendarShow(calendarDiv, instance);
 	};
 };
 export const removeOnFocusListener = ({ linkedElement }) => {
