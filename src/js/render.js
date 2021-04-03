@@ -68,8 +68,10 @@ export const renderYearPreview = (calendarNodes, options, year) => {
 	previewCells.forEach((cell, index) => {
 		let yearClasslist = ['mc-month-year__cell'];
 		let customYear = year + index;
+		const lessThanMinYear = minDate !== null && customYear < minYear;
+		const moreThanMaxYear = maxDate !== null && customYear > maxYear;
 		if (customYear === currentYear) yearClasslist.push('mc-month-year__cell--picked');
-		if (customYear < minYear || customYear > maxYear || isDisabledYear(customYear)) {
+		if (lessThanMinYear || moreThanMaxYear || isDisabledYear(customYear)) {
 			yearClasslist.push('mc-month-year__cell--inactive');
 		}
 		cell.classList = yearClasslist.join(' ');
