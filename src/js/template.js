@@ -3,9 +3,6 @@ export const spanTemplate = (direction, content) => {
 	return `<span style="transform: translateX(${units}px);">${content}</span>`;
 };
 
-export const previewCellTemplate = (classList, content) =>
-	`<div class="${classList}"><span>${content}</span></div>`;
-
 export default `<div class="mc-display">
 <div class="mc-display__header">
 <h3 class="mc-display__day">Thursday</h3>
