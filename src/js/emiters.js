@@ -7,12 +7,12 @@ import {
 	PREVIEW_PICK
 } from './events';
 
-export const dispatchCalendarShow = (elem, input) => {
+export const dispatchCalendarShow = (elem, instance) => {
 	elem.dispatchEvent(
 		new CustomEvent(CALENDAR_SHOW, {
 			bubbles: true,
 			detail: {
-				input: input
+				instance
 			}
 		})
 	);
