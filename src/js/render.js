@@ -1,6 +1,7 @@
-import template, { previewCellTemplate } from './template';
+import template from './template';
 import { valueOfDate } from './utils';
-import { applyListeners } from './handlers';
+import { applyListeners } from './listeners';
+import { getDOMNodes } from './handlers';
 
 const dayObj = (dateVal = null) => {
 	return {
@@ -187,8 +188,10 @@ export function writeTemplate(datepickers) {
 	calendarDiv.innerHTML = template;
 	// add the new div to the document
 	document.body.appendChild(calendarDiv);
+	// get calendar Nodes
+	const calendarNodes = getDOMNodes(calendarDiv);
 	// apply listeners to calendar
-	applyListeners(calendarDiv, datepickers);
+	applyListeners(calendarNodes, datepickers);
 
-	return calendarDiv;
+	return calendarNodes;
 }
