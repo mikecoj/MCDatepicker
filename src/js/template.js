@@ -18,7 +18,7 @@ export default `<div class="mc-display">
 </div>
 </div>
 <div class="mc-picker">
-<div class="mc-picker__header mc-container">
+<div class="mc-picker__header mc-select mc-container" data-view="calendar">
 <div class="mc-select__month">
 <button id="mc-picker__month--prev" class="mc-select__nav mc-select__nav--prev">
 <svg class="icon-angle icon-angle--left" viewBox="0 0 256 512" width='10px' height='100%'>
