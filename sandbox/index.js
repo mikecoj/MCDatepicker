@@ -74,7 +74,11 @@ const thirdDatePicker = MCDatepicker.create({
 	selectedDate: new Date('2020-03-22')
 });
 
-const forthDatePicker = MCDatepicker.create({ selectedDate: new Date('2020-04-04') });
+const forthDatePicker = MCDatepicker.create({
+	selectedDate: new Date('2020-04-04'),
+	allowedMonths: [5, 7, 9],
+	allowedYears: [2016, 2018, 2020, 2022, 2024, 2026]
+});
 
 forthDatePicker.onSelect((date) => {
 	alert(date);
