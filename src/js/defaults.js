@@ -48,10 +48,10 @@ const defaultOptions = {
 	disableWeekends: false,
 	disableWeekDays: [], // ex: [0,2,5] accept numbers 0-6;
 	disableDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
-	allowMonths: [],
-	allowYears: [],
-	disableMonths: [],
-	disableYears: [],
+	allowedMonths: [], // ex: [0,1] accept numbers 0-11;
+	allowedYears: [], // ex: [2022, 2023]
+	disableMonths: [], /// ex: [3,11] accept numbers 0-11;
+	disableYears: [], // ex: [2010, 2011]
 	markDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
 	daterange: false,
 	events: [],
