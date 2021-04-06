@@ -101,9 +101,9 @@ const optionsSchema = {
 	disableWeekends: (value) => Is(value).boolean(),
 	disableWeekDays: (value) => Is(value).array() && value.every((elem) => /^[0-6]{1}$/.test(elem)), // ex: [0,2,5] accept numbers 0-6;
 	disableDates: (value) => Is(value).array() && value.every((elem) => Is(elem).date()), // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
-	allowMonths: (value) =>
+	allowedMonths: (value) =>
 		Is(value).array() && value.length < 12 && value.every((elem) => Is(elem).number() && elem < 12),
-	allowYears: (value) => Is(value).array() && value.every((elem) => Is(elem).number()),
+	allowedYears: (value) => Is(value).array() && value.every((elem) => Is(elem).number()),
 	disableMonths: (value) =>
 		Is(value).array() && value.length < 12 && value.every((elem) => Is(elem).number() && elem < 12),
 	disableYears: (value) => Is(value).array() && value.every((elem) => Is(elem).number()),
@@ -130,8 +130,17 @@ export const validateOptions = (customOptions, defaultOptions) => {
 		.filter((key) => !defaultOptions.hasOwnProperty(key))
 		.map((key) => new Error(`Property "${key}" is not recognized`));
 	// check if the customOption object has the property "el", that is required
-	// if (!customOptions.hasOwnProperty('el'))
-	// 	errors.unshift(new Error(`Missing required property: "el"`));
+	if (
+		customOptions.hasOwnProperty('allowedMonths') &&
+		customOptions.hasOwnProperty('disableMonths')
+	)
+		errors.unshift(
+			new Error(`"disableMonths" option cannot be used along with "allowedMonths" option`)
+		);
+	if (customOptions.hasOwnProperty('allowedYears') && customOptions.hasOwnProperty('disableYears'))
+		errors.unshift(
+			new Error(`"disableYears" option cannot be used along with "allowedYears" option`)
+		);
 	// check if all object properied match the schema
 	const schemaErrors = Object.keys(customOptions)
 		.filter((key) => defaultOptions.hasOwnProperty(key) && !optionsSchema[key](customOptions[key]))
