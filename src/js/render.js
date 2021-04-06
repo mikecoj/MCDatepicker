@@ -9,6 +9,7 @@ const dayObj = (dateVal = null) => {
 		day: dateVal.getDay(),
 		dateNumb: dateVal.getDate(),
 		month: dateVal.getMonth(),
+		year: dateVal.getFullYear(),
 		classList: []
 	};
 };
@@ -33,25 +34,38 @@ const getCalendarArray = (options, firstMonthDate) => {
 	return calendarArray;
 };
 
+const isActiveMonth = (options, monthTarget) => {
+	const { allowedMonths, disableMonths } = options;
+	return allowedMonths.length
+		? allowedMonths.includes(monthTarget)
+		: !disableMonths.includes(monthTarget);
+};
+
+const isActiveYear = (options, YearTarget) => {
+	const { disableYears, allowedYears } = options;
+	return allowedYears.length
+		? allowedYears.includes(YearTarget)
+		: !disableYears.includes(YearTarget);
+};
+
 export const renderMonthPreview = (calendarNodes, options) => {
 	const { currentMonthSelect, currentYearSelect, previewCells } = calendarNodes;
-	const { customMonths, minDate, maxDate, allowedMonths, disableMonths } = options;
+	const { customMonths, minDate, maxDate } = options;
 	const currentMonth = currentMonthSelect.children[0].innerHTML;
 	const selectedYear = currentYearSelect.children[0].innerHTML;
-	const activeMonth = (monthTarget) => {
-		if (allowedMonths.length) return allowedMonths.includes(customMonths.indexOf(monthTarget));
-		const isDisabledMonth = disableMonths.includes(customMonths.indexOf(monthTarget));
-		return !isDisabledMonth;
-	};
 	customMonths.map((month, index) => {
 		let monthClasslist = ['mc-month-year__cell'];
-		const firstMonthDate = new Date(Number(selectedYear), customMonths.indexOf(month));
-		const lastMonthDate = new Date(Number(selectedYear), customMonths.indexOf(month) + 1, 0);
+		const firstMonthDate = new Date(Number(selectedYear), index);
+		const lastMonthDate = new Date(Number(selectedYear), index + 1, 0);
 		const lessThanMinDate = minDate !== null && valueOfDate(lastMonthDate) < valueOfDate(minDate);
 		const moreThanMaxDate = maxDate !== null && valueOfDate(firstMonthDate) > valueOfDate(maxDate);
-		const isActiveMonth = activeMonth(month);
 		if (month === currentMonth) monthClasslist.push('mc-month-year__cell--picked');
-		if (lessThanMinDate || moreThanMaxDate || !isActiveMonth) {
+		if (
+			lessThanMinDate ||
+			moreThanMaxDate ||
+			!isActiveMonth(options, index) ||
+			!isActiveYear(options, Number(selectedYear))
+		) {
 			monthClasslist.push('mc-month-year__cell--inactive');
 		}
 
@@ -66,19 +80,13 @@ export const renderYearPreview = (calendarNodes, options, year) => {
 	const minYear = minDate && minDate.getFullYear();
 	const maxYear = maxDate && maxDate.getFullYear();
 	const currentYear = Number(currentYearSelect.children[0].innerHTML);
-	const activeYear = (YearTarget) => {
-		if (allowedYears.length) return allowedYears.includes(YearTarget);
-		const isDisabledMonth = disableYears.includes(YearTarget);
-		return !isDisabledMonth;
-	};
 	previewCells.forEach((cell, index) => {
 		let yearClasslist = ['mc-month-year__cell'];
 		let customYear = year + index;
 		const lessThanMinYear = minDate !== null && customYear < minYear;
 		const moreThanMaxYear = maxDate !== null && customYear > maxYear;
-		const isActiveYear = activeYear(customYear);
 		if (customYear === currentYear) yearClasslist.push('mc-month-year__cell--picked');
-		if (lessThanMinYear || moreThanMaxYear || !isActiveYear) {
+		if (lessThanMinYear || moreThanMaxYear || !isActiveYear(options, customYear)) {
 			yearClasslist.push('mc-month-year__cell--inactive');
 		}
 		cell.classList = yearClasslist.join(' ');
@@ -158,6 +166,8 @@ export const renderCalendar = (instance, date) => {
 		// check the cases when the date is not active
 		if (
 			!isInActiveMonth(activeMonth, dayObject) ||
+			!isActiveMonth(options, dayObject.month) ||
+			!isActiveYear(options, dayObject.year) ||
 			isSelectable(options, dayObject) ||
 			isExcludedWeekend(options, dayObject) ||
 			isDisabledWeekDay(options, dayObject) ||
