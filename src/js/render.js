@@ -66,15 +66,19 @@ export const renderYearPreview = (calendarNodes, options, year) => {
 	const minYear = minDate && minDate.getFullYear();
 	const maxYear = maxDate && maxDate.getFullYear();
 	const currentYear = Number(currentYearSelect.children[0].innerHTML);
-	const isDisabledYear = (yearTarget) => disableYears.includes(yearTarget);
-	const isAllowedYear = (yearTarget) => allowedYears.includes(yearTarget);
+	const activeYear = (YearTarget) => {
+		if (allowedYears.length) return allowedYears.includes(YearTarget);
+		const isDisabledMonth = disableYears.includes(YearTarget);
+		return !isDisabledMonth;
+	};
 	previewCells.forEach((cell, index) => {
 		let yearClasslist = ['mc-month-year__cell'];
 		let customYear = year + index;
 		const lessThanMinYear = minDate !== null && customYear < minYear;
 		const moreThanMaxYear = maxDate !== null && customYear > maxYear;
+		const isActiveYear = activeYear(customYear);
 		if (customYear === currentYear) yearClasslist.push('mc-month-year__cell--picked');
-		if (lessThanMinYear || moreThanMaxYear || isDisabledYear(customYear)) {
+		if (lessThanMinYear || moreThanMaxYear || !isActiveYear) {
 			yearClasslist.push('mc-month-year__cell--inactive');
 		}
 		cell.classList = yearClasslist.join(' ');
