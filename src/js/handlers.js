@@ -1,6 +1,6 @@
-import { renderCalendar, renderMonthPreview, renderYearPreview } from './render';
+import { renderCalendar, renderMonthPreview, renderYearPreview, isActiveMonth } from './render';
 
-import { valueOfDate, calculateCalendarPosition, HandleArrowClass } from './utils';
+import { valueOfDate, calculateCalendarPosition, HandleArrowClass, getNewIndex } from './utils';
 
 export const getDOMNodes = (calendar) => {
 	return {
@@ -34,6 +34,50 @@ export const getActiveDate = (pickedDate, minDate, maxDate) => {
 	targetDate =
 		maxDate !== null && valueOfDate(targetDate) > valueOfDate(maxDate) ? maxDate : targetDate;
 	return targetDate;
+};
+
+export const getNewMonth = (options, currentMonth, direction) => {
+	const { customMonths, jumpOverDisabled } = options;
+	// let newYear = Number(currentYear);
+	if (!jumpOverDisabled) {
+		const { newIndex, overlap } = getNewIndex(
+			customMonths,
+			customMonths.indexOf(currentMonth),
+			direction
+		);
+		return { newMonth: customMonths[newIndex], overlap };
+	}
+	const activeMonthsArray = customMonths.filter((month, index) => isActiveMonth(options, index));
+	console.log(activeMonthsArray);
+	const { newIndex, overlap } = getNewIndex(
+		activeMonthsArray,
+		activeMonthsArray.indexOf(currentMonth),
+		direction
+	);
+	// if (overlap !== 0) {
+	// 	newYear = newYear + overlap;
+	// 	isActiveYear();
+	// }
+
+	return { newMonth: activeMonthsArray[newIndex], overlap };
+};
+
+export const getNewYear = (options, currentYear, direction) => {
+	const { allowedYears, jumpOverDisabled } = options;
+	if (!jumpOverDisabled) {
+		const newYear = Number(currentYear);
+		direction === 'next' ? newYear++ : newYear--;
+		return newYear;
+	}
+	if (allowedYears.length) {
+		const { newIndex } = getNewIndex(
+			allowedYears,
+			allowedYears.indexOf(Number(currentYear)),
+			direction
+		);
+		const newYear = allowedYears[newIndex];
+		return newYear;
+	}
 };
 
 export const updateCalendarPosition = (calendarNodes, instance) => {
