@@ -1,5 +1,5 @@
 import { spanTemplate } from './template';
-import { arrayInfiniteLooper, slide, dateFormatParser, valueOfDate } from './utils';
+import { arrayInfiniteLooper, slide, dateFormatParser, valueOfDate, getNewIndex } from './utils';
 import { renderMonthPreview, renderYearPreview } from './render';
 import {
 	CALENDAR_HIDE,
@@ -25,7 +25,9 @@ import {
 	updateCalendarHeader,
 	updateMonthYearPreview,
 	updateCalendarUI,
-	getActiveDate
+	getActiveDate,
+	getNewMonth,
+	getNewYear
 } from './handlers';
 
 export const applyOnFocusListener = (calendarDiv, instance) => {
@@ -162,7 +164,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		if (!clickable) return;
 		clickable = !clickable;
 		const { options, onMonthChangeCallbacks } = activeInstance;
-		const { customMonths } = options;
+		const { customMonths, jumpOverDisabled } = options;
 		// check if the button is clickable
 		const { direction } = e.detail;
 		// get the value of active month
@@ -170,9 +172,10 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		// get the value of active Year
 		const selectedYear = currentYearSelect.children[0].innerText;
 		// get the next ot prev month and the overlap value
-		const { newElement, overlap } = arrayInfiniteLooper(customMonths, selectedMonth, direction);
+		// const { newElement, overlap } = arrayInfiniteLooper(customMonths, selectedMonth, direction);
+		const { newMonth, overlap } = getNewMonth(options, selectedMonth, direction);
 		// add a new span tah with the new month to the months div
-		e.target.innerHTML += spanTemplate(direction, newElement);
+		e.target.innerHTML += spanTemplate(direction, newMonth);
 
 		if (overlap !== 0) {
 			// if the overlap is not 0 then calculate the new year
@@ -205,7 +208,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		clickable = !clickable;
 		const { direction } = e.detail;
 		const { options, onMonthChangeCallbacks, onYearChangeCallbacks } = activeInstance;
-		const { customMonths, minDate, maxDate } = options;
+		const { customMonths, minDate, maxDate, jumpOverDisabled } = options;
 		const selectedMonth = currentMonthSelect.children[0].innerText;
 		const selectedYear = e.target.children[0].innerText;
 		const next = direction === 'next' ? true : false;
@@ -218,6 +221,8 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		const moreThanMaxDate =
 			maxDate !== null && next && valueOfDate(maxDate) < valueOfDate(nextDateFirstDay);
 		const viewTarget = calendarHeader.getAttribute('data-view');
+		// ! used for tests
+		getNewYear(options, selectedYear, direction);
 		if (viewTarget === 'year') {
 			const firstTableYear = previewCells[0].children[0].innerHTML;
 			const targetYear = next ? Number(firstTableYear) + 12 : Number(firstTableYear) - 12;
