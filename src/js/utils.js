@@ -21,6 +21,22 @@ export const arrayInfiniteLooper = (array, arrayElement, direction) => {
 	return { newElement, overlap };
 };
 
+export const getNewIndex = (array, currentIndex, direction) => {
+	// get the next array index, if the current index is equal to array.length set the next index to 0
+	const forward = (currentIndex + 1) % array.length;
+	// get the prev array index, if the current index is equal to 0 set the next index to the last array index
+	const backward = (((currentIndex - 1) % array.length) + array.length) % array.length;
+	// get the overlap if the next index is greather that array.length
+	const forwardOverlap = (currentIndex + 1) / array.length;
+	// get the overlap if the index is less that 0
+	const backwardOverlap = (currentIndex - array.length) / array.length;
+	// get the new Index based on direction
+	const newIndex = direction === 'next' ? forward : backward;
+	// get overlap based on direction
+	const overlap = direction === 'next' ? ~~forwardOverlap : ~~backwardOverlap;
+	return { newIndex, overlap };
+};
+
 export function slide(
 	activeElem,
 	newElem,
