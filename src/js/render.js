@@ -34,14 +34,14 @@ const getCalendarArray = (options, firstMonthDate) => {
 	return calendarArray;
 };
 
-const isActiveMonth = (options, monthTarget) => {
+export const isActiveMonth = (options, monthTarget) => {
 	const { allowedMonths, disableMonths } = options;
 	return allowedMonths.length
 		? allowedMonths.includes(monthTarget)
 		: !disableMonths.includes(monthTarget);
 };
 
-const isActiveYear = (options, YearTarget) => {
+export const isActiveYear = (options, YearTarget) => {
 	const { disableYears, allowedYears } = options;
 	return allowedYears.length
 		? allowedYears.includes(YearTarget)
