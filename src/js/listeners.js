@@ -170,7 +170,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		// get the value of active month
 		const selectedMonth = e.target.children[0].innerText;
 		// get the value of active Year
-		const selectedYear = currentYearSelect.children[0].innerText;
+		const selectedYear = Number(currentYearSelect.children[0].innerText);
 		// get the next ot prev month and the overlap value
 		// const { newElement, overlap } = arrayInfiniteLooper(customMonths, selectedMonth, direction);
 		const { newMonth, overlap } = getNewMonth(options, selectedMonth, direction);
@@ -179,7 +179,8 @@ export const applyListeners = (calendarNodes, datepickers) => {
 
 		if (overlap !== 0) {
 			// if the overlap is not 0 then calculate the new year
-			const newYear = Number(selectedYear) + overlap;
+			// const targetYear = Number(selectedYear) + overlap;
+			const { newYear } = getNewYear(options, selectedYear, direction);
 			// add a new span with the new year to the years div
 			currentYearSelect.innerHTML += spanTemplate(direction, newYear);
 			// apply slide animation to years span tags
@@ -208,24 +209,26 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		clickable = !clickable;
 		const { direction } = e.detail;
 		const { options, onMonthChangeCallbacks, onYearChangeCallbacks } = activeInstance;
-		const { customMonths, minDate, maxDate, jumpOverDisabled } = options;
-		const selectedMonth = currentMonthSelect.children[0].innerText;
-		const selectedYear = e.target.children[0].innerText;
+		const { customMonths, minDate, maxDate } = options;
+
 		const next = direction === 'next' ? true : false;
-		const newYear = next ? Number(selectedYear) + 1 : Number(selectedYear) - 1;
-		const currentMonthIndex = customMonths.indexOf(currentMonthSelect.children[0].innerHTML);
-		const prevDateLastDay = new Date(Number(selectedYear) - 1, currentMonthIndex + 1, 0);
-		const nextDateFirstDay = new Date(Number(selectedYear) + 1, currentMonthIndex);
+		const selectedMonth = currentMonthSelect.children[0].innerText;
+		const selectedYear = Number(e.target.children[0].innerText);
+		const currentMonthIndex = customMonths.indexOf(selectedMonth);
+		const { newYear } = getNewYear(options, selectedYear, direction);
+		const viewTarget = calendarHeader.getAttribute('data-view');
+
+		// TODO:  refactor based on disabled months and Years
+		const prevDateLastDay = new Date(selectedYear - 1, currentMonthIndex + 1, 0);
+		const nextDateFirstDay = new Date(selectedYear + 1, currentMonthIndex);
 		const lessThanMinDate =
 			minDate !== null && !next && valueOfDate(prevDateLastDay) < valueOfDate(minDate);
 		const moreThanMaxDate =
 			maxDate !== null && next && valueOfDate(maxDate) < valueOfDate(nextDateFirstDay);
-		const viewTarget = calendarHeader.getAttribute('data-view');
-		// ! used for tests
-		getNewYear(options, selectedYear, direction);
+
 		if (viewTarget === 'year') {
-			const firstTableYear = previewCells[0].children[0].innerHTML;
-			const targetYear = next ? Number(firstTableYear) + 12 : Number(firstTableYear) - 12;
+			const firstTableYear = Number(previewCells[0].children[0].innerHTML);
+			const targetYear = next ? firstTableYear + 12 : firstTableYear - 12;
 			renderYearPreview(calendarNodes, activeInstance.options, targetYear);
 			updateCalendarHeader(calendarNodes, activeInstance.options, targetYear);
 			clickable = !clickable;
@@ -239,7 +242,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 
 			currentMonthSelect.innerHTML += spanTemplate(direction, customMonths[newActiveMonth]);
 
-			if (newActiveYear !== Number(selectedYear)) {
+			if (newActiveYear !== selectedYear) {
 				currentYearSelect.innerHTML += spanTemplate(direction, newActiveYear);
 				slide(currentYearSelect.children[0], currentYearSelect.children[1], direction);
 			}
