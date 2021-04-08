@@ -71,7 +71,8 @@ const thirdDatePicker = MCDatepicker.create({
 	minDate: new Date('2017-09-25'),
 	maxDate: new Date('2020-03-22'),
 	jumpToMinMax: false,
-	selectedDate: new Date('2020-03-22')
+	selectedDate: new Date('2020-03-22'),
+	disableMonths: [5, 7]
 });
 
 const forthDatePicker = MCDatepicker.create({
