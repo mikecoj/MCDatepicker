@@ -1,10 +1,6 @@
-import {
-	renderCalendar,
-	renderMonthPreview,
-	renderYearPreview,
-	isActiveMonth,
-	isActiveYear
-} from './render';
+import { renderCalendar, renderMonthPreview, renderYearPreview } from './render';
+
+import { isActiveMonth, isActiveYear } from './checker';
 
 import { valueOfDate, calculateCalendarPosition, HandleArrowClass, getNewIndex } from './utils';
 
@@ -33,16 +29,34 @@ export const getDOMNodes = (calendar) => {
 	};
 };
 
+export const getMonthObject = (monthsArray, currentMonth) => {};
+
+const isLessThanMinDate = (targetDate, prevMinDate) => {
+	return valueOfDate(targetDate) < valueOfDate(prevMinDate);
+};
+
+const isMoreThanMaxDate = (targetDate, nextMaxDate) => {
+	return valueOfDate(targetDate) > valueOfDate(nextMaxDate);
+};
+
 export const getActiveDate = (pickedDate, minDate, maxDate) => {
 	let targetDate = pickedDate === null ? new Date() : pickedDate;
-	targetDate =
-		minDate !== null && valueOfDate(targetDate) < valueOfDate(minDate) ? minDate : targetDate;
+	targetDate = minDate !== null && lessThanMinDate ? minDate : targetDate;
 	targetDate =
 		maxDate !== null && valueOfDate(targetDate) > valueOfDate(maxDate) ? maxDate : targetDate;
 	return targetDate;
 };
 
-export const getNewMonth = (options, currentMonth, direction) => {
+const getTargetDate = (instance) => {
+	const { pickedDate, prevLimitDate, nextLimitDate } = instance;
+	let targetDate = pickedDate ? pickedDate : new Date();
+	if (prevLimitDate && isLessThanMinDate(targetDate, prevLimitDate)) targetDate = prevLimitDate;
+	if (nextLimitDate && isMoreThanMaxDate(targetDate, nextLimitDate)) targetDate = nextLimitDate;
+	return targetDate;
+};
+
+export const getNewMonth = (instance, currentMonth, direction) => {
+	const { activeMonths, options } = instance;
 	const { customMonths, jumpOverDisabled } = options;
 	if (!jumpOverDisabled) {
 		const { newIndex, overlap } = getNewIndex(
@@ -52,13 +66,10 @@ export const getNewMonth = (options, currentMonth, direction) => {
 		);
 		return { newMonth: customMonths[newIndex], overlap };
 	}
-	const activeMonthsArray = customMonths.filter((month, index) => isActiveMonth(options, index));
-	const { newIndex, overlap } = getNewIndex(
-		activeMonthsArray,
-		activeMonthsArray.indexOf(currentMonth),
-		direction
-	);
-	return { newMonth: activeMonthsArray[newIndex], overlap };
+	const currentMonthIndex = activeMonths.findIndex(({ name }) => name === currentMonth);
+	const { newIndex, overlap } = getNewIndex(activeMonths, currentMonthIndex, direction);
+	const newMonth = activeMonths[newIndex].name;
+	return { newMonth, overlap };
 };
 
 export const getNewYear = (options, currentYear, direction) => {
@@ -82,6 +93,35 @@ export const getNewYear = (options, currentYear, direction) => {
 	}
 	return { newYear };
 };
+export const getActiveMonths = (options) => {
+	const { customMonths } = options;
+	return customMonths
+		.map((month, index) => {
+			if (isActiveMonth(options, index)) return { name: month, index };
+			return null;
+		})
+		.filter((item) => item);
+	// return customMonths.filter((month, index) => isActiveMonth(options, index));
+};
+
+export const getLimitDates = (options) => {
+	const { minDate, maxDate, allowedYears } = options;
+	let prevLimitDate = null;
+	let nextLimitDate = null;
+	const activeMonths = getActiveMonths(options);
+	const minMonth = activeMonths[0];
+	const maxMonth = activeMonths[activeMonths.length - 1];
+	const minYear = allowedYears.length ? Math.min(...allowedYears) : null;
+	const maxYear = allowedYears.length ? Math.max(...allowedYears) : null;
+	const minAllowedDate = minYear ? new Date(minYear, minMonth.index, 1) : null;
+	const maxAllowedDate = maxYear ? new Date(maxYear, maxMonth.index + 1, 0) : null;
+	if (minDate && minAllowedDate) prevLimitDate = new Date(Math.max(minDate, minAllowedDate));
+	if (maxDate && maxAllowedDate) nextLimitDate = new Date(Math.min(maxDate, maxAllowedDate));
+	if (!prevLimitDate) prevLimitDate = minDate ? minDate : minAllowedDate;
+	if (!nextLimitDate) nextLimitDate = maxDate ? maxDate : maxAllowedDate;
+
+	return { prevLimitDate, nextLimitDate };
+};
 
 export const updateCalendarPosition = (calendarNodes, instance) => {
 	const { calendar } = calendarNodes;
@@ -96,13 +136,14 @@ export const updateCalendarPosition = (calendarNodes, instance) => {
 	}
 };
 
-export const updateNavs = (calendarNodes, options, date) => {
+export const updateNavs = (calendarNodes, instance, date) => {
 	const { monthNavPrev, monthNavNext, yearNavPrev, yearNavNext } = calendarNodes;
-	const { customMonths, minDate, maxDate, jumpToMinMax } = options;
+	const { prevLimitDate, nextLimitDate, options } = instance;
+	const { customMonths, jumpToMinMax } = options;
 	const currentMonth = date.getMonth();
 	const currentYear = date.getFullYear();
-	const prevMonth = getNewMonth(options, customMonths[currentMonth], 'prev');
-	const nextMonth = getNewMonth(options, customMonths[currentMonth], 'next');
+	const prevMonth = getNewMonth(instance, customMonths[currentMonth], 'prev');
+	const nextMonth = getNewMonth(instance, customMonths[currentMonth], 'next');
 	const prevYear = getNewYear(options, currentYear, 'prev');
 	const nextYear = getNewYear(options, currentYear, 'next');
 	const monthNavPrevState = HandleArrowClass(monthNavPrev);
@@ -120,8 +161,8 @@ export const updateNavs = (calendarNodes, options, date) => {
 	nextMonth.overlap !== 0 && nextYear.newYear === null && monthNavNextState.inactive();
 	nextMonth.overlap !== 0 && nextYear.newYear === null && yearNavNextState.inactive();
 
-	if (minDate !== null) {
-		const minDateValue = valueOfDate(minDate);
+	if (prevLimitDate) {
+		const minDateValue = valueOfDate(prevLimitDate);
 		const currentMonthFirstDay = valueOfDate(new Date(currentYear, currentMonth, 1));
 		const prevYearLastDay = valueOfDate(new Date(prevYear.newYear, currentMonth, 0));
 		const activePrevMonth = currentMonthFirstDay > minDateValue;
@@ -130,8 +171,8 @@ export const updateNavs = (calendarNodes, options, date) => {
 		if (!jumpToMinMax && inactivePrevYear) yearNavPrevState.inactive();
 		if (!activePrevMonth) monthNavPrevState.inactive();
 	}
-	if (maxDate !== null) {
-		const maxDateValue = valueOfDate(maxDate);
+	if (nextLimitDate) {
+		const maxDateValue = valueOfDate(nextLimitDate);
 		const currentMonthLastDay = valueOfDate(new Date(currentYear, currentMonth + 1, 0));
 		const nextYearFirstDay = valueOfDate(new Date(nextYear.newYear, currentMonth, 1));
 		const activeNextMonth = currentMonthLastDay < maxDateValue;
@@ -173,7 +214,7 @@ export const updateCalendarTable = (calendarNodes, instance, date) => {
 	// render the new calendar array
 	const datesArray = renderCalendar(instance, date);
 	// Update clickable navs based on minDate and maxDate
-	updateNavs(calendarNodes, options, date);
+	updateNavs(calendarNodes, instance, date);
 	// update the DOM for each date cell
 	dateCells.forEach((cell, index) => {
 		cell.innerText = datesArray[index].dateNumb;
@@ -198,13 +239,13 @@ export const updateCalendarHeader = (calendarNodes, options, date) => {
 	currentYearSelect.innerHTML = `<span>${date.getFullYear()}</span>`;
 };
 
-export const updateMonthYearPreview = (calendarNodes, options) => {
+export const updateMonthYearPreview = (calendarNodes, instance) => {
 	const { monthYearPreview, currentYearSelect } = calendarNodes;
 	const previewTarget = monthYearPreview.getAttribute('data-preview');
-	if (previewTarget == 'month') renderMonthPreview(calendarNodes, options);
+	if (previewTarget == 'month') renderMonthPreview(calendarNodes, instance);
 	if (previewTarget == 'year') {
 		const currentYear = Number(currentYearSelect.children[0].innerHTML);
-		renderYearPreview(calendarNodes, options, currentYear - 4);
+		renderYearPreview(calendarNodes, instance.options, currentYear - 4);
 	}
 	return;
 	// monthYearPreview.classList.remove('mc-month-year__preview--opened');
@@ -218,7 +259,7 @@ export const updateCalendarUI = (calendarNodes, instance) => {
 
 	calendar.classList = 'mc-calendar';
 	// if the picketDate is null, render the calendar based on today's date
-	const activeDate = getActiveDate(pickedDate, minDate, maxDate);
+	const activeDate = getTargetDate(instance);
 	// update the weekdays names
 	updateWeekdays(calendarNodes, options);
 	// update the buttons labels
@@ -236,7 +277,7 @@ export const updateCalendarUI = (calendarNodes, instance) => {
 	}
 	updateDisplay(calendarNodes, options, pickedDate || new Date());
 	// update month year preview
-	updateMonthYearPreview(calendarNodes, options);
+	updateMonthYearPreview(calendarNodes, instance);
 	// update the calendar classlist based on options.bodytype
 	calendar.classList.add(`mc-calendar--${bodyType}`);
 };
