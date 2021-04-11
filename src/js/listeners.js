@@ -63,7 +63,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 	currentMonthSelect.onclick = () => {
 		const isOpened = monthYearPreview.classList.contains('mc-month-year__preview--opened');
 		const isMonthTarget = monthYearPreview.getAttribute('data-preview') === 'month' ? true : false;
-		renderMonthPreview(calendarNodes, activeInstance.options);
+		renderMonthPreview(calendarNodes, activeInstance);
 
 		if (isOpened && isMonthTarget) {
 			monthYearPreview.setAttribute('data-preview', null);
@@ -78,7 +78,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		const isOpened = monthYearPreview.classList.contains('mc-month-year__preview--opened');
 		const isYearTarget = monthYearPreview.getAttribute('data-preview') === 'year' ? true : false;
 		const currentYear = Number(currentYearSelect.children[0].innerText);
-		renderYearPreview(calendarNodes, activeInstance.options, currentYear - 4);
+		renderYearPreview(calendarNodes, activeInstance, currentYear - 4);
 		if (isOpened && isYearTarget) {
 			monthYearPreview.setAttribute('data-preview', null);
 			calendarHeader.setAttribute('data-view', 'calendar');
@@ -164,7 +164,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		if (!clickable) return;
 		clickable = !clickable;
 		const { options, onMonthChangeCallbacks } = activeInstance;
-		const { customMonths, jumpOverDisabled } = options;
+		const { customMonths } = options;
 		// check if the button is clickable
 		const { direction } = e.detail;
 		// get the value of active month
@@ -173,7 +173,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		const selectedYear = Number(currentYearSelect.children[0].innerText);
 		// get the next ot prev month and the overlap value
 		// const { newElement, overlap } = arrayInfiniteLooper(customMonths, selectedMonth, direction);
-		const { newMonth, overlap } = getNewMonth(options, selectedMonth, direction);
+		const { newMonth, overlap } = getNewMonth(activeInstance, selectedMonth, direction);
 		// add a new span tah with the new month to the months div
 		e.target.innerHTML += spanTemplate(direction, newMonth);
 
@@ -229,7 +229,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		if (viewTarget === 'year') {
 			const firstTableYear = Number(previewCells[0].children[0].innerHTML);
 			const targetYear = next ? firstTableYear + 12 : firstTableYear - 12;
-			renderYearPreview(calendarNodes, activeInstance.options, targetYear);
+			renderYearPreview(calendarNodes, activeInstance, targetYear);
 			updateCalendarHeader(calendarNodes, activeInstance.options, targetYear);
 			clickable = !clickable;
 			return;
@@ -250,7 +250,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 			slide(currentMonthSelect.children[0], currentMonthSelect.children[1], direction).then(() => {
 				// update the calendar table
 				updateCalendarTable(calendarNodes, activeInstance, newActiveDate);
-				updateMonthYearPreview(calendarNodes, options);
+				updateMonthYearPreview(calendarNodes, activeInstance);
 				// run all custom onMonthChangeCallbacks added by the user
 				onMonthChangeCallbacks.forEach((callback) => callback.apply(null));
 
@@ -271,7 +271,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 			);
 			// update the calendar table
 			updateCalendarTable(calendarNodes, activeInstance, nextCalendarDate);
-			updateMonthYearPreview(calendarNodes, options);
+			updateMonthYearPreview(calendarNodes, activeInstance);
 			// run every custom callback added by user
 			onYearChangeCallbacks.forEach((callback) => callback.apply(null));
 
