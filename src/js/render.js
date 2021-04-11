@@ -2,6 +2,18 @@ import template from './template';
 import { valueOfDate } from './utils';
 import { applyListeners } from './listeners';
 import { getDOMNodes } from './handlers';
+import {
+	isActiveMonth,
+	isActiveYear,
+	isSelectable,
+	isInActiveMonth,
+	isExcludedWeekend,
+	isDisabledWeekDay,
+	isDisabledDate,
+	isPicked,
+	isMarked,
+	isToday
+} from './checker';
 
 const dayObj = (dateVal = null) => {
 	return {
@@ -34,31 +46,20 @@ const getCalendarArray = (options, firstMonthDate) => {
 	return calendarArray;
 };
 
-export const isActiveMonth = (options, monthTarget) => {
-	const { allowedMonths, disableMonths } = options;
-	return allowedMonths.length
-		? allowedMonths.includes(monthTarget)
-		: !disableMonths.includes(monthTarget);
-};
-
-export const isActiveYear = (options, YearTarget) => {
-	const { disableYears, allowedYears } = options;
-	return allowedYears.length
-		? allowedYears.includes(YearTarget)
-		: !disableYears.includes(YearTarget);
-};
-
-export const renderMonthPreview = (calendarNodes, options) => {
+export const renderMonthPreview = (calendarNodes, instance) => {
 	const { currentMonthSelect, currentYearSelect, previewCells } = calendarNodes;
-	const { customMonths, minDate, maxDate } = options;
+	const { prevLimitDate, nextLimitDate, options } = instance;
+	const { customMonths } = options;
 	const currentMonth = currentMonthSelect.children[0].innerHTML;
 	const selectedYear = currentYearSelect.children[0].innerHTML;
 	customMonths.map((month, index) => {
 		let monthClasslist = ['mc-month-year__cell'];
 		const firstMonthDate = new Date(Number(selectedYear), index);
 		const lastMonthDate = new Date(Number(selectedYear), index + 1, 0);
-		const lessThanMinDate = minDate !== null && valueOfDate(lastMonthDate) < valueOfDate(minDate);
-		const moreThanMaxDate = maxDate !== null && valueOfDate(firstMonthDate) > valueOfDate(maxDate);
+		const lessThanMinDate =
+			prevLimitDate && valueOfDate(lastMonthDate) < valueOfDate(prevLimitDate);
+		const moreThanMaxDate =
+			nextLimitDate && valueOfDate(firstMonthDate) > valueOfDate(nextLimitDate);
 		if (month === currentMonth) monthClasslist.push('mc-month-year__cell--picked');
 		if (
 			lessThanMinDate ||
@@ -74,17 +75,17 @@ export const renderMonthPreview = (calendarNodes, options) => {
 	});
 };
 
-export const renderYearPreview = (calendarNodes, options, year) => {
+export const renderYearPreview = (calendarNodes, instance, year) => {
 	const { currentYearSelect, previewCells } = calendarNodes;
-	const { minDate, maxDate, disableYears, allowedYears } = options;
-	const minYear = minDate && minDate.getFullYear();
-	const maxYear = maxDate && maxDate.getFullYear();
+	const { prevLimitDate, nextLimitDate, options } = instance;
+	const minYear = prevLimitDate && prevLimitDate.getFullYear();
+	const maxYear = nextLimitDate && nextLimitDate.getFullYear();
 	const currentYear = Number(currentYearSelect.children[0].innerHTML);
 	previewCells.forEach((cell, index) => {
 		let yearClasslist = ['mc-month-year__cell'];
 		let customYear = year + index;
-		const lessThanMinYear = minDate !== null && customYear < minYear;
-		const moreThanMaxYear = maxDate !== null && customYear > maxYear;
+		const lessThanMinYear = prevLimitDate && customYear < minYear;
+		const moreThanMaxYear = nextLimitDate && customYear > maxYear;
 		if (customYear === currentYear) yearClasslist.push('mc-month-year__cell--picked');
 		if (lessThanMinYear || moreThanMaxYear || !isActiveYear(options, customYear)) {
 			yearClasslist.push('mc-month-year__cell--inactive');
@@ -101,65 +102,6 @@ export const renderCalendar = (instance, date) => {
 	// get the month
 	const activeMonth = firstMonthDate.getMonth();
 
-	const isSelectable = (options, dayObject) => {
-		const { minDate, maxDate } = options;
-		const { date } = dayObject;
-		const smallerTanMin = minDate !== null ? valueOfDate(date) < valueOfDate(minDate) : false;
-		const biggerTanMax = maxDate !== null ? valueOfDate(maxDate) < valueOfDate(date) : false;
-		return smallerTanMin || biggerTanMax;
-	};
-
-	const isInActiveMonth = (activeMonth, dayObject) => {
-		const { month } = dayObject;
-		return month !== activeMonth ? false : true;
-	};
-
-	const isExcludedWeekend = (options, dayObject) => {
-		const { disableWeekends } = options;
-		const { day } = dayObject;
-		if (!disableWeekends) return false;
-		return day === 0 || day === 6 ? true : false;
-	};
-
-	const isDisabledWeekDay = (options, dayObject) => {
-		const { disableWeekDays } = options;
-		const { day } = dayObject;
-		if (!disableWeekDays.length) return false;
-		return disableWeekDays.some((weekDay) => weekDay === day);
-	};
-
-	const isDisabledDate = (options, dayObject) => {
-		const { disableDates } = options;
-		const { date } = dayObject;
-		if (!disableDates.length) return false;
-		return disableDates.some((disabledDate) => valueOfDate(disabledDate) === valueOfDate(date));
-	};
-
-	const isPicked = (pickedDate, dayObject) => {
-		const { date } = dayObject;
-		// instance.selectedDate;
-		if (pickedDate === null) return false;
-
-		return valueOfDate(pickedDate) === valueOfDate(date) ? true : false;
-	};
-
-	const isMarked = (instance, dayObject) => {
-		const { options, markCustomCallbacks } = instance;
-		const { date } = dayObject;
-		// if (!options.markDates.length) return false;
-		const optionMark = options.markDates.some(
-			(markedDate) => valueOfDate(markedDate) === valueOfDate(date)
-		);
-		const customMark = markCustomCallbacks.some((callback) => callback.apply(null, [date]));
-
-		return optionMark || customMark;
-	};
-
-	const isToday = (dayObject) => {
-		const { date } = dayObject;
-		return valueOfDate(date) === valueOfDate(new Date()) ? true : false;
-	};
-
 	//  create date custom object
 	const renderDay = (dayObject) => {
 		let classArray = ['mc-date'];
@@ -168,7 +110,7 @@ export const renderCalendar = (instance, date) => {
 			!isInActiveMonth(activeMonth, dayObject) ||
 			!isActiveMonth(options, dayObject.month) ||
 			!isActiveYear(options, dayObject.year) ||
-			isSelectable(options, dayObject) ||
+			isSelectable(instance, dayObject) ||
 			isExcludedWeekend(options, dayObject) ||
 			isDisabledWeekDay(options, dayObject) ||
 			isDisabledDate(options, dayObject)
