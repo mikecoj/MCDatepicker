@@ -1,13 +1,21 @@
 import { validateRequired, eventSchema, eventColorTypeSchema } from './validators';
+import { getActiveMonths, getLimitDates } from './handlers';
 import { dateFormatParser } from './utils';
 
 export default function createInstance(instanceOptions, datepicker) {
+	instanceOptions.allowedYears.sort((first, next) => first - next);
+	const activeMonths = getActiveMonths(instanceOptions);
+	const { prevLimitDate, nextLimitDate } = getLimitDates(instanceOptions);
+
 	const instance = {
 		datepicker: datepicker,
 		el: instanceOptions.el,
 		linkedElement: instanceOptions.el !== null ? document.querySelector(instanceOptions.el) : null,
 		pickedDate: instanceOptions.selectedDate,
 		options: instanceOptions,
+		activeMonths: activeMonths,
+		prevLimitDate: prevLimitDate,
+		nextLimitDate: nextLimitDate,
 		onOpenCallbacks: [],
 		onCloseCallbacks: [],
 		onSelectCallbacks: [],
