@@ -1,5 +1,12 @@
 import { spanTemplate } from './template';
-import { arrayInfiniteLooper, slide, dateFormatParser, valueOfDate, getNewIndex } from './utils';
+import {
+	arrayInfiniteLooper,
+	slide,
+	dateFormatParser,
+	Animation,
+	valueOfDate,
+	getNewIndex
+} from './utils';
 import { renderMonthPreview, renderYearPreview } from './render';
 import {
 	CALENDAR_HIDE,
@@ -25,10 +32,12 @@ import {
 	updateCalendarHeader,
 	updateMonthYearPreview,
 	updateCalendarUI,
-	getActiveDate,
+	getTargetDate,
 	getNewMonth,
 	getNewYear
 } from './handlers';
+
+import { isLessThanMinDate, isMoreThanMaxDate } from './checker';
 
 export const applyOnFocusListener = (calendarDiv, instance) => {
 	instance.linkedElement.onfocus = (e) => {
@@ -141,62 +150,61 @@ export const applyListeners = (calendarNodes, datepickers) => {
 
 	calendar.addEventListener(PREVIEW_PICK, (e) => {
 		const { target, data } = e.detail;
-		const { customMonths, minDate, maxDate } = activeInstance.options;
+		const { options } = activeInstance;
+		const { customMonths } = options;
 
 		if (e.target.classList.contains('mc-month-year__cell--inactive')) return;
+
 		previewCells.forEach((cell) => cell.classList.remove('mc-month-year__cell--picked'));
 		e.target.classList.add('mc-month-year__cell--picked');
-		const currentYear =
-			target === 'month' ? Number(currentYearSelect.children[0].innerHTML) : Number(data);
-		const currentMonth =
-			target === 'year'
-				? currentMonthSelect.children[0].innerHTML
-				: customMonths.find((month) => month.includes(data));
-		const newDate = new Date(currentYear, customMonths.indexOf(currentMonth), 1);
-		const nextCalendarDate = getActiveDate(newDate, minDate, maxDate);
+
+		const currentSelectedYear = Number(currentYearSelect.children[0].innerHTML);
+		const targetYear = target === 'year' ? Number(data) : currentSelectedYear;
+		const targetMonth = target === 'month' ? data : currentMonthSelect.children[0].innerHTML;
+		const currentMonthIndex = customMonths.findIndex((month) => month.includes(targetMonth));
+		const newDate = new Date(targetYear, currentMonthIndex, 1);
+
+		const nextCalendarDate = getTargetDate(activeInstance, newDate);
+
 		calendarHeader.setAttribute('data-view', 'calendar');
 		updateCalendarTable(calendarNodes, activeInstance, nextCalendarDate);
-		updateCalendarHeader(calendarNodes, activeInstance.options, nextCalendarDate);
+		updateCalendarHeader(calendarNodes, options, nextCalendarDate);
+		monthYearPreview.setAttribute('data-preview', null);
 		monthYearPreview.classList.remove('mc-month-year__preview--opened');
 	});
 
 	currentMonthSelect.addEventListener(CHANGE_MONTH, function (e) {
+		// check if the button is clickable
 		if (!clickable) return;
 		clickable = !clickable;
-		const { options, onMonthChangeCallbacks } = activeInstance;
-		const { customMonths } = options;
-		// check if the button is clickable
+		const slider = Animation();
+		const { options, onMonthChangeCallbacks, onYearChangeCallbacks } = activeInstance;
 		const { direction } = e.detail;
 		// get the value of active month
 		const selectedMonth = e.target.children[0].innerText;
 		// get the value of active Year
-		const selectedYear = Number(currentYearSelect.children[0].innerText);
+		let selectedYear = Number(currentYearSelect.children[0].innerText);
 		// get the next ot prev month and the overlap value
-		// const { newElement, overlap } = arrayInfiniteLooper(customMonths, selectedMonth, direction);
 		const { newMonth, overlap } = getNewMonth(activeInstance, selectedMonth, direction);
+		const newYear = overlap !== 0 ? getNewYear(options, selectedYear, direction) : selectedYear;
+		const newCalendarDate = new Date(newYear, newMonth.index, 1);
 		// add a new span tah with the new month to the months div
-		e.target.innerHTML += spanTemplate(direction, newMonth);
-
 		if (overlap !== 0) {
-			// if the overlap is not 0 then calculate the new year
-			// const targetYear = Number(selectedYear) + overlap;
-			const { newYear } = getNewYear(options, selectedYear, direction);
 			// add a new span with the new year to the years div
 			currentYearSelect.innerHTML += spanTemplate(direction, newYear);
 			// apply slide animation to years span tags
-			slide(currentYearSelect.children[0], currentYearSelect.children[1], direction);
+			slider.slide(currentYearSelect.children[0], currentYearSelect.children[1], direction);
+			onYearChangeCallbacks.forEach((callback) => callback.apply(null));
 		}
+
+		e.target.innerHTML += spanTemplate(direction, newMonth.name);
 		// apply slide animation to months span tags
-		slide(e.target.children[0], e.target.children[1], direction).then(() => {
-			// get new date for the new calendar array
-			const nextCalendarDate = new Date(
-				currentYearSelect.children[0].innerText,
-				customMonths.indexOf(e.target.children[0].innerText),
-				1
-			);
+		slider.slide(e.target.children[0], e.target.children[1], direction);
+
+		slider.onFinish(() => {
 			// update the calendar table
-			updateCalendarTable(calendarNodes, activeInstance, nextCalendarDate);
-			updateMonthYearPreview(calendarNodes, options);
+			updateCalendarTable(calendarNodes, activeInstance, newCalendarDate);
+			updateMonthYearPreview(calendarNodes, activeInstance);
 			// run all custom onMonthChangeCallbacks added by the user
 			onMonthChangeCallbacks.forEach((callback) => callback.apply(null));
 
@@ -208,73 +216,52 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		if (!clickable) return;
 		clickable = !clickable;
 		const { direction } = e.detail;
-		const { options, onMonthChangeCallbacks, onYearChangeCallbacks } = activeInstance;
-		const { customMonths, minDate, maxDate } = options;
-
+		const {
+			options,
+			onMonthChangeCallbacks,
+			onYearChangeCallbacks,
+			prevLimitDate,
+			nextLimitDate
+		} = activeInstance;
+		const { customMonths } = options;
+		const slider = Animation();
 		const next = direction === 'next' ? true : false;
 		const selectedMonth = currentMonthSelect.children[0].innerText;
 		const selectedYear = Number(e.target.children[0].innerText);
 		const currentMonthIndex = customMonths.indexOf(selectedMonth);
-		const { newYear } = getNewYear(options, selectedYear, direction);
 		const viewTarget = calendarHeader.getAttribute('data-view');
 
-		// TODO:  refactor based on disabled months and Years
-		const prevDateLastDay = new Date(selectedYear - 1, currentMonthIndex + 1, 0);
-		const nextDateFirstDay = new Date(selectedYear + 1, currentMonthIndex);
-		const lessThanMinDate =
-			minDate !== null && !next && valueOfDate(prevDateLastDay) < valueOfDate(minDate);
-		const moreThanMaxDate =
-			maxDate !== null && next && valueOfDate(maxDate) < valueOfDate(nextDateFirstDay);
+		const newYear = getNewYear(options, selectedYear, direction);
+
+		let newMonth = null;
+		let newCalendarDate =
+			newYear && getTargetDate(activeInstance, new Date(newYear, currentMonthIndex, 1));
+		if (!newYear) newCalendarDate = next ? nextLimitDate : prevLimitDate;
+		if (newCalendarDate.getMonth() !== currentMonthIndex)
+			newMonth = customMonths[newCalendarDate.getMonth()];
 
 		if (viewTarget === 'year') {
 			const firstTableYear = Number(previewCells[0].children[0].innerHTML);
 			const targetYear = next ? firstTableYear + 12 : firstTableYear - 12;
 			renderYearPreview(calendarNodes, activeInstance, targetYear);
-			updateCalendarHeader(calendarNodes, activeInstance.options, targetYear);
+			updateCalendarHeader(calendarNodes, options, targetYear);
 			clickable = !clickable;
 			return;
 		}
 
-		if (lessThanMinDate || moreThanMaxDate) {
-			const newActiveDate = (lessThanMinDate && minDate) || (moreThanMaxDate && maxDate);
-			const newActiveMonth = newActiveDate.getMonth();
-			const newActiveYear = newActiveDate.getFullYear();
-
-			currentMonthSelect.innerHTML += spanTemplate(direction, customMonths[newActiveMonth]);
-
-			if (newActiveYear !== selectedYear) {
-				currentYearSelect.innerHTML += spanTemplate(direction, newActiveYear);
-				slide(currentYearSelect.children[0], currentYearSelect.children[1], direction);
-			}
-
-			slide(currentMonthSelect.children[0], currentMonthSelect.children[1], direction).then(() => {
-				// update the calendar table
-				updateCalendarTable(calendarNodes, activeInstance, newActiveDate);
-				updateMonthYearPreview(calendarNodes, activeInstance);
-				// run all custom onMonthChangeCallbacks added by the user
-				onMonthChangeCallbacks.forEach((callback) => callback.apply(null));
-
-				clickable = !clickable;
-			});
-			return;
+		if (newMonth) {
+			currentMonthSelect.innerHTML += spanTemplate(direction, newMonth);
+			slider.slide(currentMonthSelect.children[0], currentMonthSelect.children[1], direction);
+			onMonthChangeCallbacks.forEach((callback) => callback.apply(null));
 		}
-		// append a new span tag to the targeted div
-
-		e.target.innerHTML += spanTemplate(direction, newYear);
-		// apply slide animation
-		slide(e.target.children[0], e.target.children[1], direction).then(() => {
-			// generate a new date based on the current month and new generated year
-			const nextCalendarDate = new Date(
-				e.target.children[0].innerText,
-				customMonths.indexOf(selectedMonth),
-				1
-			);
-			// update the calendar table
-			updateCalendarTable(calendarNodes, activeInstance, nextCalendarDate);
-			updateMonthYearPreview(calendarNodes, activeInstance);
-			// run every custom callback added by user
+		if (newYear) {
+			e.target.innerHTML += spanTemplate(direction, newYear);
+			slider.slide(e.target.children[0], e.target.children[1], direction);
 			onYearChangeCallbacks.forEach((callback) => callback.apply(null));
-
+		}
+		slider.onFinish(() => {
+			updateCalendarTable(calendarNodes, activeInstance, newCalendarDate);
+			updateMonthYearPreview(calendarNodes, activeInstance);
 			clickable = !clickable;
 		});
 	});
@@ -318,10 +305,9 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		const { linkedElement, pickedDate, onSelectCallbacks, options } = activeInstance;
 		const { dateFormat } = options;
 		// if the value of picked date is not null then get formated date
-		let pickedDateValue =
-			pickedDate !== null ? dateFormatParser(pickedDate, options, dateFormat) : null;
+		let pickedDateValue = pickedDate ? dateFormatParser(pickedDate, options, dateFormat) : null;
 		// set the value of the picked date to the linked input
-		if (linkedElement !== null) linkedElement.value = pickedDateValue;
+		if (linkedElement) linkedElement.value = pickedDateValue;
 		// dispatch DATEPICKER_HIDE event
 		dispatchCalendarHide(e.target);
 		// run all custom onSelect callbacks added by the user
@@ -332,6 +318,6 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		const { linkedElement } = activeInstance;
 		dateCells.forEach((cell) => cell.classList.remove('mc-date--picked'));
 		activeInstance.pickedDate = null;
-		if (linkedElement !== null) linkedElement.value = null;
+		if (linkedElement) linkedElement.value = null;
 	});
 };
