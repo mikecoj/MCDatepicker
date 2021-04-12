@@ -1,6 +1,6 @@
 import { renderCalendar, renderMonthPreview, renderYearPreview } from './render';
 
-import { isActiveMonth, isActiveYear } from './checker';
+import { isActiveMonth, isActiveYear, isLessThanMinDate, isMoreThanMaxDate } from './checker';
 
 import { valueOfDate, calculateCalendarPosition, HandleArrowClass, getNewIndex } from './utils';
 
@@ -29,16 +29,6 @@ export const getDOMNodes = (calendar) => {
 	};
 };
 
-export const getMonthObject = (monthsArray, currentMonth) => {};
-
-const isLessThanMinDate = (targetDate, prevMinDate) => {
-	return valueOfDate(targetDate) < valueOfDate(prevMinDate);
-};
-
-const isMoreThanMaxDate = (targetDate, nextMaxDate) => {
-	return valueOfDate(targetDate) > valueOfDate(nextMaxDate);
-};
-
 export const getActiveDate = (pickedDate, minDate, maxDate) => {
 	let targetDate = pickedDate === null ? new Date() : pickedDate;
 	targetDate = minDate !== null && lessThanMinDate ? minDate : targetDate;
@@ -47,9 +37,20 @@ export const getActiveDate = (pickedDate, minDate, maxDate) => {
 	return targetDate;
 };
 
-const getTargetDate = (instance) => {
-	const { pickedDate, prevLimitDate, nextLimitDate } = instance;
+export const getTargetDate = (instance, newDate = null) => {
+	const { options, pickedDate, prevLimitDate, nextLimitDate, activeMonths } = instance;
 	let targetDate = pickedDate ? pickedDate : new Date();
+	const targetMonth = targetDate.getMonth();
+	if (!isActiveMonth(options, targetMonth)) {
+		const closestMonth = activeMonths.reduce((result, month) => {
+			return Math.abs(month.index - targetMonth) < Math.abs(result.index - targetMonth)
+				? month
+				: result;
+		});
+		targetDate.setMonth(closestMonth.index);
+	}
+
+	if (newDate) targetDate = newDate;
 	if (prevLimitDate && isLessThanMinDate(targetDate, prevLimitDate)) targetDate = prevLimitDate;
 	if (nextLimitDate && isMoreThanMaxDate(targetDate, nextLimitDate)) targetDate = nextLimitDate;
 	return targetDate;
@@ -64,11 +65,15 @@ export const getNewMonth = (instance, currentMonth, direction) => {
 			customMonths.indexOf(currentMonth),
 			direction
 		);
-		return { newMonth: customMonths[newIndex], overlap };
+		const newMonth = {
+			name: customMonths[newIndex],
+			index: newIndex
+		};
+		return { newMonth, overlap };
 	}
 	const currentMonthIndex = activeMonths.findIndex(({ name }) => name === currentMonth);
 	const { newIndex, overlap } = getNewIndex(activeMonths, currentMonthIndex, direction);
-	const newMonth = activeMonths[newIndex].name;
+	const newMonth = activeMonths[newIndex];
 	return { newMonth, overlap };
 };
 
@@ -76,7 +81,7 @@ export const getNewYear = (options, currentYear, direction) => {
 	const { allowedYears, jumpOverDisabled } = options;
 	let newYear = direction === 'next' ? currentYear + 1 : currentYear - 1;
 
-	if (!jumpOverDisabled) return { newYear };
+	if (!jumpOverDisabled) return newYear;
 
 	if (allowedYears.length) {
 		const { newIndex, overlap } = getNewIndex(
@@ -85,13 +90,13 @@ export const getNewYear = (options, currentYear, direction) => {
 			direction
 		);
 		newYear = overlap !== 0 ? null : allowedYears[newIndex];
-		return { newYear };
+		return newYear;
 	}
 
 	while (!isActiveYear(options, newYear)) {
 		direction === 'next' ? newYear++ : newYear--;
 	}
-	return { newYear };
+	return newYear;
 };
 export const getActiveMonths = (options) => {
 	const { customMonths } = options;
@@ -156,30 +161,28 @@ export const updateNavs = (calendarNodes, instance, date) => {
 	monthNavPrevState.active();
 	monthNavNextState.active();
 
-	prevMonth.overlap !== 0 && prevYear.newYear === null && monthNavPrevState.inactive();
-	prevMonth.overlap !== 0 && prevYear.newYear === null && yearNavPrevState.inactive();
-	nextMonth.overlap !== 0 && nextYear.newYear === null && monthNavNextState.inactive();
-	nextMonth.overlap !== 0 && nextYear.newYear === null && yearNavNextState.inactive();
+	prevMonth.overlap !== 0 && !prevYear && monthNavPrevState.inactive();
+	prevMonth.overlap !== 0 && !prevYear && yearNavPrevState.inactive();
+	nextMonth.overlap !== 0 && !nextYear && monthNavNextState.inactive();
+	nextMonth.overlap !== 0 && !nextYear && yearNavNextState.inactive();
 
 	if (prevLimitDate) {
-		const minDateValue = valueOfDate(prevLimitDate);
-		const currentMonthFirstDay = valueOfDate(new Date(currentYear, currentMonth, 1));
-		const prevYearLastDay = valueOfDate(new Date(prevYear.newYear, currentMonth, 0));
-		const activePrevMonth = currentMonthFirstDay > minDateValue;
-		const inactivePrevYear = minDateValue > prevYearLastDay || prevYear.newYear === null;
-		if (jumpToMinMax && !activePrevMonth) yearNavPrevState.inactive();
-		if (!jumpToMinMax && inactivePrevYear) yearNavPrevState.inactive();
-		if (!activePrevMonth) monthNavPrevState.inactive();
+		const currentMonthFirstDay = new Date(currentYear, currentMonth, 1);
+		const prevYearLastDay = new Date(prevYear, currentMonth + 1, 0);
+		const inactivePrevMonth = isLessThanMinDate(currentMonthFirstDay, prevLimitDate);
+		const inactivePrevYear = isLessThanMinDate(prevYearLastDay, prevLimitDate);
+		if (jumpToMinMax && inactivePrevMonth) yearNavPrevState.inactive();
+		if (!jumpToMinMax && (inactivePrevYear || !nextYear)) yearNavPrevState.inactive();
+		if (inactivePrevMonth) monthNavPrevState.inactive();
 	}
 	if (nextLimitDate) {
-		const maxDateValue = valueOfDate(nextLimitDate);
-		const currentMonthLastDay = valueOfDate(new Date(currentYear, currentMonth + 1, 0));
-		const nextYearFirstDay = valueOfDate(new Date(nextYear.newYear, currentMonth, 1));
-		const activeNextMonth = currentMonthLastDay < maxDateValue;
-		const inactiveNextYear = maxDateValue < nextYearFirstDay || nextYear.newYear === null;
-		if (jumpToMinMax && !activeNextMonth) yearNavNextState.inactive();
-		if (!jumpToMinMax && inactiveNextYear) yearNavNextState.inactive();
-		if (!activeNextMonth) monthNavNextState.inactive();
+		const currentMonthLastDay = new Date(currentYear, currentMonth + 1, 0);
+		const nextYearFirstDay = new Date(nextYear, currentMonth, 1);
+		const inactiveNextMonth = isMoreThanMaxDate(currentMonthLastDay, nextLimitDate);
+		const inactiveNextYear = isMoreThanMaxDate(nextYearFirstDay, nextLimitDate);
+		if (jumpToMinMax && inactiveNextMonth) yearNavNextState.inactive();
+		if (!jumpToMinMax && (inactiveNextYear || !nextYear)) yearNavNextState.inactive();
+		if (inactiveNextMonth) monthNavNextState.inactive();
 	}
 };
 
