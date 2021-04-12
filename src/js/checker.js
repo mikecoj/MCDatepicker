@@ -1,5 +1,15 @@
 import { valueOfDate } from './utils';
 
+export const isLessThanMinDate = (targetDate, prevMinDate) => {
+	if (targetDate && prevMinDate) return valueOfDate(targetDate) < valueOfDate(prevMinDate);
+	return false;
+};
+
+export const isMoreThanMaxDate = (targetDate, nextMaxDate) => {
+	if (targetDate && nextMaxDate) return valueOfDate(targetDate) > valueOfDate(nextMaxDate);
+	return false;
+};
+
 export const isActiveMonth = (options, monthTarget) => {
 	const { allowedMonths, disableMonths } = options;
 	return allowedMonths.length
