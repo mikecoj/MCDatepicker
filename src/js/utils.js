@@ -37,46 +37,57 @@ export const getNewIndex = (array, currentIndex, direction) => {
 	return { newIndex, overlap };
 };
 
-export function slide(
-	activeElem,
-	newElem,
-	dir,
-	{ duration = 150, easing = 'ease-in-out', ...customOption } = {}
-) {
-	// get the with of the element, and transform it based on dir property
-	const value =
-		dir === 'prev' ? activeElem.offsetWidth : dir === 'next' ? activeElem.offsetWidth * -1 : null;
+export const Animation = () => {
+	const promises = [];
+	const slide = (
+		activeElem,
+		newElem,
+		dir,
+		{ duration = 150, easing = 'ease-in-out', ...customOption } = {}
+	) => {
+		// get the with of the element, and transform it based on dir property
+		const value =
+			dir === 'prev' ? activeElem.offsetWidth : dir === 'next' ? activeElem.offsetWidth * -1 : null;
 
-	const animationOptions = {
-		// timing options
-		duration,
-		easing,
-		...customOption
+		const animationOptions = {
+			// timing options
+			duration,
+			easing,
+			...customOption
+		};
+
+		promises.push(
+			Promise.all([
+				activeElem.animate(
+					[
+						// keyframes
+						{ transform: 'translateX(0px)' },
+						{ transform: `translateX(${value}px)` }
+					],
+					animationOptions
+				).finished,
+				newElem.animate(
+					[
+						// keyframes
+						{ transform: `translateX(${-1 * value}px)` },
+						{ transform: 'translateX(0px)' }
+					],
+					animationOptions
+				).finished
+			]).then(() => {
+				newElem.style.transform = 'translateX(0)';
+				// remove the old span tag
+				activeElem.remove();
+			})
+		);
 	};
 
-	return Promise.all([
-		activeElem.animate(
-			[
-				// keyframes
-				{ transform: 'translateX(0px)' },
-				{ transform: `translateX(${value}px)` }
-			],
-			animationOptions
-		).finished,
-		newElem.animate(
-			[
-				// keyframes
-				{ transform: `translateX(${-1 * value}px)` },
-				{ transform: 'translateX(0px)' }
-			],
-			animationOptions
-		).finished
-	]).then(() => {
-		newElem.style.transform = 'translateX(0)';
-		// remove the old span tag
-		activeElem.remove();
-	});
-}
+	const onFinish = (callback) => {
+		Promise.all(promises).then(() => callback());
+	};
+
+	return { slide, onFinish };
+};
 
 export const dateFormatParser = (
 	date = new Date(),
