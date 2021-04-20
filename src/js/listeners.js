@@ -184,6 +184,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 			// update the calendar table
 			if (viewLayers[0] === 'calendar') store.calendar.setDate = newCalendarDate;
 			if (viewLayers[0] !== 'calendar') store.display.setDate = newCalendarDate;
+			if (viewLayers[0] === 'month') activeInstance.pickedDate = newCalendarDate;
 			store.header.year = newCalendarDate.getFullYear();
 			store.header.setMonth = newCalendarDate.getMonth();
 			store.preview.year = newCalendarDate.getFullYear();
