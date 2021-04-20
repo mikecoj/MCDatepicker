@@ -1,25 +1,13 @@
+import {
+	dispatchCalendarUpdate,
+	dispatchDisplayUpdate,
+	dispatchHeaderUpdate,
+	dispatchPreviewUpdate
+} from './emiters';
 import { dateFormatValidator } from './validators';
 import { Is } from './validators';
 
 export function noop() {}
-
-export const arrayInfiniteLooper = (array, arrayElement, direction) => {
-	let overlap = 0;
-	// get the index of the current element
-	const currentArrayElementIndex = array.indexOf(arrayElement);
-	// get the next element, if the current element is the last element in the array, the next element will be the first element of the array
-	const forward = (currentArrayElementIndex + 1) % array.length;
-	// gets the prev element of the array, if the current one ah index 0, then the prev element will be the last element of the array
-	const backward = (((currentArrayElementIndex - 1) % array.length) + array.length) % array.length;
-	// get the logic based on direction property
-	const nextArrayElementIndex = direction === 'next' ? forward : backward;
-	// get the new element from the array
-	const newElement = array[nextArrayElementIndex];
-	// check the overlap
-	if (direction === 'next' && currentArrayElementIndex > nextArrayElementIndex) overlap++;
-	if (direction === 'prev' && currentArrayElementIndex < nextArrayElementIndex) overlap--;
-	return { newElement, overlap };
-};
 
 export const getNewIndex = (array, currentIndex, direction) => {
 	// get the next array index, if the current index is equal to array.length set the next index to 0
@@ -46,8 +34,7 @@ export const Animation = () => {
 		{ duration = 150, easing = 'ease-in-out', ...customOption } = {}
 	) => {
 		// get the with of the element, and transform it based on dir property
-		const value =
-			dir === 'prev' ? activeElem.offsetWidth : dir === 'next' ? activeElem.offsetWidth * -1 : null;
+		const value = dir === 'prev' ? activeElem.offsetWidth : activeElem.offsetWidth * -1;
 
 		const animationOptions = {
 			// timing options
@@ -75,8 +62,9 @@ export const Animation = () => {
 					animationOptions
 				).finished
 			]).then(() => {
-				newElem.style.transform = 'translateX(0)';
-				// remove the old span tag
+				// remove the style attribute from the new element
+				newElem.removeAttribute('style');
+				//  remove the old span tag
 				activeElem.remove();
 			})
 		);
@@ -204,4 +192,59 @@ export const HandleArrowClass = (arrow) => {
 	};
 
 	return { active, inactive };
+};
+
+export const Store = (calendarNodes, dataTarget) => {
+	const { calendar, calendarDisplay, calendarHeader, monthYearPreview } = calendarNodes;
+	return {
+		display: {
+			target: dataTarget,
+			date: null,
+			set setDate(date) {
+				this.date = date;
+				dispatchDisplayUpdate(calendarDisplay);
+			}
+		},
+		header: {
+			target: dataTarget,
+			month: null,
+			year: null,
+			set setTarget(target) {
+				this.target = target;
+				dispatchHeaderUpdate(calendarHeader);
+			},
+			set setMonth(month) {
+				this.month = month;
+				dispatchHeaderUpdate(calendarHeader);
+			},
+			set setYear(year) {
+				this.year = year;
+				dispatchHeaderUpdate(calendarHeader);
+			}
+		},
+		preview: {
+			target: null,
+			month: null,
+			year: null,
+			set setTarget(target) {
+				this.target = target;
+				dispatchPreviewUpdate(monthYearPreview);
+			},
+			set setMonth(month) {
+				this.month = month;
+				dispatchPreviewUpdate(monthYearPreview);
+			},
+			set setYear(year) {
+				this.year = year;
+				dispatchPreviewUpdate(monthYearPreview);
+			}
+		},
+		calendar: {
+			date: null,
+			set setDate(date) {
+				this.date = date;
+				dispatchCalendarUpdate(calendar);
+			}
+		}
+	};
 };
