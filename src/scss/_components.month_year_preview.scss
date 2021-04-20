@@ -14,7 +14,7 @@
 		visibility: hidden;
 		opacity: 0;
 		background-color: #f5f5f6;
-		transition: all 150ms linear;
+		// transition: all 150ms linear;
 
 		&--opened {
 			visibility: visible;
@@ -29,6 +29,7 @@
 		height: 20%;
 		text-align: center;
 		border-radius: 10px;
+		cursor: pointer;
 
 		&--picked {
 			background-color: $dark-bg-color;
