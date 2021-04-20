@@ -34,7 +34,7 @@ const MCDatepicker = (() => {
 		// validate options and merge them with de default Options
 		const instanceOptions = validateOptions(options, defaultOptions);
 		// create instance
-		const instance = createInstance(instanceOptions, MCDatepicker);
+		const instance = createInstance(MCDatepicker, calendarNodes, instanceOptions);
 		// push fresh created instance to instances array
 		datepickers.push(instance);
 		// add event listener to the linked input
