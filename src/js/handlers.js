@@ -1,7 +1,6 @@
+import { viewLayers } from './defaults';
 import { renderCalendar, renderMonthPreview, renderYearPreview } from './render';
-
 import { isActiveMonth, isActiveYear, isLessThanMinDate, isMoreThanMaxDate } from './checker';
-
 import { valueOfDate, calculateCalendarPosition, HandleArrowClass, getNewIndex } from './utils';
 
 export const getDOMNodes = (calendar) => {
@@ -27,6 +26,14 @@ export const getDOMNodes = (calendar) => {
 		monthYearPreview: calendar.querySelector('.mc-month-year__preview'),
 		previewCells: calendar.querySelectorAll('.mc-month-year__cell')
 	};
+};
+
+export const getViewLayers = (options) => {
+	const { dateFormat } = options;
+	const splitTest = dateFormat.split(/(?:(?:,\s)|[.-\s\/]{1})/);
+	const firstChars = splitTest.map((group) => group.charAt(0).toUpperCase());
+	const result = [...new Set(firstChars)].sort().join('');
+	return viewLayers[result];
 };
 
 export const getActiveDate = (pickedDate, minDate, maxDate) => {
@@ -106,7 +113,6 @@ export const getActiveMonths = (options) => {
 			return null;
 		})
 		.filter((item) => item);
-	// return customMonths.filter((month, index) => isActiveMonth(options, index));
 };
 
 export const getLimitDates = (options) => {
@@ -141,16 +147,13 @@ export const updateCalendarPosition = (calendarNodes, instance) => {
 	}
 };
 
-export const updateNavs = (calendarNodes, instance, date) => {
+export const updateNavs = (calendarNodes, instance) => {
 	const { monthNavPrev, monthNavNext, yearNavPrev, yearNavNext } = calendarNodes;
-	const { prevLimitDate, nextLimitDate, options } = instance;
+	const { store, prevLimitDate, nextLimitDate, options } = instance;
 	const { customMonths, jumpToMinMax } = options;
-	const currentMonth = date.getMonth();
-	const currentYear = date.getFullYear();
-	const prevMonth = getNewMonth(instance, customMonths[currentMonth], 'prev');
-	const nextMonth = getNewMonth(instance, customMonths[currentMonth], 'next');
-	const prevYear = getNewYear(options, currentYear, 'prev');
-	const nextYear = getNewYear(options, currentYear, 'next');
+	const viewTarget = store.header.target;
+	const currentMonth = store.header.month;
+	const currentYear = store.header.year;
 	const monthNavPrevState = HandleArrowClass(monthNavPrev);
 	const monthNavNextState = HandleArrowClass(monthNavNext);
 	const yearNavPrevState = HandleArrowClass(yearNavPrev);
@@ -161,10 +164,23 @@ export const updateNavs = (calendarNodes, instance, date) => {
 	monthNavPrevState.active();
 	monthNavNextState.active();
 
-	prevMonth.overlap !== 0 && !prevYear && monthNavPrevState.inactive();
-	prevMonth.overlap !== 0 && !prevYear && yearNavPrevState.inactive();
-	nextMonth.overlap !== 0 && !nextYear && monthNavNextState.inactive();
-	nextMonth.overlap !== 0 && !nextYear && yearNavNextState.inactive();
+	if (viewTarget === 'year') {
+		monthNavPrevState.inactive();
+		monthNavNextState.inactive();
+		prevLimitDate && prevLimitDate.getFullYear() > currentYear - 1 && yearNavPrevState.inactive();
+		nextLimitDate && nextLimitDate.getFullYear() < currentYear + 12 && yearNavNextState.inactive();
+		return;
+	}
+
+	const prevMonth = getNewMonth(instance, customMonths[currentMonth], 'prev');
+	const nextMonth = getNewMonth(instance, customMonths[currentMonth], 'next');
+	const prevYear = viewTarget !== 'year' && getNewYear(options, currentYear, 'prev');
+	const nextYear = viewTarget !== 'year' && getNewYear(options, currentYear, 'next');
+
+	viewTarget === 'calendar' && prevMonth.overlap !== 0 && !prevYear && monthNavPrevState.inactive();
+	viewTarget === 'calendar' && prevMonth.overlap !== 0 && !prevYear && yearNavPrevState.inactive();
+	viewTarget === 'calendar' && nextMonth.overlap !== 0 && !nextYear && monthNavNextState.inactive();
+	viewTarget === 'calendar' && nextMonth.overlap !== 0 && !nextYear && yearNavNextState.inactive();
 
 	if (prevLimitDate) {
 		const currentMonthFirstDay = new Date(currentYear, currentMonth, 1);
@@ -202,22 +218,35 @@ export const updateWeekdays = (calendarNodes, options) => {
 		wDay.innerText = customWeekDays[nextElement].substr(0, 2);
 	});
 };
-export const updateDisplay = (calendarNodes, options, pickedDate) => {
-	const { displayDay, displayDate, displayMonth, displayYear } = calendarNodes;
-	const { customWeekDays, customMonths } = options;
-	displayDay.innerText = customWeekDays[pickedDate.getDay()];
-	displayDate.innerText = pickedDate.getDate();
-	displayMonth.innerText = customMonths[pickedDate.getMonth()];
-	displayYear.innerText = pickedDate.getFullYear();
+
+export const updateDisplay = (calendarNodes, instance) => {
+	const { displayDay, displayDate, displayMonth, displayYear, calendarDisplay } = calendarNodes;
+	const { store, viewLayers, options } = instance;
+	const { target, date } = store.display;
+	const { customWeekDays, customMonths, showCalendarDisplay } = options;
+
+	if (!showCalendarDisplay || viewLayers[0] !== 'calendar') {
+		calendarDisplay.classList.add('u-display-none');
+	} else {
+		calendarDisplay.classList.remove('u-display-none');
+	}
+	calendarDisplay.setAttribute('data-target', store.display.target);
+	displayYear.innerText = date.getFullYear();
+	if (target === 'year') return;
+	displayMonth.innerText = customMonths[date.getMonth()];
+	if (target === 'month') return;
+	displayDay.innerText = customWeekDays[date.getDay()];
+	displayDate.innerText = date.getDate();
 };
 
-export const updateCalendarTable = (calendarNodes, instance, date) => {
+export const updateCalendarTable = (calendarNodes, instance) => {
 	const { dateCells } = calendarNodes;
-	const { options } = instance;
+	const { store, viewLayers } = instance;
+	const activeDate = store.calendar.date;
+
+	if (viewLayers[0] !== 'calendar') return;
 	// render the new calendar array
-	const datesArray = renderCalendar(instance, date);
-	// Update clickable navs based on minDate and maxDate
-	updateNavs(calendarNodes, instance, date);
+	const datesArray = renderCalendar(instance, activeDate);
 	// update the DOM for each date cell
 	dateCells.forEach((cell, index) => {
 		cell.innerText = datesArray[index].dateNumb;
@@ -226,61 +255,58 @@ export const updateCalendarTable = (calendarNodes, instance, date) => {
 	});
 };
 
-export const updateCalendarHeader = (calendarNodes, options, date) => {
+export const updateCalendarHeader = (calendarNodes, instance) => {
 	const { currentMonthSelect, currentYearSelect, calendarHeader } = calendarNodes;
+	const { store, options } = instance;
 	const { customMonths } = options;
-	const viewTarget = calendarHeader.getAttribute('data-view');
-	if (viewTarget === 'year') {
-		const firstYear = date;
+	const { target, month, year } = store.header;
+
+	calendarHeader.setAttribute('data-target', target);
+
+	updateNavs(calendarNodes, instance);
+
+	if (target === 'year') {
+		const firstYear = year;
 		currentYearSelect.innerHTML = `<span>${firstYear}</span><span> - </span><span>${
 			firstYear + 11
 		}</span>`;
-		// currentMonthSelect.style.display = 'none';
 		return;
 	}
-	currentMonthSelect.innerHTML = `<span>${customMonths[date.getMonth()]}</span>`;
-	currentYearSelect.innerHTML = `<span>${date.getFullYear()}</span>`;
+	currentMonthSelect.innerHTML = `<span>${customMonths[month]}</span>`;
+	currentYearSelect.innerHTML = `<span>${year}</span>`;
 };
 
 export const updateMonthYearPreview = (calendarNodes, instance) => {
-	const { monthYearPreview, currentYearSelect } = calendarNodes;
-	const previewTarget = monthYearPreview.getAttribute('data-preview');
-	if (previewTarget == 'month') renderMonthPreview(calendarNodes, instance);
-	if (previewTarget == 'year') {
-		const currentYear = Number(currentYearSelect.children[0].innerHTML);
-		renderYearPreview(calendarNodes, instance.options, currentYear - 4);
-	}
-	return;
-	// monthYearPreview.classList.remove('mc-month-year__preview--opened');
+	const { monthYearPreview } = calendarNodes;
+	const { target } = instance.store.preview;
+	const { year } = instance.store.header;
+	if (target === 'calendar')
+		return monthYearPreview.classList.remove('mc-month-year__preview--opened');
+	monthYearPreview.setAttribute('data-target', target);
+	monthYearPreview.classList.add('mc-month-year__preview--opened');
+	if (target == 'month') renderMonthPreview(calendarNodes, instance);
+	if (target == 'year') renderYearPreview(calendarNodes, instance, year);
 };
 
 export const updateCalendarUI = (calendarNodes, instance) => {
-	const { options, pickedDate } = instance;
-	const { showCalendarDisplay, bodyType, minDate, maxDate } = options;
-	const { calendar, calendarDisplay, calendarHeader } = calendarNodes;
-	const viewTarget = calendarHeader.getAttribute('data-view');
-
-	calendar.classList = 'mc-calendar';
-	// if the picketDate is null, render the calendar based on today's date
+	const { calendar } = calendarNodes;
+	const { store, viewLayers, options, pickedDate } = instance;
+	const { bodyType } = options;
 	const activeDate = getTargetDate(instance);
-	// update the weekdays names
-	updateWeekdays(calendarNodes, options);
-	// update the buttons labels
-	updateButtons(calendarNodes, options);
-	// update the calendar table
-	updateCalendarTable(calendarNodes, instance, activeDate);
-	// update calendar header
-	if (viewTarget !== 'year') updateCalendarHeader(calendarNodes, options, activeDate);
-	if (viewTarget === 'year') updateCalendarHeader(calendarNodes, options, activeDate.getFullYear());
-	// update calendar display UI based on custom options
-	if (!showCalendarDisplay) {
-		calendarDisplay.classList.add('u-display-none');
-	} else {
-		calendarDisplay.classList.remove('u-display-none');
-	}
-	updateDisplay(calendarNodes, options, pickedDate || new Date());
-	// update month year preview
-	updateMonthYearPreview(calendarNodes, instance);
-	// update the calendar classlist based on options.bodytype
+	const activeYear = activeDate.getFullYear();
+	const activeMonth = activeDate.getMonth();
+	calendar.classList = 'mc-calendar';
 	calendar.classList.add(`mc-calendar--${bodyType}`);
+	store.display.target = viewLayers[0];
+	store.display.setDate = pickedDate || new Date();
+	store.calendar.setDate = activeDate;
+	store.header.month = activeMonth;
+	store.header.year = viewLayers[0] === 'year' ? activeYear - 4 : activeYear;
+	store.preview.month = activeMonth;
+	store.preview.year = activeYear;
+	store.header.setTarget = viewLayers[0];
+	store.preview.setTarget = viewLayers[0];
+	updateWeekdays(calendarNodes, options);
+	updateButtons(calendarNodes, options);
+	updateCalendarPosition(calendarNodes, instance);
 };

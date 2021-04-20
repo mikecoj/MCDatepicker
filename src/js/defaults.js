@@ -5,6 +5,15 @@ export const defaultEventColorType = [
 	{ type: 'slight', color: '#00DDFF' }
 ];
 
+export const viewLayers = {
+	DMY: ['calendar', 'month', 'year'],
+	DY: ['calendar', 'month', 'year'],
+	D: ['calendar', 'month', 'year'],
+	MY: ['month', 'year'],
+	M: ['month'],
+	Y: ['year']
+};
+
 export const weekDays = [
 	'Sunday',
 	'Monday',
@@ -54,9 +63,9 @@ const defaultOptions = {
 	disableMonths: [], /// ex: [3,11] accept numbers 0-11;
 	disableYears: [], // ex: [2010, 2011]
 	markDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
-	daterange: false,
-	events: [],
-	eventColorScheme: defaultEventColorType
+	daterange: false, // currently not supported
+	events: [], // currently not supported
+	eventColorScheme: defaultEventColorType // currently not supported
 };
 
 export default defaultOptions;

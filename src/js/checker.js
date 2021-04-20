@@ -60,7 +60,7 @@ export const isDisabledDate = (options, dayObject) => {
 
 export const isPicked = (pickedDate, dayObject) => {
 	const { date } = dayObject;
-	// instance.selectedDate;
+
 	if (pickedDate === null) return false;
 
 	return valueOfDate(pickedDate) === valueOfDate(date) ? true : false;
@@ -69,7 +69,6 @@ export const isPicked = (pickedDate, dayObject) => {
 export const isMarked = (instance, dayObject) => {
 	const { options, markCustomCallbacks } = instance;
 	const { date } = dayObject;
-	// if (!options.markDates.length) return false;
 	const optionMark = options.markDates.some(
 		(markedDate) => valueOfDate(markedDate) === valueOfDate(date)
 	);

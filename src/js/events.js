@@ -1,6 +1,10 @@
-export const CALENDAR_HIDE = 'hide-calendar';
 export const CALENDAR_SHOW = 'show-calendar';
-export const CHANGE_MONTH = 'month-change';
-export const CHANGE_YEAR = 'year-change';
+export const CALENDAR_HIDE = 'hide-calendar';
+export const CALENDAR_UPDATE = 'update-calendar';
+export const DISPLAY_UPDATE = 'update-display';
+export const HEADER_UPDATE = 'update-header';
+export const PREVIEW_UPDATE = 'update-preview';
 export const DATE_PICK = 'date-pick';
 export const PREVIEW_PICK = 'preview-pick';
+export const CHANGE_MONTH = 'month-change';
+export const CHANGE_YEAR = 'year-change';

@@ -1,21 +1,26 @@
 import { validateRequired, eventSchema, eventColorTypeSchema } from './validators';
-import { getActiveMonths, getLimitDates } from './handlers';
-import { dateFormatParser } from './utils';
+import { getActiveMonths, getLimitDates, getViewLayers } from './handlers';
+import { dateFormatParser, Store } from './utils';
 
-export default function createInstance(instanceOptions, datepicker) {
+export default function createInstance(datepicker, calendarNodes, instanceOptions) {
 	instanceOptions.allowedYears.sort((first, next) => first - next);
+	const linkedElement =
+		instanceOptions.el !== null ? document.querySelector(instanceOptions.el) : null;
 	const activeMonths = getActiveMonths(instanceOptions);
 	const { prevLimitDate, nextLimitDate } = getLimitDates(instanceOptions);
+	const viewLayers = getViewLayers(instanceOptions);
+	const store = Store(calendarNodes, viewLayers[0]);
 
 	const instance = {
 		datepicker: datepicker,
 		el: instanceOptions.el,
-		linkedElement: instanceOptions.el !== null ? document.querySelector(instanceOptions.el) : null,
+		linkedElement: linkedElement,
 		pickedDate: instanceOptions.selectedDate,
-		options: instanceOptions,
+		viewLayers: viewLayers,
 		activeMonths: activeMonths,
 		prevLimitDate: prevLimitDate,
 		nextLimitDate: nextLimitDate,
+		options: instanceOptions,
 		onOpenCallbacks: [],
 		onCloseCallbacks: [],
 		onSelectCallbacks: [],
@@ -23,17 +28,17 @@ export default function createInstance(instanceOptions, datepicker) {
 		onMonthChangeCallbacks: [],
 		onYearChangeCallbacks: [],
 		markCustomCallbacks: [],
+		store: store,
 		// Methods
 		open: () => {
-			// datepicker.open(instance.el);
 			datepicker.open(instance);
 		},
 		close: () => {
 			datepicker.close();
 		},
 		reset: () => {
-			instance.linkedElement.value = null;
 			instance.pickedDate = null;
+			if (instance.linkedElement) instance.linkedElement.value = null;
 		},
 		destroy: () => {
 			datepicker.remove(instance);

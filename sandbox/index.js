@@ -52,7 +52,7 @@ const secundDatePicker = MCDatepicker.create({
 });
 const thirdDatePicker = MCDatepicker.create({
 	el: '#datepicker_three',
-	dateFormat: 'dddd, dd mmmm yyyy',
+	dateFormat: 'mm-yyyy',
 	customWeekDays: ['Søndag', 'Måneder', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'],
 	customMonths: [
 		'Januar',
@@ -71,18 +71,20 @@ const thirdDatePicker = MCDatepicker.create({
 	minDate: new Date('2017-09-25'),
 	maxDate: new Date('2020-03-22'),
 	jumpToMinMax: false,
+	// jumpOverDisabled: false,
 	selectedDate: new Date('2020-03-22'),
 	disableMonths: [5, 7]
 });
 
 const forthDatePicker = MCDatepicker.create({
+	dateFormat: 'yyyy',
 	selectedDate: new Date('2020-04-04'),
 	allowedMonths: [5, 7, 9],
 	allowedYears: [2016, 2018, 2020, 2022, 2024, 2026]
 });
 
-forthDatePicker.onSelect((date) => {
-	alert(date);
+forthDatePicker.onSelect((date, formatedDate) => {
+	console.log(formatedDate);
 });
 
 datepickerBTN.onclick = () => {

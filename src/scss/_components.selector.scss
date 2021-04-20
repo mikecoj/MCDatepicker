@@ -5,27 +5,11 @@
 .mc-select {
 	$root: &;
 
-	&[data-view='year'] {
+	&[data-target='year'] {
 		#{$root}__month {
 			display: none;
 		}
 		#{$root}__year {
-			width: 100%;
-			#{$root}__data--year {
-				width: 75%;
-				justify-content: center;
-			}
-			#{$root}__nav {
-				display: flex;
-				position: relative;
-			}
-		}
-	}
-	&[data-view='month'] {
-		#{$root}__year {
-			display: none;
-		}
-		#{$root}__month {
 			width: 100%;
 			#{$root}__data--year {
 				width: 75%;
@@ -112,8 +96,9 @@
 		span {
 			line-height: 1.2;
 			text-align: center;
-			#{$root}[data-view='calendar'] & {
-				position: absolute;
+			position: absolute;
+			#{$root}[data-target='year'] & {
+				position: relative;
 			}
 		}
 

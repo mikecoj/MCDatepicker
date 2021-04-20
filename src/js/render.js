@@ -47,11 +47,11 @@ const getCalendarArray = (options, firstMonthDate) => {
 };
 
 export const renderMonthPreview = (calendarNodes, instance) => {
-	const { currentMonthSelect, currentYearSelect, previewCells } = calendarNodes;
-	const { prevLimitDate, nextLimitDate, options } = instance;
+	const { previewCells } = calendarNodes;
+	const { store, prevLimitDate, nextLimitDate, options } = instance;
 	const { customMonths } = options;
-	const currentMonth = currentMonthSelect.children[0].innerHTML;
-	const selectedYear = currentYearSelect.children[0].innerHTML;
+	const currentMonth = customMonths[store.preview.month];
+	const selectedYear = store.preview.year;
 	customMonths.map((month, index) => {
 		let monthClasslist = ['mc-month-year__cell'];
 		const firstMonthDate = new Date(Number(selectedYear), index);
@@ -76,11 +76,11 @@ export const renderMonthPreview = (calendarNodes, instance) => {
 };
 
 export const renderYearPreview = (calendarNodes, instance, year) => {
-	const { currentYearSelect, previewCells } = calendarNodes;
-	const { prevLimitDate, nextLimitDate, options } = instance;
+	const { previewCells } = calendarNodes;
+	const { store, prevLimitDate, nextLimitDate, options } = instance;
 	const minYear = prevLimitDate && prevLimitDate.getFullYear();
 	const maxYear = nextLimitDate && nextLimitDate.getFullYear();
-	const currentYear = Number(currentYearSelect.children[0].innerHTML);
+	const currentYear = store.preview.year;
 	previewCells.forEach((cell, index) => {
 		let yearClasslist = ['mc-month-year__cell'];
 		let customYear = year + index;
@@ -138,8 +138,6 @@ export const renderCalendar = (instance, date) => {
 export function writeTemplate(datepickers) {
 	// create a new div tag
 	const calendarDiv = document.createElement('div');
-	// set the id of the created div
-	// calendarDiv.id = 'mc-calendar';
 	// set the classList of the created div
 	calendarDiv.className = 'mc-calendar';
 	// write the template to the div content
