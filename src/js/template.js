@@ -3,7 +3,7 @@ export const spanTemplate = (direction, content) => {
 	return `<span style="transform: translateX(${units}px);">${content}</span>`;
 };
 
-export default `<div class="mc-display">
+export default `<div class="mc-display" data-target="calendar">
 <div class="mc-display__header">
 <h3 class="mc-display__day">Thursday</h3>
 </div>
@@ -18,7 +18,7 @@ export default `<div class="mc-display">
 </div>
 </div>
 <div class="mc-picker">
-<div class="mc-picker__header mc-select mc-container" data-view="calendar">
+<div class="mc-picker__header mc-select mc-container" data-target="calendar">
 <div class="mc-select__month">
 <button id="mc-picker__month--prev" class="mc-select__nav mc-select__nav--prev">
 <svg class="icon-angle icon-angle--left" viewBox="0 0 256 512" width='10px' height='100%'>
@@ -120,7 +120,7 @@ export default `<div class="mc-display">
 </tr>
 </tbody>
 </table>
-<div class="mc-month-year__preview" data-preview=null>
+<div class="mc-month-year__preview" data-target=null>
 <div class="mc-month-year__cell"></div>
 <div class="mc-month-year__cell"></div>
 <div class="mc-month-year__cell"></div>
