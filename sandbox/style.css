@@ -53,3 +53,35 @@ body {
 .form-field__input {
 	display: block;
 }
+
+.form-field__input {
+	padding: 0.5em 0.7em;
+	border: 1px solid #919fae;
+	border-radius: 5px;
+	outline: none;
+}
+
+.input__wrapper {
+	display: flex;
+}
+
+#datepicker_btn {
+	padding: 0 0.6em;
+	border: 1px solid #919fae;
+	border-radius: 0;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	outline: none;
+	cursor: pointer;
+}
+
+.calendarIcon {
+	height: 1rem;
+}
+
+#datepicker_four {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	border-right: none;
+	/* cursor: not-allowed; */
+}

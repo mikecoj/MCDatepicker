@@ -4,6 +4,7 @@ import './style.css';
 window.MCDatepicker = MCDatepicker;
 
 const datepickerBTN = document.querySelector('#datepicker_btn');
+const inputFourDatepicker = document.querySelector('#datepicker_four');
 
 const firstDatePicker = MCDatepicker.create({
 	el: '#datepicker_one',
@@ -84,9 +85,11 @@ const forthDatePicker = MCDatepicker.create({
 });
 
 forthDatePicker.onSelect((date, formatedDate) => {
-	console.log(formatedDate);
+	inputFourDatepicker.value = formatedDate;
 });
 
 datepickerBTN.onclick = () => {
 	forthDatePicker.open();
 };
+
+forthDatePicker.onCancel(() => alert('The datepicker was closed using CANCEL button'));
