@@ -46,6 +46,12 @@
 
 	&__header {
 		background-color: $dark-bg-color;
+		#{$root}[data-target='month'] &,
+		#{$root}[data-target='year'] & {
+			@include for-desktop {
+				display: none;
+			}
+		}
 	}
 
 	&__day {
@@ -90,6 +96,10 @@
 			#{$root}[data-target='year'] & {
 				width: 100%;
 				text-align: center;
+				@include for-desktop {
+					justify-content: center;
+					height: 100%;
+				}
 			}
 			@include for-desktop {
 				justify-content: space-between;

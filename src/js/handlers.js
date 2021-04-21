@@ -225,7 +225,7 @@ export const updateDisplay = (calendarNodes, instance) => {
 	const { target, date } = store.display;
 	const { customWeekDays, customMonths, showCalendarDisplay } = options;
 
-	if (!showCalendarDisplay || viewLayers[0] !== 'calendar') {
+	if (!showCalendarDisplay) {
 		calendarDisplay.classList.add('u-display-none');
 	} else {
 		calendarDisplay.classList.remove('u-display-none');

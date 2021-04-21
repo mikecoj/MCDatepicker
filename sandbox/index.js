@@ -47,7 +47,7 @@ firstDatePicker.onCancel(() => console.log('Cancel button clicked!'));
 const secundDatePicker = MCDatepicker.create({
 	el: '#datepicker_two',
 	bodyType: 'modal',
-	showCalendarDisplay: false,
+	// showCalendarDisplay: false,
 	minDate: new Date(2020, 11, 5),
 	maxDate: new Date(2021, 0, 16)
 });
