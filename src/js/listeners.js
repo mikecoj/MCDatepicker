@@ -125,7 +125,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		store.preview.setTarget = viewLayers[0];
 		store.header.setTarget = viewLayers[0];
 
-		if (target === viewLayers[0]) activeInstance.pickedDate = nextCalendarDate;
+		if (viewLayers[0] !== 'calendar') activeInstance.pickedDate = nextCalendarDate;
 		if (viewLayers[0] === 'calendar') store.calendar.setDate = nextCalendarDate;
 	});
 
@@ -246,6 +246,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		slider.onFinish(() => {
 			if (viewLayers[0] === 'calendar') store.calendar.setDate = newCalendarDate;
 			if (viewLayers[0] !== 'calendar') store.display.setDate = newCalendarDate;
+			if (viewLayers[0] !== 'calendar') activeInstance.pickedDate = newCalendarDate;
 			store.preview.year = newCalendarDate.getFullYear();
 			store.preview.setMonth = newCalendarDate.getMonth();
 			store.header.year = newCalendarDate.getFullYear();
@@ -311,7 +312,11 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		dispatchChangeYear(currentYearSelect, 'next');
 	});
 
-	cancelButton.addEventListener('click', (e) => dispatchCalendarHide(e.target));
+	cancelButton.addEventListener('click', (e) => {
+		const { onCancelCallbacks } = activeInstance;
+		dispatchCalendarHide(e.target);
+		onCancelCallbacks.forEach((callback) => callback.apply(null));
+	});
 
 	okButton.addEventListener('click', (e) => {
 		const { linkedElement, pickedDate, onSelectCallbacks, options } = activeInstance;
