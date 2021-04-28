@@ -121,11 +121,11 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		store.preview.year = nextCalendarDate.getFullYear();
 		if (viewLayers[0] !== 'year') store.header.year = nextCalendarDate.getFullYear();
 		store.preview.month = nextCalendarDate.getMonth();
-		store.display.setDate = nextCalendarDate;
 		store.preview.setTarget = viewLayers[0];
 		store.header.setTarget = viewLayers[0];
 
 		if (viewLayers[0] !== 'calendar') activeInstance.pickedDate = nextCalendarDate;
+		if (viewLayers[0] !== 'calendar') store.display.setDate = nextCalendarDate;
 		if (viewLayers[0] === 'calendar') store.calendar.setDate = nextCalendarDate;
 	});
 
@@ -262,6 +262,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		const isMonthTarget = store.preview.target === 'month' ? true : false;
 		if (isOpened && isMonthTarget) {
 			store.preview.setTarget = viewLayers[0];
+			return;
 		}
 		store.header.setTarget = 'month';
 		store.preview.setTarget = 'month';
