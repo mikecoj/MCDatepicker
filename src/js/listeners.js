@@ -341,11 +341,12 @@ export const applyListeners = (calendarNodes, datepickers) => {
 };
 
 export const applyOnFocusListener = (calendarDiv, instance) => {
+	if (!instance.linkedElement) return;
 	instance.linkedElement.onfocus = (e) => {
 		e.preventDefault();
 		dispatchCalendarShow(calendarDiv, instance);
 	};
 };
 export const removeOnFocusListener = ({ linkedElement }) => {
-	linkedElement.onfocus = null;
+	if (linkedElement) linkedElement.onfocus = null;
 };
