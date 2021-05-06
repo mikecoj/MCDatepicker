@@ -1,7 +1,13 @@
 import { viewLayers } from './defaults';
 import { renderCalendar, renderMonthPreview, renderYearPreview } from './render';
 import { isActiveMonth, isActiveYear, isLessThanMinDate, isMoreThanMaxDate } from './checker';
-import { valueOfDate, calculateCalendarPosition, HandleArrowClass, getNewIndex } from './utils';
+import {
+	valueOfDate,
+	calculateCalendarPosition,
+	HandleArrowClass,
+	getNewIndex,
+	dateFormatParser
+} from './utils';
 
 export const getDOMNodes = (calendar) => {
 	return {
@@ -132,6 +138,14 @@ export const getLimitDates = (options) => {
 	if (!nextLimitDate) nextLimitDate = maxDate ? maxDate : maxAllowedDate;
 
 	return { prevLimitDate, nextLimitDate };
+};
+
+export const updateLinkedInputValue = (instance) => {
+	const { pickedDate, linkedElement, options } = instance;
+	const { dateFormat } = options;
+	if (linkedElement && pickedDate) {
+		linkedElement.value = dateFormatParser(pickedDate, options, dateFormat);
+	}
 };
 
 export const updateCalendarPosition = (calendarNodes, instance) => {
