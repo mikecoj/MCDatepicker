@@ -8,7 +8,8 @@ import {
 	CHANGE_MONTH,
 	CHANGE_YEAR,
 	DATE_PICK,
-	PREVIEW_PICK
+	PREVIEW_PICK,
+	SET_DATE
 } from './events';
 
 export const dispatchCalendarShow = (elem, instance) => {
@@ -80,6 +81,15 @@ export const dispatchPreviewCellPick = (elem) => {
 				target,
 				data: elem.children[0].innerHTML
 			}
+		})
+	);
+};
+
+export const dispatchSetDate = (elem, detail = { instance: null, date: null }) => {
+	elem.dispatchEvent(
+		new CustomEvent(SET_DATE, {
+			bubbles: true,
+			detail
 		})
 	);
 };
