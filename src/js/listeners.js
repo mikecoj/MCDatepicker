@@ -1,5 +1,5 @@
 import { spanTemplate } from './template';
-import { dateFormatParser, Animation } from './utils';
+import { dateFormatParser, Animation, valueOfDate } from './utils';
 import {
 	CALENDAR_HIDE,
 	CALENDAR_SHOW,
@@ -10,7 +10,8 @@ import {
 	CHANGE_MONTH,
 	CHANGE_YEAR,
 	DATE_PICK,
-	PREVIEW_PICK
+	PREVIEW_PICK,
+	SET_DATE
 } from './events';
 import {
 	dispatchCalendarShow,
@@ -27,6 +28,7 @@ import {
 	updateMonthYearPreview,
 	updateCalendarUI,
 	updateDisplay,
+	updateLinkedInputValue,
 	getTargetDate,
 	getNewMonth,
 	getNewYear
@@ -127,6 +129,16 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		if (viewLayers[0] !== 'calendar') activeInstance.pickedDate = nextCalendarDate;
 		if (viewLayers[0] !== 'calendar') store.display.setDate = nextCalendarDate;
 		if (viewLayers[0] === 'calendar') store.calendar.setDate = nextCalendarDate;
+	});
+
+	calendar.addEventListener(SET_DATE, (e) => {
+		const { instance, date } = e.detail;
+		instance.pickedDate = date;
+		updateLinkedInputValue(instance);
+		if (JSON.stringify(activeInstance) !== JSON.stringify(instance)) return;
+		const { store } = activeInstance;
+		store.display.setDate = date;
+		store.calendar.setDate = store.calendar.date;
 	});
 
 	calendar.addEventListener(CALENDAR_UPDATE, (e) =>
