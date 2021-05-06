@@ -1,4 +1,5 @@
-import { validateRequired, eventSchema, eventColorTypeSchema } from './validators';
+// import { validateRequired, eventSchema, eventColorTypeSchema } from './validators';
+import { dispatchSetDate } from './emiters';
 import { getActiveMonths, getLimitDates, getViewLayers } from './handlers';
 import { dateFormatParser, Store } from './utils';
 
@@ -64,38 +65,61 @@ export default function createInstance(datepicker, calendarNodes, instanceOption
 		},
 		// Getters
 		getDay: () => {
-			return instance.pickedDate.getDay();
+			return instance.pickedDate ? instance.pickedDate.getDay() : null;
 		},
 		getDate: () => {
-			return instance.pickedDate.getDate();
+			return instance.pickedDate ? instance.pickedDate.getDate() : null;
 		},
 		getMonth: () => {
-			return instance.pickedDate.getMonth();
+			return instance.pickedDate ? instance.pickedDate.getMonth() : null;
 		},
 		getYear: () => {
-			return instance.pickedDate.getFullYear();
+			return instance.pickedDate ? instance.pickedDate.getFullYear() : null;
 		},
 		getFullDate: () => {
 			return instance.pickedDate;
 		},
 		getFormatedDate: () => {
-			return dateFormatParser(instance.pickedDate, instance.options, instance.options.dateFormat);
-		},
-		getEvents: () => {
-			return instance.options.events;
+			return instance.pickedDate
+				? dateFormatParser(instance.pickedDate, instance.options, instance.options.dateFormat)
+				: null;
 		},
 		markDatesCustom: (callback) => {
 			instance.markCustomCallbacks.push(callback);
 		},
+		// getEvents: () => {
+		// 	return instance.options.events;
+		// },
+
 		//  Setters
-		customizeEvents: (eventsType) => {
-			if (!validateRequired(eventsType, eventColorTypeSchema)) return;
-			instance.options.eventColorScheme.push(...eventsType);
+		setFullDate: (date) => {
+			dispatchSetDate(calendarNodes.calendar, { instance, date });
 		},
-		addEvents: (events) => {
-			if (!validateRequired(events, eventSchema)) return;
-			instance.options.events.push(...events);
+		setDate: (date) => {
+			const newDate = instance.pickedDate ? new Date(instance.pickedDate) : new Date();
+			newDate.setDate(date);
+			dispatchSetDate(calendarNodes.calendar, { instance, date: newDate });
+		},
+		setMonth: (month) => {
+			const newDate = instance.pickedDate ? new Date(instance.pickedDate) : new Date();
+			newDate.setMonth(month);
+			dispatchSetDate(calendarNodes.calendar, { instance, date: newDate });
+		},
+		setYear: (year) => {
+			const newDate = instance.pickedDate ? new Date(instance.pickedDate) : new Date();
+			newDate.setFullYear(year);
+			dispatchSetDate(calendarNodes.calendar, { instance, date: newDate });
 		}
+
+		// TODO: Add Events Integration
+		// customizeEvents: (eventsType) => {
+		// 	if (!validateRequired(eventsType, eventColorTypeSchema)) return;
+		// 	instance.options.eventColorScheme.push(...eventsType);
+		// },
+		// addEvents: (events) => {
+		// 	if (!validateRequired(events, eventSchema)) return;
+		// 	instance.options.events.push(...events);
+		// }
 	};
 	return instance;
 }
