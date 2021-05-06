@@ -5,6 +5,9 @@ window.MCDatepicker = MCDatepicker;
 
 const datepickerBTN = document.querySelector('#datepicker_btn');
 const inputFourDatepicker = document.querySelector('#datepicker_four');
+const setDateInput = document.querySelector('#set_date_input_two');
+const setDateBtn = document.querySelector('#set_date_btn');
+let setDateValue = null;
 
 const firstDatePicker = MCDatepicker.create({
 	el: '#datepicker_one',
@@ -53,7 +56,8 @@ const secundDatePicker = MCDatepicker.create({
 });
 const thirdDatePicker = MCDatepicker.create({
 	el: '#datepicker_three',
-	dateFormat: 'mm-yyyy',
+	// dateFormat: 'mm-yyyy',
+	dateFormat: 'dd-mm-yyyy',
 	customWeekDays: ['Søndag', 'Måneder', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'],
 	customMonths: [
 		'Januar',
@@ -93,3 +97,11 @@ datepickerBTN.onclick = () => {
 };
 
 forthDatePicker.onCancel(() => alert('The datepicker was closed using CANCEL button'));
+
+setDateInput.onchange = (e) => {
+	setDateValue = eval(e.target.value);
+};
+
+setDateBtn.onclick = () => {
+	setDateValue && secundDatePicker.setFullDate(setDateValue);
+};
