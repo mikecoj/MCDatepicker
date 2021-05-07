@@ -139,6 +139,16 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		const { store } = activeInstance;
 		store.display.setDate = date;
 		store.calendar.setDate = store.calendar.date;
+		if (store.preview.target !== 'calendar') {
+			store.preview.month = date.getMonth();
+			store.preview.year = date.getFullYear();
+			store.preview.setTarget = store.preview.target;
+		}
+		if (store.header.target === 'month') {
+			store.header.month = date.getMonth();
+			store.header.year = date.getFullYear();
+			store.header.setTarget = store.header.target;
+		}
 	});
 
 	calendar.addEventListener(CALENDAR_UPDATE, (e) =>
