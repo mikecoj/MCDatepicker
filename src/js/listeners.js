@@ -89,6 +89,8 @@ export const applyListeners = (calendarNodes, datepickers) => {
 	});
 	calendar.addEventListener(DATE_PICK, (e) => {
 		if (e.target.classList.contains('mc-date--inactive')) return;
+		const { linkedElement, onSelectCallbacks, options } = activeInstance;
+		const { autoClose, dateFormat } = options;
 		// update the instance picked date
 		activeInstance.pickedDate = e.detail.date;
 		// update display store data
@@ -96,12 +98,23 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		// update the classlist of the picked cell
 		dateCells.forEach((cell) => cell.classList.remove('mc-date--picked'));
 		e.target.classList.add('mc-date--picked');
+
+		if (autoClose) {
+			let pickedDateValue = activeInstance.pickedDate
+				? dateFormatParser(activeInstance.pickedDate, options, dateFormat)
+				: null;
+			if (linkedElement) linkedElement.value = pickedDateValue;
+			dispatchCalendarHide(e.target);
+			onSelectCallbacks.forEach((callback) =>
+				callback.apply(null, [activeInstance.pickedDate, pickedDateValue])
+			);
+		}
 	});
 
 	calendar.addEventListener(PREVIEW_PICK, (e) => {
 		const { data } = e.detail;
-		const { store, options, viewLayers } = activeInstance;
-		const { customMonths } = options;
+		const { linkedElement, onSelectCallbacks, store, options, viewLayers } = activeInstance;
+		const { customMonths, autoClose, dateFormat } = options;
 		const { target } = store.preview;
 
 		if (e.target.classList.contains('mc-month-year__cell--inactive')) return;
@@ -123,12 +136,24 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		store.preview.year = nextCalendarDate.getFullYear();
 		if (viewLayers[0] !== 'year') store.header.year = nextCalendarDate.getFullYear();
 		store.preview.month = nextCalendarDate.getMonth();
-		store.preview.setTarget = viewLayers[0];
-		store.header.setTarget = viewLayers[0];
 
 		if (viewLayers[0] !== 'calendar') activeInstance.pickedDate = nextCalendarDate;
 		if (viewLayers[0] !== 'calendar') store.display.setDate = nextCalendarDate;
 		if (viewLayers[0] === 'calendar') store.calendar.setDate = nextCalendarDate;
+
+		if (autoClose && store.preview.target === viewLayers[0]) {
+			let pickedDateValue = activeInstance.pickedDate
+				? dateFormatParser(activeInstance.pickedDate, options, dateFormat)
+				: null;
+			if (linkedElement) linkedElement.value = pickedDateValue;
+			dispatchCalendarHide(e.target);
+			onSelectCallbacks.forEach((callback) =>
+				callback.apply(null, [activeInstance.pickedDate, pickedDateValue])
+			);
+		}
+
+		store.preview.setTarget = viewLayers[0];
+		store.header.setTarget = viewLayers[0];
 	});
 
 	calendar.addEventListener(SET_DATE, (e) => {
