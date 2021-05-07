@@ -43,6 +43,7 @@ const defaultOptions = {
 	el: null,
 	dateFormat: 'DD-MMM-YYYY',
 	bodyType: 'modal', // ['modal', 'inline', 'permanent']
+	autoClose: false,
 	showCalendarDisplay: true,
 	customWeekDays: weekDays,
 	customMonths: months,
