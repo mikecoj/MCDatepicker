@@ -6,8 +6,18 @@ window.MCDatepicker = MCDatepicker;
 const datepickerBTN = document.querySelector('#datepicker_btn');
 const inputFourDatepicker = document.querySelector('#datepicker_four');
 const setDateInput = document.querySelector('#set_date_input_two');
+const setDayInput = document.querySelector('#set_day_input_two');
+const setMonthInput = document.querySelector('#set_month_input_two');
+const setYearInput = document.querySelector('#set_year_input_two');
 const setDateBtn = document.querySelector('#set_date_btn');
+const setDayBtn = document.querySelector('#set_day_btn');
+const setMonthBtn = document.querySelector('#set_month_btn');
+const setYearBtn = document.querySelector('#set_year_btn');
+
 let setDateValue = null;
+let setDayValue = null;
+let setMonthValue = null;
+let setYearValue = null;
 
 const firstDatePicker = MCDatepicker.create({
 	el: '#datepicker_one',
@@ -49,6 +59,8 @@ firstDatePicker.onCancel(() => console.log('Cancel button clicked!'));
 
 const secundDatePicker = MCDatepicker.create({
 	el: '#datepicker_two',
+	// dateFormat: 'yyyy',
+	// dateFormat: 'mm-yyyy',
 	bodyType: 'modal',
 	// showCalendarDisplay: false,
 	minDate: new Date(2020, 11, 5),
@@ -56,8 +68,8 @@ const secundDatePicker = MCDatepicker.create({
 });
 const thirdDatePicker = MCDatepicker.create({
 	el: '#datepicker_three',
-	// dateFormat: 'mm-yyyy',
-	dateFormat: 'dd-mm-yyyy',
+	dateFormat: 'mm-yyyy',
+	// dateFormat: 'dd-mm-yyyy',
 	customWeekDays: ['Søndag', 'Måneder', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'],
 	customMonths: [
 		'Januar',
@@ -98,10 +110,44 @@ datepickerBTN.onclick = () => {
 
 forthDatePicker.onCancel(() => alert('The datepicker was closed using CANCEL button'));
 
+// ---------------------
+
 setDateInput.onchange = (e) => {
+	// converts string into code ex: new Date(2021, 0, 1)
 	setDateValue = eval(e.target.value);
 };
 
 setDateBtn.onclick = () => {
-	setDateValue && secundDatePicker.setFullDate(setDateValue);
+	setDateValue !== null && secundDatePicker.setFullDate(setDateValue);
+};
+
+// ---------------------
+
+setDayInput.onchange = (e) => {
+	setDayValue = Number(e.target.value);
+};
+
+setDayBtn.onclick = () => {
+	setDayValue !== null && secundDatePicker.setDate(setDayValue);
+};
+
+// ---------------------
+
+setMonthInput.onchange = (e) => {
+	setMonthValue = Number(e.target.value);
+};
+
+setMonthBtn.onclick = () => {
+	console.log(setMonthValue);
+	setMonthValue !== null && secundDatePicker.setMonth(setMonthValue);
+};
+
+// ---------------------
+
+setYearInput.onchange = (e) => {
+	setYearValue = Number(e.target.value);
+};
+
+setYearBtn.onclick = () => {
+	setYearValue !== null && secundDatePicker.setYear(setYearValue);
 };
