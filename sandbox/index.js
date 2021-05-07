@@ -22,6 +22,7 @@ let setYearValue = null;
 const firstDatePicker = MCDatepicker.create({
 	el: '#datepicker_one',
 	bodyType: 'inline',
+	autoClose: true,
 	dateFormat: 'dddd, dd mmmm yyyy',
 	disableDates: [new Date(2021, 1, 12), new Date(2021, 4, 15)],
 	customWeekDays: ['Duminică', 'Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă'],
@@ -69,6 +70,7 @@ const secundDatePicker = MCDatepicker.create({
 const thirdDatePicker = MCDatepicker.create({
 	el: '#datepicker_three',
 	dateFormat: 'mm-yyyy',
+	autoClose: true,
 	// dateFormat: 'dd-mm-yyyy',
 	customWeekDays: ['Søndag', 'Måneder', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'],
 	customMonths: [
