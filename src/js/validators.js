@@ -78,6 +78,7 @@ const optionsSchema = {
 		const types = ['modal', 'inline', 'permanent'];
 		return types.includes(value);
 	},
+	autoClose: (value) => Is(value).boolean(),
 	showCalendarDisplay: (value) => Is(value).boolean(),
 	customWeekDays: (value) => {
 		// ['S', 'M', 'T', 'W', 'T', 'F', 'S']
