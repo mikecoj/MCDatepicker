@@ -1,4 +1,5 @@
 import { viewLayers } from './defaults';
+import { dispatchCalendarHide } from './emiters';
 import { renderCalendar, renderMonthPreview, renderYearPreview } from './render';
 import { isActiveMonth, isActiveYear, isLessThanMinDate, isMoreThanMaxDate } from './checker';
 import {
@@ -138,6 +139,16 @@ export const getLimitDates = (options) => {
 	if (!nextLimitDate) nextLimitDate = maxDate ? maxDate : maxAllowedDate;
 
 	return { prevLimitDate, nextLimitDate };
+};
+
+export const updatePickedDateValue = (activeInstance, calendar) => {
+	if (!activeInstance) return;
+	const { pickedDate, linkedElement, onSelectCallbacks, options } = activeInstance;
+	const { dateFormat } = options;
+	let pickedDateValue = pickedDate ? dateFormatParser(pickedDate, options, dateFormat) : null;
+	if (linkedElement) linkedElement.value = pickedDateValue;
+	dispatchCalendarHide(calendar);
+	onSelectCallbacks.forEach((callback) => callback.apply(null, [pickedDate, pickedDateValue]));
 };
 
 export const updateLinkedInputValue = (instance) => {
