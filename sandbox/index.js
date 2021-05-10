@@ -63,6 +63,7 @@ const secundDatePicker = MCDatepicker.create({
 	// dateFormat: 'yyyy',
 	// dateFormat: 'mm-yyyy',
 	bodyType: 'modal',
+	// closeOndblclick: false,
 	// showCalendarDisplay: false,
 	minDate: new Date(2020, 11, 5),
 	maxDate: new Date(2021, 0, 16)
@@ -98,6 +99,7 @@ const thirdDatePicker = MCDatepicker.create({
 const forthDatePicker = MCDatepicker.create({
 	dateFormat: 'yyyy',
 	selectedDate: new Date('2020-04-04'),
+	closeOndblclick: false,
 	allowedMonths: [5, 7, 9],
 	allowedYears: [2016, 2018, 2020, 2022, 2024, 2026]
 });
