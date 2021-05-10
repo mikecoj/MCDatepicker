@@ -79,6 +79,7 @@ const optionsSchema = {
 		return types.includes(value);
 	},
 	autoClose: (value) => Is(value).boolean(),
+	closeOndblclick: (value) => Is(value).boolean(),
 	showCalendarDisplay: (value) => Is(value).boolean(),
 	customWeekDays: (value) => {
 		// ['S', 'M', 'T', 'W', 'T', 'F', 'S']
