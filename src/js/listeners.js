@@ -1,5 +1,5 @@
+import { Animation } from './utils';
 import { spanTemplate } from './template';
-import { dateFormatParser, Animation, valueOfDate } from './utils';
 import {
 	CALENDAR_HIDE,
 	CALENDAR_SHOW,
@@ -28,6 +28,7 @@ import {
 	updateMonthYearPreview,
 	updateCalendarUI,
 	updateDisplay,
+	updatePickedDateValue,
 	updateLinkedInputValue,
 	getTargetDate,
 	getNewMonth,
@@ -88,9 +89,16 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		onCloseCallbacks.forEach((callback) => callback.apply(null));
 	});
 	calendar.addEventListener(DATE_PICK, (e) => {
+		const { options } = activeInstance;
+		const { autoClose, closeOndblclick } = options;
+
 		if (e.target.classList.contains('mc-date--inactive')) return;
-		const { linkedElement, onSelectCallbacks, options } = activeInstance;
-		const { autoClose, dateFormat } = options;
+
+		if (e.detail.dblclick) {
+			if (!closeOndblclick) return;
+			return updatePickedDateValue(activeInstance, calendar);
+		}
+
 		// update the instance picked date
 		activeInstance.pickedDate = e.detail.date;
 		// update display store data
@@ -99,28 +107,24 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		dateCells.forEach((cell) => cell.classList.remove('mc-date--picked'));
 		e.target.classList.add('mc-date--picked');
 
-		if (autoClose) {
-			let pickedDateValue = activeInstance.pickedDate
-				? dateFormatParser(activeInstance.pickedDate, options, dateFormat)
-				: null;
-			if (linkedElement) linkedElement.value = pickedDateValue;
-			dispatchCalendarHide(e.target);
-			onSelectCallbacks.forEach((callback) =>
-				callback.apply(null, [activeInstance.pickedDate, pickedDateValue])
-			);
-		}
+		if (autoClose) updatePickedDateValue(activeInstance, calendar);
 	});
 
 	calendar.addEventListener(PREVIEW_PICK, (e) => {
-		const { data } = e.detail;
-		const { linkedElement, onSelectCallbacks, store, options, viewLayers } = activeInstance;
-		const { customMonths, autoClose, dateFormat } = options;
+		const { data, dblclick } = e.detail;
+		const { store, options, viewLayers } = activeInstance;
+		const { customMonths, autoClose, closeOndblclick } = options;
 		const { target } = store.preview;
 
 		if (e.target.classList.contains('mc-month-year__cell--inactive')) return;
 
 		previewCells.forEach((cell) => cell.classList.remove('mc-month-year__cell--picked'));
 		e.target.classList.add('mc-month-year__cell--picked');
+
+		if (dblclick && store.preview.target === viewLayers[0]) {
+			if (!closeOndblclick) return;
+			return updatePickedDateValue(activeInstance, calendar);
+		}
 
 		let targetYear = store.preview.year;
 		let targetMonth = customMonths[store.header.month];
@@ -142,14 +146,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		if (viewLayers[0] === 'calendar') store.calendar.setDate = nextCalendarDate;
 
 		if (autoClose && store.preview.target === viewLayers[0]) {
-			let pickedDateValue = activeInstance.pickedDate
-				? dateFormatParser(activeInstance.pickedDate, options, dateFormat)
-				: null;
-			if (linkedElement) linkedElement.value = pickedDateValue;
-			dispatchCalendarHide(e.target);
-			onSelectCallbacks.forEach((callback) =>
-				callback.apply(null, [activeInstance.pickedDate, pickedDateValue])
-			);
+			updatePickedDateValue(activeInstance, calendar);
 		}
 
 		store.preview.setTarget = viewLayers[0];
@@ -334,11 +331,26 @@ export const applyListeners = (calendarNodes, datepickers) => {
 
 	// Dispatch custom events
 
-	previewCells.forEach((cell) =>
-		cell.addEventListener('click', (e) => dispatchPreviewCellPick(e.currentTarget))
-	);
+	previewCells.forEach((cell) => {
+		// cell.addEventListener('click', (e) => dispatchPreviewCellPick(e.currentTarget))
+		cell.onclick = (e) => {
+			e.detail === 1 && dispatchPreviewCellPick(e.currentTarget);
+		};
+		cell.ondblclick = (e) => {
+			e.detail === 2 && dispatchPreviewCellPick(e.currentTarget, true);
+		};
+	});
 	// add click event that dispatch a custom DATE_PICK event, to every calendar cell
-	dateCells.forEach((cell) => cell.addEventListener('click', (e) => dispatchDatePick(e.target)));
+	// dateCells.forEach((cell) => cell.addEventListener('click', (e) => dispatchDatePick(e.target)));
+
+	dateCells.forEach((cell) => {
+		cell.onclick = (e) => {
+			e.detail === 1 && dispatchDatePick(e.target);
+		};
+		cell.ondblclick = (e) => {
+			e.detail === 2 && dispatchDatePick(e.target, true);
+		};
+	});
 
 	monthNavPrev.addEventListener('click', (e) => {
 		if (e.currentTarget.classList.contains('mc-select__nav--inactive')) return;
@@ -366,18 +378,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		onCancelCallbacks.forEach((callback) => callback.apply(null));
 	});
 
-	okButton.addEventListener('click', (e) => {
-		const { linkedElement, pickedDate, onSelectCallbacks, options } = activeInstance;
-		const { dateFormat } = options;
-		// if the value of picked date is not null then get formated date
-		let pickedDateValue = pickedDate ? dateFormatParser(pickedDate, options, dateFormat) : null;
-		// set the value of the picked date to the linked input
-		if (linkedElement) linkedElement.value = pickedDateValue;
-		// dispatch DATEPICKER_HIDE event
-		dispatchCalendarHide(e.target);
-		// run all custom onSelect callbacks added by the user
-		onSelectCallbacks.forEach((callback) => callback.apply(null, [pickedDate, pickedDateValue]));
-	});
+	okButton.addEventListener('click', updatePickedDateValue(activeInstance, calendar));
 
 	clearButton.addEventListener('click', () => {
 		const { linkedElement } = activeInstance;
@@ -397,3 +398,15 @@ export const applyOnFocusListener = (calendarDiv, instance) => {
 export const removeOnFocusListener = ({ linkedElement }) => {
 	if (linkedElement) linkedElement.onfocus = null;
 };
+
+// dateCells.forEach((cell) => {
+// 	let timer = null;
+// 	cell.onclick = (e) => {
+// 		let clicks = e.detail > 2 ? 2 : e.detail;
+// 		timer = !timer
+// 			? setTimeout(() => {
+// 					console.log(clicks);
+// 			  }, 200)
+// 			: null;
+// 	};
+// });
