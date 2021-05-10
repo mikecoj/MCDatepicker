@@ -1,7 +1,8 @@
 // import { validateRequired, eventSchema, eventColorTypeSchema } from './validators';
+import { Is } from './validators';
 import { dispatchSetDate } from './emiters';
-import { getActiveMonths, getLimitDates, getViewLayers } from './handlers';
 import { dateFormatParser, Store } from './utils';
+import { getActiveMonths, getLimitDates, getViewLayers } from './handlers';
 
 export default function createInstance(datepicker, calendarNodes, instanceOptions) {
 	instanceOptions.allowedYears.sort((first, next) => first - next);
@@ -93,19 +94,26 @@ export default function createInstance(datepicker, calendarNodes, instanceOption
 
 		//  Setters
 		setFullDate: (date) => {
+			if (!Is(date).date()) throw new TypeError('Parameter of setFullDate() is not of type date');
 			dispatchSetDate(calendarNodes.calendar, { instance, date });
 		},
 		setDate: (date) => {
+			if (!Is(date).number())
+				throw new TypeError(`Parameter 'date' of setDate() is not of type number`);
 			const newDate = instance.pickedDate ? new Date(instance.pickedDate) : new Date();
 			newDate.setDate(date);
 			dispatchSetDate(calendarNodes.calendar, { instance, date: newDate });
 		},
 		setMonth: (month) => {
+			if (!Is(date).number())
+				throw new TypeError(`Parameter 'month' of setMonth() is not of type number`);
 			const newDate = instance.pickedDate ? new Date(instance.pickedDate) : new Date();
 			newDate.setMonth(month);
 			dispatchSetDate(calendarNodes.calendar, { instance, date: newDate });
 		},
 		setYear: (year) => {
+			if (!Is(date).number())
+				throw new TypeError(`Parameter 'year' of setYear() is not of type number`);
 			const newDate = instance.pickedDate ? new Date(instance.pickedDate) : new Date();
 			newDate.setFullYear(year);
 			dispatchSetDate(calendarNodes.calendar, { instance, date: newDate });
