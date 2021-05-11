@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.0
+
+---
+
+- added `autoClose` option
+- added `closeOndblclick` option
+- added `setFullDate()` method
+- added `setDate()` method
+- added `setMonth()` method
+- added `setYear()` method
+
 ## 0.4.0
 
 ---
