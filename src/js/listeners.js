@@ -378,7 +378,7 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		onCancelCallbacks.forEach((callback) => callback.apply(null));
 	});
 
-	okButton.addEventListener('click', updatePickedDateValue(activeInstance, calendar));
+	okButton.addEventListener('click', (e) => updatePickedDateValue(activeInstance, calendar));
 
 	clearButton.addEventListener('click', () => {
 		const { linkedElement } = activeInstance;
