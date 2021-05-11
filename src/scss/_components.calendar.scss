@@ -64,6 +64,7 @@
 				top: 50vh;
 				opacity: 1;
 				visibility: visible;
+				height: min(95vh, 400px);
 				transform: translate(-50%, -50%) scale(1);
 				@include popup();
 			}
