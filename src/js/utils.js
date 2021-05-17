@@ -1,4 +1,6 @@
 import {
+	dispatchCalendarShow,
+	dispatchCalendarHide,
 	dispatchCalendarUpdate,
 	dispatchDisplayUpdate,
 	dispatchHeaderUpdate,
@@ -23,6 +25,18 @@ export const getNewIndex = (array, currentIndex, direction) => {
 	// get overlap based on direction
 	const overlap = direction === 'next' ? ~~forwardOverlap : ~~backwardOverlap;
 	return { newIndex, overlap };
+};
+
+export const getAnimations = (element) => {
+	return Promise.all(
+		element.getAnimations({ subtree: true }).map((animation) => animation.finished)
+	);
+};
+
+export const waitFor = (time) => {
+	return new Promise((resolve, reject) => {
+		setTimeout(resolve, time);
+	});
 };
 
 export const Animation = () => {
@@ -245,6 +259,58 @@ export const Store = (calendarNodes, dataTarget) => {
 				this.date = date;
 				dispatchCalendarUpdate(calendar);
 			}
+		}
+	};
+};
+
+export const CalendarStateManager = (calendar) => {
+	let openTimer = null;
+	let closeTimer = null;
+	let prevInstance = null;
+	let sameInstance = false;
+
+	return {
+		opened: false,
+		closed: true,
+		blured: false,
+		isOpening: false,
+		isClosing: false,
+		isBluring: false,
+		open(instance) {
+			if (this.isClosing) return;
+			sameInstance = JSON.stringify(prevInstance) === JSON.stringify(instance);
+			this.isOpening = true;
+			clearTimeout(openTimer);
+			dispatchCalendarShow(calendar, instance);
+			openTimer = setTimeout(() => {
+				this.isOpening = false;
+				this.opened = true;
+				this.closed = false;
+				prevInstance = instance;
+			}, 200);
+		},
+		close() {
+			if (this.closed || this.isOpening || this.isClosing) return;
+			sameInstance = false;
+			this.isClosing = true;
+			clearTimeout(closeTimer);
+			dispatchCalendarHide(calendar);
+			closeTimer = setTimeout(() => {
+				this.isClosing = false;
+				this.opened = false;
+				this.closed = true;
+			}, 200);
+		},
+		blur() {
+			this.isBluring = true;
+			return waitFor(100).then(() => {
+				if (this.closed || this.isOpening || this.isClosing) return !sameInstance;
+				if (prevInstance && !prevInstance.options.closeOnBlur) return false;
+				this.close();
+				this.isBluring = false;
+				this.blured = true;
+				return true;
+			});
 		}
 	};
 };
