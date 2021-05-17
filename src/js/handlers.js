@@ -1,17 +1,17 @@
 import { viewLayers } from './defaults';
-import { dispatchCalendarHide } from './emiters';
 import { renderCalendar, renderMonthPreview, renderYearPreview } from './render';
 import { isActiveMonth, isActiveYear, isLessThanMinDate, isMoreThanMaxDate } from './checker';
 import {
-	valueOfDate,
 	calculateCalendarPosition,
+	CalendarStateManager,
 	HandleArrowClass,
-	getNewIndex,
-	dateFormatParser
+	dateFormatParser,
+	valueOfDate,
+	getNewIndex
 } from './utils';
 
 export const getDOMNodes = (calendar) => {
-	return {
+	const nodes = {
 		calendar,
 		calendarDisplay: calendar.querySelector('.mc-display'),
 		displayDay: calendar.querySelector('.mc-display__day'),
@@ -31,8 +31,10 @@ export const getDOMNodes = (calendar) => {
 		clearButton: calendar.querySelector('#mc-btn__clear'),
 		dateCells: calendar.querySelectorAll('.mc-date'),
 		monthYearPreview: calendar.querySelector('.mc-month-year__preview'),
-		previewCells: calendar.querySelectorAll('.mc-month-year__cell')
+		previewCells: calendar.querySelectorAll('.mc-month-year__cell'),
+		calendarStates: CalendarStateManager(calendar)
 	};
+	return nodes;
 };
 
 export const getViewLayers = (options) => {
@@ -141,13 +143,13 @@ export const getLimitDates = (options) => {
 	return { prevLimitDate, nextLimitDate };
 };
 
-export const updatePickedDateValue = (activeInstance, calendar) => {
+export const updatePickedDateValue = (activeInstance, calendarStates) => {
 	if (!activeInstance) return;
 	const { pickedDate, linkedElement, onSelectCallbacks, options } = activeInstance;
 	const { dateFormat } = options;
 	let pickedDateValue = pickedDate ? dateFormatParser(pickedDate, options, dateFormat) : null;
 	if (linkedElement) linkedElement.value = pickedDateValue;
-	dispatchCalendarHide(calendar);
+	calendarStates.close();
 	onSelectCallbacks.forEach((callback) => callback.apply(null, [pickedDate, pickedDateValue]));
 };
 
@@ -246,7 +248,7 @@ export const updateWeekdays = (calendarNodes, options) => {
 
 export const updateDisplay = (calendarNodes, instance) => {
 	const { displayDay, displayDate, displayMonth, displayYear, calendarDisplay } = calendarNodes;
-	const { store, viewLayers, options } = instance;
+	const { store, options } = instance;
 	const { target, date } = store.display;
 	const { customWeekDays, customMonths, showCalendarDisplay } = options;
 
@@ -302,6 +304,7 @@ export const updateCalendarHeader = (calendarNodes, instance) => {
 };
 
 export const updateMonthYearPreview = (calendarNodes, instance) => {
+	if (!instance) return;
 	const { monthYearPreview } = calendarNodes;
 	const { target } = instance.store.preview;
 	const { year } = instance.store.header;
