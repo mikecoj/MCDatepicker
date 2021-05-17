@@ -45,6 +45,7 @@ const defaultOptions = {
 	bodyType: 'modal', // ['modal', 'inline', 'permanent']
 	autoClose: false,
 	closeOndblclick: true,
+	closeOnBlur: false,
 	showCalendarDisplay: true,
 	customWeekDays: weekDays,
 	customMonths: months,
