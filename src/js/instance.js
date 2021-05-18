@@ -13,7 +13,7 @@ export default function createInstance(datepicker, calendarNodes, instanceOption
 	const viewLayers = getViewLayers(instanceOptions);
 	const store = Store(calendarNodes, viewLayers[0]);
 
-	const instance = {
+	return {
 		datepicker: datepicker,
 		el: instanceOptions.el,
 		linkedElement: linkedElement,
@@ -32,91 +32,91 @@ export default function createInstance(datepicker, calendarNodes, instanceOption
 		markCustomCallbacks: [],
 		store: store,
 		// Methods
-		open: () => {
-			datepicker.open(instance);
+		open() {
+			datepicker.open(this);
 		},
-		close: () => {
+		close() {
 			datepicker.close();
 		},
-		reset: () => {
-			instance.pickedDate = null;
-			if (instance.linkedElement) instance.linkedElement.value = null;
+		reset() {
+			this.pickedDate = null;
+			if (this.linkedElement) this.linkedElement.value = null;
 		},
-		destroy: () => {
-			datepicker.remove(instance);
+		destroy() {
+			datepicker.remove(this);
 		},
 		// Event callbacks
-		onOpen: (callback = () => {}) => {
-			instance.onOpenCallbacks.push(callback);
+		onOpen(callback = () => {}) {
+			this.onOpenCallbacks.push(callback);
 		},
-		onClose: (callback = () => {}) => {
-			instance.onCloseCallbacks.push(callback);
+		onClose(callback = () => {}) {
+			this.onCloseCallbacks.push(callback);
 		},
-		onSelect: (callback) => {
-			instance.onSelectCallbacks.push(callback);
+		onSelect(callback) {
+			this.onSelectCallbacks.push(callback);
 		},
-		onCancel: (callback) => {
-			instance.onCancelCallbacks.push(callback);
+		onCancel(callback) {
+			this.onCancelCallbacks.push(callback);
 		},
-		onMonthChange: (callback) => {
-			instance.onMonthChangeCallbacks.push(callback);
+		onMonthChange(callback) {
+			this.onMonthChangeCallbacks.push(callback);
 		},
-		onYearChange: (callback) => {
-			instance.onYearChangeCallbacks.push(callback);
+		onYearChange(callback) {
+			this.onYearChangeCallbacks.push(callback);
 		},
 		// Getters
-		getDay: () => {
-			return instance.pickedDate ? instance.pickedDate.getDay() : null;
+		getDay() {
+			return this.pickedDate ? this.pickedDate.getDay() : null;
 		},
-		getDate: () => {
-			return instance.pickedDate ? instance.pickedDate.getDate() : null;
+		getDate() {
+			return this.pickedDate ? this.pickedDate.getDate() : null;
 		},
-		getMonth: () => {
-			return instance.pickedDate ? instance.pickedDate.getMonth() : null;
+		getMonth() {
+			return this.pickedDate ? this.pickedDate.getMonth() : null;
 		},
-		getYear: () => {
-			return instance.pickedDate ? instance.pickedDate.getFullYear() : null;
+		getYear() {
+			return this.pickedDate ? this.pickedDate.getFullYear() : null;
 		},
-		getFullDate: () => {
-			return instance.pickedDate;
+		getFullDate() {
+			return this.pickedDate;
 		},
-		getFormatedDate: () => {
-			return instance.pickedDate
-				? dateFormatParser(instance.pickedDate, instance.options, instance.options.dateFormat)
+		getFormatedDate() {
+			return this.pickedDate
+				? dateFormatParser(this.pickedDate, this.options, this.options.dateFormat)
 				: null;
 		},
-		markDatesCustom: (callback) => {
-			instance.markCustomCallbacks.push(callback);
+		markDatesCustom(callback) {
+			this.markCustomCallbacks.push(callback);
 		},
 		// getEvents: () => {
 		// 	return instance.options.events;
 		// },
 
 		//  Setters
-		setFullDate: (date) => {
+		setFullDate(date) {
 			if (!Is(date).date()) throw new TypeError('Parameter of setFullDate() is not of type date');
-			dispatchSetDate(calendarNodes.calendar, { instance, date });
+			dispatchSetDate(calendarNodes.calendar, { instance: this, date });
 		},
-		setDate: (date) => {
+		setDate(date) {
 			if (!Is(date).number())
 				throw new TypeError(`Parameter 'date' of setDate() is not of type number`);
-			const newDate = instance.pickedDate ? new Date(instance.pickedDate) : new Date();
+			const newDate = this.pickedDate ? new Date(this.pickedDate) : new Date();
 			newDate.setDate(date);
-			dispatchSetDate(calendarNodes.calendar, { instance, date: newDate });
+			dispatchSetDate(calendarNodes.calendar, { instance: this, date: newDate });
 		},
-		setMonth: (month) => {
-			if (!Is(date).number())
+		setMonth(month) {
+			if (!Is(month).number())
 				throw new TypeError(`Parameter 'month' of setMonth() is not of type number`);
-			const newDate = instance.pickedDate ? new Date(instance.pickedDate) : new Date();
+			const newDate = this.pickedDate ? new Date(this.pickedDate) : new Date();
 			newDate.setMonth(month);
-			dispatchSetDate(calendarNodes.calendar, { instance, date: newDate });
+			dispatchSetDate(calendarNodes.calendar, { instance: this, date: newDate });
 		},
-		setYear: (year) => {
-			if (!Is(date).number())
+		setYear(year) {
+			if (!Is(year).number())
 				throw new TypeError(`Parameter 'year' of setYear() is not of type number`);
-			const newDate = instance.pickedDate ? new Date(instance.pickedDate) : new Date();
+			const newDate = this.pickedDate ? new Date(this.pickedDate) : new Date();
 			newDate.setFullYear(year);
-			dispatchSetDate(calendarNodes.calendar, { instance, date: newDate });
+			dispatchSetDate(calendarNodes.calendar, { instance: this, date: newDate });
 		}
 
 		// TODO: Add Events Integration
@@ -129,5 +129,5 @@ export default function createInstance(datepicker, calendarNodes, instanceOption
 		// 	instance.options.events.push(...events);
 		// }
 	};
-	return instance;
+	// return instance;
 }
