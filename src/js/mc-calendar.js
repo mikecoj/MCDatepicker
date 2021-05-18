@@ -2,7 +2,6 @@ import defaultOptions from './defaults';
 import createInstance from './instance';
 import { writeTemplate } from './render';
 import { validateOptions } from './validators';
-import { dispatchCalendarShow, dispatchCalendarHide } from './emiters';
 import { applyOnFocusListener, removeOnFocusListener } from './listeners';
 
 import '../scss/main.scss';
@@ -13,17 +12,21 @@ const MCDatepicker = (() => {
 
 	const initCalendar = () => {
 		if (calendarNodes) return;
-		calendarNodes = writeTemplate(datepickers);
+		calendarNodes = writeTemplate();
 	};
 
 	const open = (instance) => {
-		const { calendar } = calendarNodes;
-		dispatchCalendarShow(calendar, instance);
+		const activeInstance =
+			datepickers.find((datepicker) => JSON.stringify(datepicker) === JSON.stringify(instance)) ||
+			null;
+		if (!activeInstance && !calendarNodes) return;
+		calendarNodes.calendarStates.open(activeInstance);
 	};
 
 	const close = () => {
-		const { calendar } = calendarNodes;
-		dispatchCalendarHide(calendar);
+		if (!calendarNodes) return;
+		const { calendarStates } = calendarNodes;
+		calendarStates.close();
 	};
 
 	const create = (options = {}) => {
@@ -36,7 +39,7 @@ const MCDatepicker = (() => {
 		// push fresh created instance to instances array
 		datepickers.push(instance);
 		// add event listener to the linked input
-		applyOnFocusListener(calendarNodes.calendar, instance);
+		applyOnFocusListener(instance);
 
 		return instance;
 	};
