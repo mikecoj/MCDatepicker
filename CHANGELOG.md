@@ -5,6 +5,7 @@
 ---
 
 - added `autoClose` option
+- added `closeOnBlur` option
 - added `closeOndblclick` option
 - added `setFullDate()` method
 - added `setDate()` method
