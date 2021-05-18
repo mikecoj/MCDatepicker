@@ -23,6 +23,7 @@ const firstDatePicker = MCDatepicker.create({
 	el: '#datepicker_one',
 	bodyType: 'inline',
 	autoClose: true,
+	closeOnBlur: true,
 	dateFormat: 'dddd, dd mmmm yyyy',
 	disableDates: [new Date(2021, 1, 12), new Date(2021, 4, 15)],
 	customWeekDays: ['Duminică', 'Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă'],
@@ -100,6 +101,7 @@ const forthDatePicker = MCDatepicker.create({
 	dateFormat: 'yyyy',
 	selectedDate: new Date('2020-04-04'),
 	closeOndblclick: false,
+	closeOnBlur: true,
 	allowedMonths: [5, 7, 9],
 	allowedYears: [2016, 2018, 2020, 2022, 2024, 2026]
 });
