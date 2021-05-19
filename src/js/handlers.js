@@ -149,8 +149,8 @@ export const updatePickedDateValue = (activeInstance, calendarStates) => {
 	const { dateFormat } = options;
 	let pickedDateValue = pickedDate ? dateFormatParser(pickedDate, options, dateFormat) : null;
 	if (linkedElement) linkedElement.value = pickedDateValue;
-	calendarStates.close();
 	onSelectCallbacks.forEach((callback) => callback.apply(null, [pickedDate, pickedDateValue]));
+	calendarStates.close();
 };
 
 export const updateLinkedInputValue = (instance) => {

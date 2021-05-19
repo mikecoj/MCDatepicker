@@ -178,10 +178,7 @@ export const applyListeners = (calendarNodes) => {
 		e.preventDefault();
 		const isTargeted = calendar.contains(e.relatedTarget);
 		if (isTargeted || !activeInstance) return;
-		const { onCancelCallbacks } = activeInstance;
-		calendarStates.blur().then((result) => {
-			result && onCancelCallbacks.forEach((callback) => callback.apply(null));
-		});
+		calendarStates.blur();
 	});
 
 	calendarDisplay.addEventListener(DISPLAY_UPDATE, (e) => {
@@ -378,9 +375,8 @@ export const applyListeners = (calendarNodes) => {
 
 	cancelButton.addEventListener('click', (e) => {
 		const { onCancelCallbacks } = activeInstance;
-		calendarStates.close();
-		// dispatchCalendarHide(e.target);
 		onCancelCallbacks.forEach((callback) => callback.apply(null));
+		calendarStates.close();
 	});
 
 	okButton.addEventListener('click', (e) => updatePickedDateValue(activeInstance, calendarStates));
