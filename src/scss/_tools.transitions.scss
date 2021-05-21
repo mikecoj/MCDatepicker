@@ -70,3 +70,39 @@
 		animation: zoom-in 0.1s linear reverse;
 	}
 }
+
+@keyframes slide-left-in {
+	from {
+		transform: translateX(100px);
+	}
+	to {
+		transform: translateX(0px);
+	}
+}
+
+@keyframes slide-left-out {
+	from {
+		transform: translateX(0px);
+	}
+	to {
+		transform: translateX(-100px);
+	}
+}
+
+@keyframes slide-right-in {
+	from {
+		transform: translateX(-100px);
+	}
+	to {
+		transform: translateX(0px);
+	}
+}
+
+@keyframes slide-right-out {
+	from {
+		transform: translateX(0px);
+	}
+	to {
+		transform: translateX(100px);
+	}
+}
