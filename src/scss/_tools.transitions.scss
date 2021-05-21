@@ -22,7 +22,8 @@
 }
 @keyframes slide-down {
 	0% {
-		transform: translate(-50%, #{min(-400px, -65vh)});
+		// transform: translate(-50%, #{min(-400px, -65vh)});
+		transform: translate(-50%, -400px);
 	}
 
 	100% {
