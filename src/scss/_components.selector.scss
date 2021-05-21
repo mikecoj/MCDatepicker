@@ -42,6 +42,13 @@
 			}
 		}
 
+		&:focus {
+			-webkit-tap-highlight-color: transparent;
+			outline: none;
+			-ms-touch-action: manipulation;
+			touch-action: manipulation;
+		}
+
 		&--inactive {
 			color: $inactive-date-color;
 			cursor: default;
@@ -138,6 +145,25 @@
 					width: 3.2rem;
 				}
 			}
+		}
+	}
+}
+
+.slide {
+	&-right {
+		&--in {
+			animation: slide-right-in 200ms ease;
+		}
+		&--out {
+			animation: slide-right-out 200ms ease;
+		}
+	}
+	&-left {
+		&--in {
+			animation: slide-left-in 200ms ease;
+		}
+		&--out {
+			animation: slide-left-out 200ms ease;
 		}
 	}
 }
