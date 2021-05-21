@@ -40,54 +40,28 @@ export const waitFor = (time) => {
 };
 
 export const Animation = () => {
-	const promises = [];
-	const slide = (
-		activeElem,
-		newElem,
-		dir,
-		{ duration = 150, easing = 'ease-in-out', ...customOption } = {}
-	) => {
-		// get the with of the element, and transform it based on dir property
-		const value = dir === 'prev' ? activeElem.offsetWidth : activeElem.offsetWidth * -1;
+	let promises = null;
+	const slide = (activeElem, newElem, dir) => {
+		// const activeElementClass = dir === 'prev' ? 'slide-left--out' : 'slide-right--out';
+		const activeElementClass = dir === 'prev' ? 'slide-right--out' : 'slide-left--out';
+		// const newElementClass = dir === 'prev' ? 'slide-left--in' : 'slide-right--in';
+		const newElementClass = dir === 'prev' ? 'slide-right--in' : 'slide-left--in';
+		activeElem.classList.add(activeElementClass);
+		newElem.classList.add(newElementClass);
 
-		const animationOptions = {
-			// timing options
-			duration,
-			easing,
-			...customOption
-		};
-
-		promises.push(
-			Promise.all([
-				activeElem.animate(
-					[
-						// keyframes
-						{ transform: 'translateX(0px)' },
-						{ transform: `translateX(${value}px)` }
-					],
-					animationOptions
-				).finished,
-				newElem.animate(
-					[
-						// keyframes
-						{ transform: `translateX(${-1 * value}px)` },
-						{ transform: 'translateX(0px)' }
-					],
-					animationOptions
-				).finished
-			]).then(() => {
-				// remove the style attribute from the new element
-				newElem.removeAttribute('style');
-				//  remove the old span tag
-				activeElem.remove();
-			})
-		);
+		promises = waitFor(150).then(() => {
+			// remove the style attribute from the new element
+			activeElem.remove();
+			newElem.removeAttribute('style');
+			newElem.classList.remove(newElementClass);
+			//  remove the old span tag
+		});
 	};
-
 	const onFinish = (callback) => {
-		Promise.all(promises).then(() => callback());
+		!promises && callback();
+		promises && promises.then(() => callback());
+		promises = null;
 	};
-
 	return { slide, onFinish };
 };
 
