@@ -77,11 +77,11 @@ export const applyListeners = (calendarNodes) => {
 		// delete the style attribute for inline calendar
 		if (options.bodyType == 'inline') calendar.removeAttribute('style');
 		// wait for animation to end and remove the --opened class
-		getAnimations(calendar).then(() => {
-			store.preview.setTarget = 'calendar';
-			activeInstance = null;
-			// reset the active instance
-		});
+		// getAnimations(calendar).then(() => {
+		// 	store.preview.setTarget = 'calendar';
+		// });
+		// reset the active instance
+		activeInstance = null;
 		// run all custom onClose callbacks added by the user
 		onCloseCallbacks.forEach((callback) => callback.apply(null));
 	});
