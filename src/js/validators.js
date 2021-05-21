@@ -15,7 +15,8 @@ export const Is = (variable) => {
 		return type === 'date' ? true : false;
 	};
 	const number = () => {
-		return type === 'number' ? true : false;
+		const isNaN = Number.isNaN(variable);
+		return type === 'number' && !isNaN ? true : false;
 	};
 	const string = () => {
 		return type === 'string' ? true : false;
