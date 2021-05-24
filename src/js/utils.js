@@ -1,4 +1,6 @@
 import {
+	dispatchCalendarShow,
+	dispatchCalendarHide,
 	dispatchCalendarUpdate,
 	dispatchDisplayUpdate,
 	dispatchHeaderUpdate,
@@ -25,55 +27,41 @@ export const getNewIndex = (array, currentIndex, direction) => {
 	return { newIndex, overlap };
 };
 
+export const getAnimations = (element) => {
+	return Promise.all(
+		element.getAnimations({ subtree: true }).map((animation) => animation.finished)
+	);
+};
+
+export const waitFor = (time) => {
+	return new Promise((resolve, reject) => {
+		setTimeout(resolve, time);
+	});
+};
+
 export const Animation = () => {
-	const promises = [];
-	const slide = (
-		activeElem,
-		newElem,
-		dir,
-		{ duration = 150, easing = 'ease-in-out', ...customOption } = {}
-	) => {
-		// get the with of the element, and transform it based on dir property
-		const value = dir === 'prev' ? activeElem.offsetWidth : activeElem.offsetWidth * -1;
+	let promises = null;
+	const slide = (activeElem, newElem, dir) => {
+		// const activeElementClass = dir === 'prev' ? 'slide-left--out' : 'slide-right--out';
+		const activeElementClass = dir === 'prev' ? 'slide-right--out' : 'slide-left--out';
+		// const newElementClass = dir === 'prev' ? 'slide-left--in' : 'slide-right--in';
+		const newElementClass = dir === 'prev' ? 'slide-right--in' : 'slide-left--in';
+		activeElem.classList.add(activeElementClass);
+		newElem.classList.add(newElementClass);
 
-		const animationOptions = {
-			// timing options
-			duration,
-			easing,
-			...customOption
-		};
-
-		promises.push(
-			Promise.all([
-				activeElem.animate(
-					[
-						// keyframes
-						{ transform: 'translateX(0px)' },
-						{ transform: `translateX(${value}px)` }
-					],
-					animationOptions
-				).finished,
-				newElem.animate(
-					[
-						// keyframes
-						{ transform: `translateX(${-1 * value}px)` },
-						{ transform: 'translateX(0px)' }
-					],
-					animationOptions
-				).finished
-			]).then(() => {
-				// remove the style attribute from the new element
-				newElem.removeAttribute('style');
-				//  remove the old span tag
-				activeElem.remove();
-			})
-		);
+		promises = waitFor(150).then(() => {
+			// remove the style attribute from the new element
+			activeElem.remove();
+			newElem.removeAttribute('style');
+			newElem.classList.remove(newElementClass);
+			//  remove the old span tag
+		});
 	};
-
 	const onFinish = (callback) => {
-		Promise.all(promises).then(() => callback());
+		!promises && callback();
+		promises && promises.then(() => callback());
+		promises = null;
 	};
-
 	return { slide, onFinish };
 };
 
@@ -245,6 +233,58 @@ export const Store = (calendarNodes, dataTarget) => {
 				this.date = date;
 				dispatchCalendarUpdate(calendar);
 			}
+		}
+	};
+};
+
+export const CalendarStateManager = (calendar) => {
+	let openTimer = null;
+	let closeTimer = null;
+	let prevInstance = null;
+	let sameInstance = false;
+
+	return {
+		opened: false,
+		closed: true,
+		blured: false,
+		isOpening: false,
+		isClosing: false,
+		isBluring: false,
+		open(instance) {
+			if (this.isClosing) return;
+			sameInstance = JSON.stringify(prevInstance) === JSON.stringify(instance);
+			this.isOpening = true;
+			clearTimeout(openTimer);
+			dispatchCalendarShow(calendar, instance);
+			openTimer = setTimeout(() => {
+				this.isOpening = false;
+				this.opened = true;
+				this.closed = false;
+				prevInstance = instance;
+			}, 200);
+		},
+		close() {
+			if (this.closed || this.isOpening || this.isClosing) return;
+			sameInstance = false;
+			this.isClosing = true;
+			clearTimeout(closeTimer);
+			dispatchCalendarHide(calendar);
+			closeTimer = setTimeout(() => {
+				this.isClosing = false;
+				this.opened = false;
+				this.closed = true;
+			}, 200);
+		},
+		blur() {
+			this.isBluring = true;
+			return waitFor(100).then(() => {
+				if (this.closed || this.isOpening || this.isClosing) return !sameInstance;
+				if (prevInstance && !prevInstance.options.closeOnBlur) return false;
+				this.close();
+				this.isBluring = false;
+				this.blured = true;
+				return true;
+			});
 		}
 	};
 };

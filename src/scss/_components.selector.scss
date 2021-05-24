@@ -13,6 +13,8 @@
 			width: 100%;
 			#{$root}__data--year {
 				width: 75%;
+				max-width: unset;
+				min-width: unset;
 				justify-content: center;
 			}
 			#{$root}__nav {
@@ -38,6 +40,13 @@
 			#{$modal} & {
 				position: relative;
 			}
+		}
+
+		&:focus {
+			-webkit-tap-highlight-color: transparent;
+			outline: none;
+			-ms-touch-action: manipulation;
+			touch-action: manipulation;
 		}
 
 		&--inactive {
@@ -87,8 +96,12 @@
 	&__data {
 		display: flex;
 		align-items: center;
-		font-size: clamp(1rem, 8vw, 1.25rem);
-		height: clamp(1.75rem, calc(8vw + 0.25rem), 2rem);
+		// font-size: clamp(1rem, 8vw, 1.25rem);
+		@include font-size-clamp-polyfill(1rem, 8, 1.25rem);
+		// height: clamp(1.75rem, calc(8vw + 0.25rem), 2rem);
+		height: calc(8vw + 0.25rem);
+		min-height: 1.75rem;
+		max-height: 2rem;
 		overflow: hidden;
 		position: relative;
 		cursor: pointer;
@@ -105,7 +118,10 @@
 		&--month {
 			&,
 			span {
-				width: clamp(5rem, 40vw, 6.25rem);
+				// width: clamp(5rem, 40vw, 6.25rem);
+				width: 40vw;
+				min-width: 5rem;
+				max-width: 6.25rem;
 			}
 			#{$inline} & {
 				&,
@@ -118,7 +134,10 @@
 		&--year {
 			&,
 			span {
-				width: clamp(3rem, 22vw, 3.5rem);
+				// width: clamp(3rem, 22vw, 3.5rem);
+				width: 22vw;
+				min-width: 3rem;
+				max-width: 3.5rem;
 			}
 			#{$inline} & {
 				&,
@@ -126,6 +145,25 @@
 					width: 3.2rem;
 				}
 			}
+		}
+	}
+}
+
+.slide {
+	&-right {
+		&--in {
+			animation: slide-right-in 200ms ease;
+		}
+		&--out {
+			animation: slide-right-out 200ms ease;
+		}
+	}
+	&-left {
+		&--in {
+			animation: slide-left-in 200ms ease;
+		}
+		&--out {
+			animation: slide-left-out 200ms ease;
 		}
 	}
 }

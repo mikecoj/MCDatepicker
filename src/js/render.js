@@ -1,7 +1,7 @@
 import template from './template';
 import { valueOfDate } from './utils';
-import { applyListeners } from './listeners';
 import { getDOMNodes } from './handlers';
+import { applyListeners } from './listeners';
 import {
 	isActiveMonth,
 	isActiveYear,
@@ -135,11 +135,13 @@ export const renderCalendar = (instance, date) => {
 	return calendarArray.map((day) => renderDay(day));
 };
 
-export function writeTemplate(datepickers) {
+export function writeTemplate() {
 	// create a new div tag
 	const calendarDiv = document.createElement('div');
 	// set the classList of the created div
 	calendarDiv.className = 'mc-calendar';
+	// make the calendar focusable
+	calendarDiv.setAttribute('tabindex', 0);
 	// write the template to the div content
 	calendarDiv.innerHTML = template;
 	// add the new div to the document
@@ -147,7 +149,7 @@ export function writeTemplate(datepickers) {
 	// get calendar Nodes
 	const calendarNodes = getDOMNodes(calendarDiv);
 	// apply listeners to calendar
-	applyListeners(calendarNodes, datepickers);
+	applyListeners(calendarNodes);
 
 	return calendarNodes;
 }

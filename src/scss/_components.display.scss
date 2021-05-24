@@ -56,7 +56,8 @@
 
 	&__day {
 		text-align: center;
-		font-size: clamp(1rem, 8vw, 1.25rem);
+		// font-size: clamp(1rem, 8vw, 1.25rem);
+		@include font-size-clamp-polyfill(1rem, 8, 1.25rem);
 		line-height: 1;
 		padding: 0.5em 0;
 		#{$root}[data-target='month'] &,
@@ -108,12 +109,14 @@
 	}
 
 	&__date {
-		font-size: clamp(5rem, 40vw, 7rem);
+		// font-size: clamp(5rem, 40vw, 7rem);
+		@include font-size-clamp-polyfill(5rem, 40, 7rem);
 		line-height: 1;
 	}
 
 	&__month {
-		font-size: clamp(1.2rem, 9vw, 1.5rem);
+		// font-size: clamp(1.2rem, 9vw, 1.5rem);
+		@include font-size-clamp-polyfill(1.2rem, 9, 1.5rem);
 		#{$root}[data-target='year'] & {
 			display: none;
 		}
@@ -123,7 +126,8 @@
 	}
 
 	&__year {
-		font-size: clamp(2.4rem, 18vw, 3rem);
+		// font-size: clamp(2.4rem, 18vw, 3rem);
+		@include font-size-clamp-polyfill(2.4rem, 18, 3rem);
 		line-height: 0.8;
 		#{$root}[data-target='year'] & {
 			padding: 0.3em 0;

@@ -24,8 +24,8 @@ body {
 	flex-wrap: wrap;
 	/* flex-direction: column; */
 	/* align-items: flex-end; */
-	/* width: min(80%, 1000px); */
-	width: 100%;
+	width: min(80%, 1000px);
+	/* width: 100%; */
 	margin: 0 auto;
 	justify-content: center;
 }
@@ -65,8 +65,17 @@ body {
 	display: flex;
 }
 
-#datepicker_btn {
+/* #datepicker_btn {
 	padding: 0 0.6em;
+	border: 1px solid #919fae;
+	border-radius: 0;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	outline: none;
+	cursor: pointer;
+} */
+
+.btn {
 	border: 1px solid #919fae;
 	border-radius: 0;
 	border-top-right-radius: 5px;
@@ -75,13 +84,20 @@ body {
 	cursor: pointer;
 }
 
+.btn--large {
+	padding: 0.6em 1em;
+}
+
+.btn--small {
+	padding: 0 0.6em;
+}
+
 .calendarIcon {
 	height: 1rem;
 }
 
-#datepicker_four {
+.form-field__input--coupled {
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 	border-right: none;
-	/* cursor: not-allowed; */
 }

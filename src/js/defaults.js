@@ -43,6 +43,9 @@ const defaultOptions = {
 	el: null,
 	dateFormat: 'DD-MMM-YYYY',
 	bodyType: 'modal', // ['modal', 'inline', 'permanent']
+	autoClose: false,
+	closeOndblclick: true,
+	closeOnBlur: false,
 	showCalendarDisplay: true,
 	customWeekDays: weekDays,
 	customMonths: months,
@@ -62,10 +65,12 @@ const defaultOptions = {
 	allowedYears: [], // ex: [2022, 2023]
 	disableMonths: [], /// ex: [3,11] accept numbers 0-11;
 	disableYears: [], // ex: [2010, 2011]
-	markDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
-	daterange: false, // currently not supported
-	events: [], // currently not supported
-	eventColorScheme: defaultEventColorType // currently not supported
+	markDates: [] // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
+	// TODO: Integrate Daterange Feature
+	// daterange: false, // currently not supported
+	// TODO: Integrate Events Feature
+	// events: [], // currently not supported
+	// eventColorScheme: defaultEventColorType // currently not supported
 };
 
 export default defaultOptions;

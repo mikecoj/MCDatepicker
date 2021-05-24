@@ -1,5 +1,5 @@
 import { spanTemplate } from './template';
-import { dateFormatParser, Animation } from './utils';
+import { Animation, getAnimations, waitFor } from './utils';
 import {
 	CALENDAR_HIDE,
 	CALENDAR_SHOW,
@@ -10,7 +10,8 @@ import {
 	CHANGE_MONTH,
 	CHANGE_YEAR,
 	DATE_PICK,
-	PREVIEW_PICK
+	PREVIEW_PICK,
+	SET_DATE
 } from './events';
 import {
 	dispatchCalendarShow,
@@ -27,15 +28,18 @@ import {
 	updateMonthYearPreview,
 	updateCalendarUI,
 	updateDisplay,
+	updatePickedDateValue,
+	updateLinkedInputValue,
 	getTargetDate,
 	getNewMonth,
 	getNewYear
 } from './handlers';
 
-export const applyListeners = (calendarNodes, datepickers) => {
+export const applyListeners = (calendarNodes) => {
 	let activeInstance = null;
 	let clickable = true;
 	const {
+		calendarStates,
 		calendar,
 		calendarDisplay,
 		calendarHeader,
@@ -53,40 +57,45 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		clearButton
 	} = calendarNodes;
 
-	// listen for custom events
-
 	calendar.addEventListener(CALENDAR_SHOW, (e) => {
-		// get the instance of the input that fired CALENDAR_SHOW event
-		activeInstance = datepickers.find(
-			(datepicker) => JSON.stringify(datepicker) === JSON.stringify(e.detail.instance)
-		);
-		// update the calendar display
+		activeInstance = e.detail.instance;
+		// update the calendar UI
 		updateCalendarUI(calendarNodes, activeInstance);
 		// show the calendar
 		calendar.classList.add('mc-calendar--opened');
+
+		calendar.focus();
 		// run all custom onOpen callbacks added by the user
 		activeInstance.onOpenCallbacks.forEach((callback) => callback.apply(null));
 	});
 
 	calendar.addEventListener(CALENDAR_HIDE, () => {
+		// calendar.removeEventListener(CALENDAR_SHOW, showFunction);
 		const { store, options, onCloseCallbacks } = activeInstance;
 		// hide the calendar
 		calendar.classList.remove('mc-calendar--opened');
 		// delete the style attribute for inline calendar
 		if (options.bodyType == 'inline') calendar.removeAttribute('style');
 		// wait for animation to end and remove the --opened class
-		Promise.all(
-			calendar.getAnimations({ subtree: true }).map((animation) => animation.finished)
-		).then(() => {
-			store.preview.setTarget = 'calendar';
-			// reset the active instance
-			activeInstance = null;
-		});
+		// getAnimations(calendar).then(() => {
+		// 	store.preview.setTarget = 'calendar';
+		// });
+		// reset the active instance
+		activeInstance = null;
 		// run all custom onClose callbacks added by the user
 		onCloseCallbacks.forEach((callback) => callback.apply(null));
 	});
 	calendar.addEventListener(DATE_PICK, (e) => {
+		const { options } = activeInstance;
+		const { autoClose, closeOndblclick } = options;
+
 		if (e.target.classList.contains('mc-date--inactive')) return;
+
+		if (e.detail.dblclick) {
+			if (!closeOndblclick) return;
+			return updatePickedDateValue(activeInstance, calendarStates);
+		}
+
 		// update the instance picked date
 		activeInstance.pickedDate = e.detail.date;
 		// update display store data
@@ -94,18 +103,25 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		// update the classlist of the picked cell
 		dateCells.forEach((cell) => cell.classList.remove('mc-date--picked'));
 		e.target.classList.add('mc-date--picked');
+
+		if (autoClose) updatePickedDateValue(activeInstance, calendarStates);
 	});
 
 	calendar.addEventListener(PREVIEW_PICK, (e) => {
-		const { data } = e.detail;
+		const { data, dblclick } = e.detail;
 		const { store, options, viewLayers } = activeInstance;
-		const { customMonths } = options;
+		const { customMonths, autoClose, closeOndblclick } = options;
 		const { target } = store.preview;
 
 		if (e.target.classList.contains('mc-month-year__cell--inactive')) return;
 
 		previewCells.forEach((cell) => cell.classList.remove('mc-month-year__cell--picked'));
 		e.target.classList.add('mc-month-year__cell--picked');
+
+		if (dblclick && store.preview.target === viewLayers[0]) {
+			if (!closeOndblclick) return;
+			return updatePickedDateValue(activeInstance, calendarStates);
+		}
 
 		let targetYear = store.preview.year;
 		let targetMonth = customMonths[store.header.month];
@@ -121,17 +137,49 @@ export const applyListeners = (calendarNodes, datepickers) => {
 		store.preview.year = nextCalendarDate.getFullYear();
 		if (viewLayers[0] !== 'year') store.header.year = nextCalendarDate.getFullYear();
 		store.preview.month = nextCalendarDate.getMonth();
-		store.preview.setTarget = viewLayers[0];
-		store.header.setTarget = viewLayers[0];
 
 		if (viewLayers[0] !== 'calendar') activeInstance.pickedDate = nextCalendarDate;
 		if (viewLayers[0] !== 'calendar') store.display.setDate = nextCalendarDate;
 		if (viewLayers[0] === 'calendar') store.calendar.setDate = nextCalendarDate;
+
+		store.preview.setTarget = viewLayers[0];
+		store.header.setTarget = viewLayers[0];
+
+		if (autoClose && store.preview.target === viewLayers[0]) {
+			updatePickedDateValue(activeInstance, calendarStates);
+		}
+	});
+
+	calendar.addEventListener(SET_DATE, (e) => {
+		const { instance, date } = e.detail;
+		instance.pickedDate = date;
+		updateLinkedInputValue(instance);
+		if (JSON.stringify(activeInstance) !== JSON.stringify(instance)) return;
+		const { store } = activeInstance;
+		store.display.setDate = date;
+		store.calendar.setDate = store.calendar.date;
+		if (store.preview.target !== 'calendar') {
+			store.preview.month = date.getMonth();
+			store.preview.year = date.getFullYear();
+			store.preview.setTarget = store.preview.target;
+		}
+		if (store.header.target === 'month') {
+			store.header.month = date.getMonth();
+			store.header.year = date.getFullYear();
+			store.header.setTarget = store.header.target;
+		}
 	});
 
 	calendar.addEventListener(CALENDAR_UPDATE, (e) =>
 		updateCalendarTable(calendarNodes, activeInstance)
 	);
+
+	calendar.addEventListener('blur', (e) => {
+		e.preventDefault();
+		const isTargeted = calendar.contains(e.relatedTarget);
+		if (isTargeted || !activeInstance) return;
+		calendarStates.blur();
+	});
 
 	calendarDisplay.addEventListener(DISPLAY_UPDATE, (e) => {
 		updateDisplay(calendarNodes, activeInstance);
@@ -286,12 +334,24 @@ export const applyListeners = (calendarNodes, datepickers) => {
 	};
 
 	// Dispatch custom events
+	previewCells.forEach((cell) => {
+		cell.onclick = (e) => {
+			e.detail === 1 && dispatchPreviewCellPick(e.currentTarget);
+		};
+		cell.ondblclick = (e) => {
+			e.detail === 2 && dispatchPreviewCellPick(e.currentTarget, true);
+		};
+	});
 
-	previewCells.forEach((cell) =>
-		cell.addEventListener('click', (e) => dispatchPreviewCellPick(e.currentTarget))
-	);
 	// add click event that dispatch a custom DATE_PICK event, to every calendar cell
-	dateCells.forEach((cell) => cell.addEventListener('click', (e) => dispatchDatePick(e.target)));
+	dateCells.forEach((cell) => {
+		cell.onclick = (e) => {
+			e.detail === 1 && dispatchDatePick(e.target);
+		};
+		cell.ondblclick = (e) => {
+			e.detail === 2 && dispatchDatePick(e.target, true);
+		};
+	});
 
 	monthNavPrev.addEventListener('click', (e) => {
 		if (e.currentTarget.classList.contains('mc-select__nav--inactive')) return;
@@ -315,24 +375,13 @@ export const applyListeners = (calendarNodes, datepickers) => {
 
 	cancelButton.addEventListener('click', (e) => {
 		const { onCancelCallbacks } = activeInstance;
-		dispatchCalendarHide(e.target);
 		onCancelCallbacks.forEach((callback) => callback.apply(null));
+		calendarStates.close();
 	});
 
-	okButton.addEventListener('click', (e) => {
-		const { linkedElement, pickedDate, onSelectCallbacks, options } = activeInstance;
-		const { dateFormat } = options;
-		// if the value of picked date is not null then get formated date
-		let pickedDateValue = pickedDate ? dateFormatParser(pickedDate, options, dateFormat) : null;
-		// set the value of the picked date to the linked input
-		if (linkedElement) linkedElement.value = pickedDateValue;
-		// dispatch DATEPICKER_HIDE event
-		dispatchCalendarHide(e.target);
-		// run all custom onSelect callbacks added by the user
-		onSelectCallbacks.forEach((callback) => callback.apply(null, [pickedDate, pickedDateValue]));
-	});
+	okButton.addEventListener('click', (e) => updatePickedDateValue(activeInstance, calendarStates));
 
-	clearButton.addEventListener('click', () => {
+	clearButton.addEventListener('click', (e) => {
 		const { linkedElement } = activeInstance;
 		dateCells.forEach((cell) => cell.classList.remove('mc-date--picked'));
 		activeInstance.pickedDate = null;
@@ -340,12 +389,12 @@ export const applyListeners = (calendarNodes, datepickers) => {
 	});
 };
 
-export const applyOnFocusListener = (calendarDiv, instance) => {
+export const applyOnFocusListener = (instance) => {
+	if (!instance.linkedElement) return;
 	instance.linkedElement.onfocus = (e) => {
-		e.preventDefault();
-		dispatchCalendarShow(calendarDiv, instance);
+		instance.open();
 	};
 };
 export const removeOnFocusListener = ({ linkedElement }) => {
-	linkedElement.onfocus = null;
+	if (linkedElement) linkedElement.onfocus = null;
 };

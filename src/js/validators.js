@@ -15,7 +15,8 @@ export const Is = (variable) => {
 		return type === 'date' ? true : false;
 	};
 	const number = () => {
-		return type === 'number' ? true : false;
+		const isNaN = Number.isNaN(variable);
+		return type === 'number' && !isNaN ? true : false;
 	};
 	const string = () => {
 		return type === 'string' ? true : false;
@@ -78,6 +79,9 @@ const optionsSchema = {
 		const types = ['modal', 'inline', 'permanent'];
 		return types.includes(value);
 	},
+	autoClose: (value) => Is(value).boolean(),
+	closeOndblclick: (value) => Is(value).boolean(),
+	closeOnBlur: (value) => Is(value).boolean(),
 	showCalendarDisplay: (value) => Is(value).boolean(),
 	customWeekDays: (value) => {
 		// ['S', 'M', 'T', 'W', 'T', 'F', 'S']

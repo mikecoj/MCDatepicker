@@ -7,9 +7,6 @@
 	<title>Calendar</title>
 	<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous"> -->
-	<!-- <link rel="stylesheet" href="style.css"> -->
-	<!-- <link rel="stylesheet" href="../dist/mc-calendar.min.css"> -->
-	<!-- <script src="../dist/mc-calendar.min.js"></script> -->
 </head>
 
 <body>
@@ -36,8 +33,9 @@
 			<div class="form-field card">
 				<label class=" form-field__label">Datepicker With Button</label>
 				<div class="input__wrapper">
-					<input id="datepicker_four" type="text" class="form-field__input" readonly>
-					<button id="datepicker_btn">
+					<input id="datepicker_four" type="text" class="form-field__input form-field__input--coupled"
+						readonly>
+					<button id="datepicker_btn" class="btn btn--small">
 						<svg class="calendarIcon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
 							focusable="false" data-prefix="far" data-icon="calendar-alt"
 							class="svg-inline--fa fa-calendar-alt fa-w-14" role="img" viewBox="0 0 448 512">
@@ -47,12 +45,36 @@
 					</button>
 				</div>
 			</div>
+			<div class="form-field card">
+				<label class=" form-field__label">Set Full Date for Datepicker Two</label>
+				<div class="input__wrapper">
+					<input id="set_date_input_two" type="text" class="form-field__input form-field__input--coupled">
+					<button id="set_date_btn" class="btn btn--small">Set Date</button>
+				</div>
+			</div>
+			<div class="form-field card">
+				<label class=" form-field__label">Set Date for Datepicker Two</label>
+				<div class="input__wrapper">
+					<input id="set_day_input_two" type="text" class="form-field__input form-field__input--coupled">
+					<button id="set_day_btn" class="btn btn--small">Set Day</button>
+				</div>
+			</div>
+			<div class="form-field card">
+				<label class=" form-field__label">Set Month for Datepicker Two</label>
+				<div class="input__wrapper">
+					<input id="set_month_input_two" type="text" class="form-field__input form-field__input--coupled">
+					<button id="set_month_btn" class="btn btn--small">Set Month</button>
+				</div>
+			</div>
+			<div class="form-field card">
+				<label class=" form-field__label">Set Year for Datepicker Two</label>
+				<div class="input__wrapper">
+					<input id="set_year_input_two" type="text" class="form-field__input form-field__input--coupled">
+					<button id="set_year_btn" class="btn btn--small">Set Year</button>
+				</div>
+			</div>
 		</div>
 	</main>
-
-	<!-- <script>
-		const firstCalendar = MCDatepicker.create({ el: '#datepicker_one' })
-	</script> -->
 </body>
 
 </html>

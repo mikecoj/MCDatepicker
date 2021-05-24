@@ -20,4 +20,11 @@
 	&:active {
 		transform: scale3d(0.95, 0.95, 0.95);
 	}
+
+	&:focus {
+		-webkit-tap-highlight-color: transparent;
+		outline: none;
+		-ms-touch-action: manipulation;
+		touch-action: manipulation;
+	}
 }
