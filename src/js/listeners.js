@@ -142,12 +142,12 @@ export const applyListeners = (calendarNodes) => {
 		if (viewLayers[0] !== 'calendar') store.display.setDate = nextCalendarDate;
 		if (viewLayers[0] === 'calendar') store.calendar.setDate = nextCalendarDate;
 
+		store.preview.setTarget = viewLayers[0];
+		store.header.setTarget = viewLayers[0];
+
 		if (autoClose && store.preview.target === viewLayers[0]) {
 			updatePickedDateValue(activeInstance, calendarStates);
 		}
-
-		store.preview.setTarget = viewLayers[0];
-		store.header.setTarget = viewLayers[0];
 	});
 
 	calendar.addEventListener(SET_DATE, (e) => {
