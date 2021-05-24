@@ -11,6 +11,8 @@
 - added `setDate()` method
 - added `setMonth()` method
 - added `setYear()` method
+- fixed styles for safari
+- fixed animations for safari
 
 ## 0.4.0
 
