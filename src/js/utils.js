@@ -252,7 +252,7 @@ export const CalendarStateManager = (calendar) => {
 		isBluring: false,
 		open(instance) {
 			if (this.isClosing) return;
-			sameInstance = JSON.stringify(prevInstance) === JSON.stringify(instance);
+			sameInstance = prevInstance && prevInstance._id === instance._id;
 			this.isOpening = true;
 			clearTimeout(openTimer);
 			dispatchCalendarShow(calendar, instance);
@@ -287,4 +287,8 @@ export const CalendarStateManager = (calendar) => {
 			});
 		}
 	};
+};
+
+export const uniqueId = (length = 16) => {
+	return parseInt(Math.ceil(Math.random() * Date.now()).toPrecision(length)).toString(16);
 };

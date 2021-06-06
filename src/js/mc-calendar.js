@@ -15,10 +15,9 @@ const MCDatepicker = (() => {
 		calendarNodes = writeTemplate();
 	};
 
-	const open = (instance) => {
-		const activeInstance =
-			datepickers.find((datepicker) => JSON.stringify(datepicker) === JSON.stringify(instance)) ||
-			null;
+	const open = (uid) => {
+		// find the instance based on it's unique id
+		const activeInstance = datepickers.find(({ _id }) => _id === uid);
 		if (!activeInstance && !calendarNodes) return;
 		calendarNodes.calendarStates.open(activeInstance);
 	};
@@ -43,8 +42,10 @@ const MCDatepicker = (() => {
 
 		return instance;
 	};
-	const remove = (instance) => {
-		if (!datepickers.length) return;
+	const remove = (uid) => {
+		// find the instance based on it's unique id
+		const instance = datepickers.find(({ _id }) => _id === uid);
+		if (!datepickers.length || !instance) return;
 		// remove the onFocus listener
 		removeOnFocusListener(instance);
 		// Remove the instance from the datepickers array
