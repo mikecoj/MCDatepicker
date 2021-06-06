@@ -1,7 +1,7 @@
 // import { validateRequired, eventSchema, eventColorTypeSchema } from './validators';
 import { Is } from './validators';
 import { dispatchSetDate } from './emiters';
-import { dateFormatParser, Store } from './utils';
+import { dateFormatParser, Store, uniqueId } from './utils';
 import { getActiveMonths, getLimitDates, getViewLayers } from './handlers';
 
 export default function createInstance(datepicker, calendarNodes, instanceOptions) {
@@ -14,6 +14,7 @@ export default function createInstance(datepicker, calendarNodes, instanceOption
 	const store = Store(calendarNodes, viewLayers[0]);
 
 	return {
+		_id: uniqueId(),
 		datepicker: datepicker,
 		el: instanceOptions.el,
 		linkedElement: linkedElement,
@@ -33,7 +34,7 @@ export default function createInstance(datepicker, calendarNodes, instanceOption
 		store: store,
 		// Methods
 		open() {
-			datepicker.open(this);
+			datepicker.open(this._id);
 		},
 		close() {
 			datepicker.close();
@@ -43,7 +44,7 @@ export default function createInstance(datepicker, calendarNodes, instanceOption
 			if (this.linkedElement) this.linkedElement.value = null;
 		},
 		destroy() {
-			datepicker.remove(this);
+			datepicker.remove(this._id);
 		},
 		// Event callbacks
 		onOpen(callback = () => {}) {
