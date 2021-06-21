@@ -7,7 +7,7 @@ import { getActiveMonths, getLimitDates, getViewLayers } from './handlers';
 export default function createInstance(datepicker, calendarNodes, instanceOptions) {
 	instanceOptions.allowedYears.sort((first, next) => first - next);
 	const linkedElement =
-		instanceOptions.el !== null ? document.querySelector(instanceOptions.el) : null;
+		instanceOptions.el !== null ? instanceOptions.context.querySelector(instanceOptions.el) : null;
 	const activeMonths = getActiveMonths(instanceOptions);
 	const { prevLimitDate, nextLimitDate } = getLimitDates(instanceOptions);
 	const viewLayers = getViewLayers(instanceOptions);
@@ -17,6 +17,7 @@ export default function createInstance(datepicker, calendarNodes, instanceOption
 		_id: uniqueId(),
 		datepicker: datepicker,
 		el: instanceOptions.el,
+		context: instanceOptions.context,
 		linkedElement: linkedElement,
 		pickedDate: instanceOptions.selectedDate,
 		viewLayers: viewLayers,

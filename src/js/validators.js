@@ -74,6 +74,7 @@ export const eventColorTypeSchema = {
 
 const optionsSchema = {
 	el: (value) => /^[#][-\w]+$/.test(value),
+	context: (value) => value.nodeType == Node.ELEMENT_NODE,
 	dateFormat: (value) => dateFormatValidator(value).isValid(),
 	bodyType: (value) => {
 		const types = ['modal', 'inline', 'permanent'];
