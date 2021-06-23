@@ -41,7 +41,7 @@ export const months = [
 
 const defaultOptions = {
 	el: null,
-	context: document,
+	context: document.body,
 	dateFormat: 'DD-MMM-YYYY',
 	bodyType: 'modal', // ['modal', 'inline', 'permanent']
 	autoClose: false,

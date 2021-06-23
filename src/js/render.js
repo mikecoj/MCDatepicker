@@ -135,7 +135,7 @@ export const renderCalendar = (instance, date) => {
 	return calendarArray.map((day) => renderDay(day));
 };
 
-export function writeTemplate() {
+export function writeTemplate(instanceOptions) {
 	// create a new div tag
 	const calendarDiv = document.createElement('div');
 	// set the classList of the created div
@@ -145,7 +145,7 @@ export function writeTemplate() {
 	// write the template to the div content
 	calendarDiv.innerHTML = template;
 	// add the new div to the document
-	document.body.appendChild(calendarDiv);
+	instanceOptions.context.appendChild(calendarDiv);
 	// get calendar Nodes
 	const calendarNodes = getDOMNodes(calendarDiv);
 	// apply listeners to calendar
