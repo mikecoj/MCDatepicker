@@ -9,7 +9,8 @@ import {
 	CHANGE_YEAR,
 	DATE_PICK,
 	PREVIEW_PICK,
-	SET_DATE
+	SET_DATE,
+	CANCEL
 } from './events';
 
 export const dispatchCalendarShow = (elem, instance) => {
@@ -92,4 +93,8 @@ export const dispatchSetDate = (elem, detail = { instance: null, date: null }) =
 			detail
 		})
 	);
+};
+
+export const dispatchCancel = (elem) => {
+	elem.dispatchEvent(new CustomEvent(CANCEL, { bubbles: true }));
 };

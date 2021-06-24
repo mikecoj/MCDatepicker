@@ -157,3 +157,33 @@ setYearInput.onchange = (e) => {
 setYearBtn.onclick = () => {
 	setYearValue !== null && secundDatePicker.setYear(setYearValue);
 };
+
+// Test Shadow Dom usage
+document.addEventListener("DOMContentLoaded", setupShadowDOM);
+
+function setupShadowDOM() {
+	const el = document.querySelector('#shadow-dom');
+	if (document.head.attachShadow) {
+		el.attachShadow({mode: 'open'});
+		const shadowRoot = el.shadowRoot;
+
+		// Add input to shadow dom
+		const el2 = document.createElement('input');
+		el2.id = 'shadow-picker-el';
+		shadowRoot.append(el2);
+
+		// Add styles to shadow dom
+		const styleEl = document.querySelector('head link').cloneNode();
+		shadowRoot.append(styleEl);
+
+		setupShadowPicker(shadowRoot);
+	}
+}
+
+function setupShadowPicker(shadowRoot) {
+	window.shadowDatePicker = MCDatepicker.create({
+		el: '#shadow-picker-el',
+		context: shadowRoot,
+		bodyType: 'inline',
+	});
+}

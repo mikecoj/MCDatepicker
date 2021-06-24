@@ -47,11 +47,12 @@ const getCalendarArray = (options, firstMonthDate) => {
 };
 
 export const renderMonthPreview = (calendarNodes, instance) => {
-	const { previewCells } = calendarNodes;
+	const { previewCells, currentMonthSelect } = calendarNodes;
 	const { store, prevLimitDate, nextLimitDate, options } = instance;
 	const { customMonths } = options;
 	const currentMonth = customMonths[store.preview.month];
 	const selectedYear = store.preview.year;
+	currentMonthSelect.setAttribute('aria-expanded', true);
 	customMonths.map((month, index) => {
 		let monthClasslist = ['mc-month-year__cell'];
 		const firstMonthDate = new Date(Number(selectedYear), index);
@@ -60,7 +61,11 @@ export const renderMonthPreview = (calendarNodes, instance) => {
 			prevLimitDate && valueOfDate(lastMonthDate) < valueOfDate(prevLimitDate);
 		const moreThanMaxDate =
 			nextLimitDate && valueOfDate(firstMonthDate) > valueOfDate(nextLimitDate);
-		if (month === currentMonth) monthClasslist.push('mc-month-year__cell--picked');
+		let ariaLabel = month;
+		if (month === currentMonth) {
+			monthClasslist.push('mc-month-year__cell--picked');
+			ariaLabel = `Current Month: ${ariaLabel}`;
+		}
 		if (
 			lessThanMinDate ||
 			moreThanMaxDate ||
@@ -68,19 +73,24 @@ export const renderMonthPreview = (calendarNodes, instance) => {
 			!isActiveYear(options, Number(selectedYear))
 		) {
 			monthClasslist.push('mc-month-year__cell--inactive');
+			previewCells[index].setAttribute('tabindex', -1);
+		} else {
+			previewCells[index].setAttribute('tabindex', 0);
 		}
 
 		previewCells[index].classList = monthClasslist.join(' ');
 		previewCells[index].innerHTML = `<span>${month.substr(0, 3)}</span>`;
+		previewCells[index].setAttribute('aria-label', month);
 	});
 };
 
 export const renderYearPreview = (calendarNodes, instance, year) => {
-	const { previewCells } = calendarNodes;
+	const { previewCells, currentYearSelect } = calendarNodes;
 	const { store, prevLimitDate, nextLimitDate, options } = instance;
 	const minYear = prevLimitDate && prevLimitDate.getFullYear();
 	const maxYear = nextLimitDate && nextLimitDate.getFullYear();
 	const currentYear = store.preview.year;
+	currentYearSelect.setAttribute('aria-expanded', true);
 	previewCells.forEach((cell, index) => {
 		let yearClasslist = ['mc-month-year__cell'];
 		let customYear = year + index;
@@ -89,6 +99,9 @@ export const renderYearPreview = (calendarNodes, instance, year) => {
 		if (customYear === currentYear) yearClasslist.push('mc-month-year__cell--picked');
 		if (lessThanMinYear || moreThanMaxYear || !isActiveYear(options, customYear)) {
 			yearClasslist.push('mc-month-year__cell--inactive');
+			previewCells[index].setAttribute('tabindex', -1);
+		} else {
+			previewCells[index].setAttribute('tabindex', 0);
 		}
 		cell.classList = yearClasslist.join(' ');
 		cell.innerHTML = `<span>${customYear}</span>`;
@@ -105,6 +118,7 @@ export const renderCalendar = (instance, date) => {
 	//  create date custom object
 	const renderDay = (dayObject) => {
 		let classArray = ['mc-date'];
+		dayObject.ariaLabel = dayObject.date.toDateString();
 		// check the cases when the date is not active
 		if (
 			!isInActiveMonth(activeMonth, dayObject) ||
@@ -116,14 +130,25 @@ export const renderCalendar = (instance, date) => {
 			isDisabledDate(options, dayObject)
 		) {
 			classArray.push('mc-date--inactive');
+			dayObject.tabindex = -1;
 		} else {
 			classArray.push('mc-date--active');
+			dayObject.tabindex = 0;
 		}
-		if (isPicked(pickedDate, dayObject)) classArray.push('mc-date--picked');
+		if (isPicked(pickedDate, dayObject)){
+			classArray.push('mc-date--picked');
+			dayObject.ariaLabel = `Picked: ${dayObject.ariaLabel}`;
+		}
 
-		if (isMarked(instance, dayObject)) classArray.push('mc-date--marked');
+		if (isMarked(instance, dayObject)) {
+			classArray.push('mc-date--marked');
+			dayObject.ariaLabel = `Marked: ${dayObject.ariaLabel}`;
+		}
 
-		if (isToday(dayObject)) classArray.push('mc-date--today');
+		if (isToday(dayObject)) {
+			classArray.push('mc-date--today');
+			dayObject.ariaLabel = `Today: ${dayObject.ariaLabel}`;
+		}
 
 		dayObject.classList = classArray.join(' ');
 
@@ -131,11 +156,10 @@ export const renderCalendar = (instance, date) => {
 	};
 
 	const calendarArray = getCalendarArray(options, firstMonthDate);
-
 	return calendarArray.map((day) => renderDay(day));
 };
 
-export function writeTemplate() {
+export function writeTemplate(instanceOptions) {
 	// create a new div tag
 	const calendarDiv = document.createElement('div');
 	// set the classList of the created div
@@ -145,7 +169,7 @@ export function writeTemplate() {
 	// write the template to the div content
 	calendarDiv.innerHTML = template;
 	// add the new div to the document
-	document.body.appendChild(calendarDiv);
+	instanceOptions.context.appendChild(calendarDiv);
 	// get calendar Nodes
 	const calendarNodes = getDOMNodes(calendarDiv);
 	// apply listeners to calendar
