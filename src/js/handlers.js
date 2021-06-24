@@ -14,10 +14,12 @@ export const getDOMNodes = (calendar) => {
 	const nodes = {
 		calendar,
 		calendarDisplay: calendar.querySelector('.mc-display'),
+		calendarPicker: calendar.querySelector('.mc-picker'),
 		displayDay: calendar.querySelector('.mc-display__day'),
 		displayDate: calendar.querySelector('.mc-display__date'),
 		displayMonth: calendar.querySelector('.mc-display__month'),
 		displayYear: calendar.querySelector('.mc-display__year'),
+		accessibilityMonthYear: calendar.querySelector('#mc-picker__month-year'),
 		calendarHeader: calendar.querySelector('.mc-picker__header'),
 		currentMonthSelect: calendar.querySelector('#mc-current--month'),
 		currentYearSelect: calendar.querySelector('#mc-current--year'),
@@ -243,6 +245,7 @@ export const updateWeekdays = (calendarNodes, options) => {
 	weekdays.forEach((wDay, index) => {
 		const nextElement = (firstWeekday + index) % customWeekDays.length;
 		wDay.innerText = customWeekDays[nextElement].substr(0, 2);
+		wDay.setAttribute('aria-label', customWeekDays[nextElement])
 	});
 };
 
@@ -279,11 +282,13 @@ export const updateCalendarTable = (calendarNodes, instance) => {
 		cell.innerText = datesArray[index].dateNumb;
 		cell.classList = datesArray[index].classList;
 		cell.setAttribute('data-val-date', datesArray[index].date);
+		cell.setAttribute('tabindex', datesArray[index].tabindex);
+		cell.setAttribute('aria-label', datesArray[index].ariaLabel);
 	});
 };
 
 export const updateCalendarHeader = (calendarNodes, instance) => {
-	const { currentMonthSelect, currentYearSelect, calendarHeader } = calendarNodes;
+	const { currentMonthSelect, currentYearSelect, calendarHeader, accessibilityMonthYear } = calendarNodes;
 	const { store, options } = instance;
 	const { customMonths } = options;
 	const { target, month, year } = store.header;
@@ -301,6 +306,7 @@ export const updateCalendarHeader = (calendarNodes, instance) => {
 	}
 	currentMonthSelect.innerHTML = `<span>${customMonths[month]}</span>`;
 	currentYearSelect.innerHTML = `<span>${year}</span>`;
+	accessibilityMonthYear.innerText = `${customMonths[month]} ${year}`;
 };
 
 export const updateMonthYearPreview = (calendarNodes, instance) => {
