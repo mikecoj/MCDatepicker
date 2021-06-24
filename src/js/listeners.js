@@ -11,7 +11,8 @@ import {
 	CHANGE_YEAR,
 	DATE_PICK,
 	PREVIEW_PICK,
-	SET_DATE
+	SET_DATE,
+	CANCEL
 } from './events';
 import {
 	dispatchCalendarShow,
@@ -19,7 +20,8 @@ import {
 	dispatchDatePick,
 	dispatchChangeMonth,
 	dispatchChangeYear,
-	dispatchPreviewCellPick
+	dispatchPreviewCellPick,
+	dispatchCancel
 } from './emiters';
 
 import {
@@ -42,6 +44,7 @@ export const applyListeners = (calendarNodes) => {
 		calendarStates,
 		calendar,
 		calendarDisplay,
+		calendarPicker,
 		calendarHeader,
 		currentMonthSelect,
 		currentYearSelect,
@@ -145,6 +148,17 @@ export const applyListeners = (calendarNodes) => {
 		store.preview.setTarget = viewLayers[0];
 		store.header.setTarget = viewLayers[0];
 
+		currentMonthSelect.setAttribute('aria-expanded', false);
+		currentYearSelect.setAttribute('aria-expanded', false);
+
+		// Return focus to correct location
+		if (target == 'month') {
+			currentMonthSelect.focus();
+		}
+		else if (target == 'year') {
+			currentYearSelect.focus();
+		}
+
 		if (autoClose && store.preview.target === viewLayers[0]) {
 			updatePickedDateValue(activeInstance, calendarStates);
 		}
@@ -179,6 +193,12 @@ export const applyListeners = (calendarNodes) => {
 		const isTargeted = calendar.contains(e.relatedTarget);
 		if (isTargeted || !activeInstance) return;
 		calendarStates.blur();
+	});
+
+	calendar.addEventListener(CANCEL, (e) => {
+		const { onCancelCallbacks } = activeInstance;
+		onCancelCallbacks.forEach((callback) => callback.apply(null));
+		calendarStates.close();
 	});
 
 	calendarDisplay.addEventListener(DISPLAY_UPDATE, (e) => {
@@ -304,6 +324,19 @@ export const applyListeners = (calendarNodes) => {
 	});
 
 	currentMonthSelect.onclick = () => {
+		openMonthSelect();
+	};
+	currentMonthSelect.onkeydown = (e) => {
+		if (e.key == 'Enter') {
+			openMonthSelect('keyboard');
+		}
+		else if (e.key == 'Tab' && !e.shiftKey) {
+			// Correct focus order
+			e.preventDefault();
+			currentYearSelect.focus();
+		}
+	};
+	function openMonthSelect(arrivalMethod = 'click') {
 		const { store, viewLayers } = activeInstance;
 		if (viewLayers[0] === 'month') return;
 		const isOpened = monthYearPreview.classList.contains('mc-month-year__preview--opened');
@@ -314,9 +347,28 @@ export const applyListeners = (calendarNodes) => {
 		}
 		store.header.setTarget = 'month';
 		store.preview.setTarget = 'month';
-	};
+		if (arrivalMethod == 'keyboard') monthYearPreview.querySelector('[tabindex="0"]').focus();
+	}
 
 	currentYearSelect.onclick = () => {
+		openYearSelect();
+	};
+	currentYearSelect.onkeydown = (e) => {
+		if (e.key == 'Enter') {
+			openYearSelect('keyboard');
+		}
+		else if (e.key == 'Tab' && e.shiftKey) {
+			// Correct focus order
+			e.preventDefault();
+			currentMonthSelect.focus();
+		}
+		else if (e.key == 'Tab') {
+			// Correct focus order
+			e.preventDefault();
+			monthNavNext.focus();
+		}
+	};
+	function openYearSelect(arrivalMethod = 'click') {
 		const { store, viewLayers } = activeInstance;
 		if (viewLayers[0] === 'year') return;
 		const isOpened = monthYearPreview.classList.contains('mc-month-year__preview--opened');
@@ -331,7 +383,8 @@ export const applyListeners = (calendarNodes) => {
 		store.header.year = store.preview.year - 4;
 		store.header.setTarget = 'year';
 		store.preview.setTarget = 'year';
-	};
+		if (arrivalMethod == 'keyboard') monthYearPreview.querySelector('[tabindex="0"]').focus();
+	}
 
 	// Dispatch custom events
 	previewCells.forEach((cell) => {
@@ -340,6 +393,11 @@ export const applyListeners = (calendarNodes) => {
 		};
 		cell.ondblclick = (e) => {
 			e.detail === 2 && dispatchPreviewCellPick(e.currentTarget, true);
+		};
+		cell.onkeydown = (e) => {
+			if (e.key == 'Enter') {
+				dispatchPreviewCellPick(e.currentTarget);
+			}
 		};
 	});
 
@@ -350,6 +408,14 @@ export const applyListeners = (calendarNodes) => {
 		};
 		cell.ondblclick = (e) => {
 			e.detail === 2 && dispatchDatePick(e.target, true);
+		};
+		cell.onkeydown = (e) => {
+			if (e.key == 'Enter') {
+				dispatchDatePick(e.target);
+			}
+			else if (e.key == 'End') {
+				clearButton.focus();
+			}
 		};
 	});
 
@@ -362,6 +428,17 @@ export const applyListeners = (calendarNodes) => {
 		if (e.currentTarget.classList.contains('mc-select__nav--inactive')) return;
 		dispatchChangeMonth(currentMonthSelect, 'next');
 	});
+	monthNavNext.addEventListener('keydown', (e) => {
+		// correct focus order
+		if (e.key == 'Tab' && e.shiftKey) {
+			e.preventDefault();
+			currentYearSelect.focus();
+		}
+		else if (e.key == 'Tab') {
+			e.preventDefault();
+			calendarHeader.nextElementSibling.querySelector('[tabindex="0"]').focus();
+		}
+	})
 
 	yearNavPrev.addEventListener('click', (e) => {
 		if (e.currentTarget.classList.contains('mc-select__nav--inactive')) return;
@@ -374,9 +451,13 @@ export const applyListeners = (calendarNodes) => {
 	});
 
 	cancelButton.addEventListener('click', (e) => {
-		const { onCancelCallbacks } = activeInstance;
-		onCancelCallbacks.forEach((callback) => callback.apply(null));
-		calendarStates.close();
+		dispatchCancel(calendar);
+	});
+
+	calendarPicker.addEventListener('keyup', (e) => {
+		if (e.key == 'Escape') {
+			dispatchCancel(calendar);
+		}
 	});
 
 	okButton.addEventListener('click', (e) => updatePickedDateValue(activeInstance, calendarStates));

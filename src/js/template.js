@@ -20,15 +20,15 @@ export default `<div class="mc-display" data-target="calendar">
 <div class="mc-picker">
 <div class="mc-picker__header mc-select mc-container" data-target="calendar">
 <div class="mc-select__month">
-<button id="mc-picker__month--prev" class="mc-select__nav mc-select__nav--prev">
+<button id="mc-picker__month--prev" class="mc-select__nav mc-select__nav--prev" tabindex="0" aria-label="Previous Month">
 <svg class="icon-angle icon-angle--left" viewBox="0 0 256 512" width='10px' height='100%'>
 <path fill="currentColor" d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z" />
 </svg>
 </button>
-<div id="mc-current--month" class="mc-select__data mc-select__data--month">
+<div id="mc-current--month" class="mc-select__data mc-select__data--month" tabindex="0" aria-label="Click to select month" aria-haspopup="true" aria-expanded="false" aria-controls="mc-month-year__preview">
 <span>January</span>
 </div>
-<button id="mc-picker__month--next" class="mc-select__nav mc-select__nav--next">
+<button id="mc-picker__month--next" class="mc-select__nav mc-select__nav--next" tabindex="0" aria-label="Next Month">
 <svg class="icon-angle icon-angle--right" viewBox="0 0 256 512" width='10px' height='100%'>
 <path fill="currentColor" d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z" />
 </svg>
@@ -40,7 +40,7 @@ export default `<div class="mc-display" data-target="calendar">
 <path fill="currentColor" d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z" />
 </svg>
 </button>
-<div id="mc-current--year" class="mc-select__data mc-select__data--year">
+<div id="mc-current--year" class="mc-select__data mc-select__data--year" tabindex="0" aria-label="Click to select year" aria-haspopup="true" aria-expanded="false" aria-controls="mc-month-year__preview">
 <span>1970</span>
 </div>
 <button id="mc-picker__year--next" class="mc-select__nav mc-select__nav--next">
@@ -49,9 +49,10 @@ export default `<div class="mc-display" data-target="calendar">
 </svg>
 </button>
 </div>
+<div id="mc-picker__month-year" class="mc-picker-vhidden" aria-live="polite" aria-atomic="true">January 1970</div>
 </div>
 <div class="mc-picker__body">
-<table class="mc-table mc-container">
+<table class="mc-table mc-container" aria-labelledby="mc-picker__month-year">
 <thead class="mc-table__header">
 <tr>
 <th class="mc-table__weekday">S</th>
@@ -120,7 +121,7 @@ export default `<div class="mc-display" data-target="calendar">
 </tr>
 </tbody>
 </table>
-<div class="mc-month-year__preview" data-target=null>
+<div id="mc-month-year__preview" class="mc-month-year__preview" data-target=null role="menu">
 <div class="mc-month-year__cell"></div>
 <div class="mc-month-year__cell"></div>
 <div class="mc-month-year__cell"></div>
@@ -137,11 +138,11 @@ export default `<div class="mc-display" data-target="calendar">
 </div>
 <div class="mc-picker__footer mc-container">
 <div class="mc-footer__section mc-footer__section--primary">
-<button id="mc-btn__clear" class="mc-btn mc-btn--danger">Clear</button>
+<button id="mc-btn__clear" class="mc-btn mc-btn--danger" tabindex="0">Clear</button>
 </div>
 <div class="mc-footer__section mc-footer__section--secondary">
-<button id="mc-btn__cancel" class="mc-btn mc-btn--success">CANCEL</button>
-<button id="mc-btn__ok" class="mc-btn mc-btn--success">OK</button>
+<button id="mc-btn__cancel" class="mc-btn mc-btn--success" tabindex="0">CANCEL</button>
+<button id="mc-btn__ok" class="mc-btn mc-btn--success" tabindex="0">OK</button>
 </div>
 </div>
 </div>`;

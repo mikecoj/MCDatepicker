@@ -10,9 +10,9 @@ const MCDatepicker = (() => {
 	let datepickers = [];
 	let calendarNodes = null;
 
-	const initCalendar = () => {
+	const initCalendar = (instanceOptions) => {
 		if (calendarNodes) return;
-		calendarNodes = writeTemplate();
+		calendarNodes = writeTemplate(instanceOptions);
 	};
 
 	const open = (uid) => {
@@ -29,10 +29,10 @@ const MCDatepicker = (() => {
 	};
 
 	const create = (options = {}) => {
-		// initiate the calendar instance once
-		initCalendar();
 		// validate options and merge them with de default Options
 		const instanceOptions = validateOptions(options, defaultOptions);
+		// initiate the calendar instance once
+		initCalendar(instanceOptions);
 		// create instance
 		const instance = createInstance(MCDatepicker, calendarNodes, instanceOptions);
 		// push fresh created instance to instances array

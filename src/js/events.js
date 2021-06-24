@@ -9,3 +9,4 @@ export const PREVIEW_PICK = 'preview-pick';
 export const CHANGE_MONTH = 'month-change';
 export const CHANGE_YEAR = 'year-change';
 export const SET_DATE = 'set-date';
+export const CANCEL = 'cancel-calendar';
