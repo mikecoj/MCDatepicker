@@ -5,6 +5,84 @@ export const defaultEventColorType = [
 	{ type: 'slight', color: '#00DDFF' }
 ];
 
+export const defaultTheme = {
+	theme_color: '#38ada9',
+	main_background: '',
+	active_text_color: '',
+	inactive_text_color: '',
+	display: {
+		foreground: '',
+		background: '#38ada9'
+	},
+	picker: {
+		foreground: '',
+		background: ''
+	},
+	picker_header: {
+		active: '',
+		inactive: ''
+	},
+	weekday: {
+		foreground: '#38ada9'
+	},
+	button: {
+		success: {
+			foreground: '#38ada9'
+		},
+		danger: {
+			foreground: ''
+		}
+	},
+	date: {
+		active: {
+			default: {
+				foreground: ''
+			},
+			picked: {
+				foreground: '',
+				background: '#38ada9'
+			},
+			today: {
+				foreground: '',
+				background: ''
+			}
+		},
+		inactive: {
+			default: {
+				foreground: ''
+			},
+			picked: {
+				foreground: '#38ada9',
+				background: '#38ada9'
+			},
+			today: {
+				foreground: '',
+				background: ''
+			}
+		}
+	},
+	month_year_preview: {
+		active: {
+			default: {
+				foreground: ''
+			},
+			picked: {
+				foreground: '',
+				background: ''
+			}
+		},
+		inactive: {
+			default: {
+				foreground: ''
+			},
+			picked: {
+				foreground: '',
+				background: ''
+			}
+		}
+	}
+};
+
 export const viewLayers = {
 	DMY: ['calendar', 'month', 'year'],
 	DY: ['calendar', 'month', 'year'],
@@ -66,7 +144,8 @@ const defaultOptions = {
 	allowedYears: [], // ex: [2022, 2023]
 	disableMonths: [], /// ex: [3,11] accept numbers 0-11;
 	disableYears: [], // ex: [2010, 2011]
-	markDates: [] // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
+	markDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
+	theme: defaultTheme
 	// TODO: Integrate Daterange Feature
 	// daterange: false, // currently not supported
 	// TODO: Integrate Events Feature
