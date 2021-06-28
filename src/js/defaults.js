@@ -7,20 +7,20 @@ export const defaultEventColorType = [
 
 export const defaultTheme = {
 	theme_color: '#38ada9',
-	main_background: '',
-	active_text_color: '',
-	inactive_text_color: '',
+	main_background: '#f5f5f6',
+	active_text_color: 'rgb(0, 0, 0)',
+	inactive_text_color: 'rgba(0, 0, 0, 0.8)',
 	display: {
-		foreground: '',
+		foreground: 'rgba(255, 255, 255, 0.8)',
 		background: '#38ada9'
 	},
 	picker: {
-		foreground: '',
-		background: ''
+		foreground: 'rgb(0, 0, 0)',
+		background: '#f5f5f6'
 	},
 	picker_header: {
-		active: '',
-		inactive: ''
+		active: '#818181',
+		inactive: '#bebebe'
 	},
 	weekday: {
 		foreground: '#38ada9'
@@ -30,54 +30,54 @@ export const defaultTheme = {
 			foreground: '#38ada9'
 		},
 		danger: {
-			foreground: ''
+			foreground: '#e65151'
 		}
 	},
 	date: {
 		active: {
 			default: {
-				foreground: ''
+				foreground: 'rgb(0, 0, 0)'
 			},
 			picked: {
-				foreground: '',
+				foreground: '#ffffff',
 				background: '#38ada9'
 			},
 			today: {
-				foreground: '',
-				background: ''
+				foreground: 'rgb(0, 0, 0)',
+				background: 'rgba(0, 0, 0, 0.2)'
 			}
 		},
 		inactive: {
 			default: {
-				foreground: ''
+				foreground: '#bebebe'
 			},
 			picked: {
 				foreground: '#38ada9',
 				background: '#38ada9'
 			},
 			today: {
-				foreground: '',
-				background: ''
+				foreground: '#bebebe',
+				background: '#bebebe'
 			}
 		}
 	},
 	month_year_preview: {
 		active: {
 			default: {
-				foreground: ''
+				foreground: 'rgb(0, 0, 0)'
 			},
 			picked: {
-				foreground: '',
-				background: ''
+				foreground: 'rgb(0, 0, 0)',
+				background: 'rgba(0, 0, 0,0.8)'
 			}
 		},
 		inactive: {
 			default: {
-				foreground: ''
+				foreground: 'rgba(0,0,0,0.2)'
 			},
 			picked: {
-				foreground: '',
-				background: ''
+				foreground: 'rgba(0, 0, 0, 0.2)',
+				background: 'rgba(0, 0, 0, 0.2)'
 			}
 		}
 	}
