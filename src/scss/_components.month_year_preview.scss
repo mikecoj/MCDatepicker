@@ -22,6 +22,7 @@
 		}
 	}
 	&__cell {
+		$root: &;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -37,6 +38,10 @@
 		&--inactive {
 			color: $inactive-date-color;
 			cursor: default;
+			&#{$root}--picked {
+				box-shadow: 0 0 0 1px $dark-bg-color;
+				background-color: transparent;
+			}
 		}
 	}
 }
