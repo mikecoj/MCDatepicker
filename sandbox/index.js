@@ -19,6 +19,53 @@ let setDayValue = null;
 let setMonthValue = null;
 let setYearValue = null;
 
+const calendarTheme = {
+	theme_color: '#38ada9',
+	main_background: '#f5f5f6',
+	inactive_text_color: 'rgba(0, 0, 0, 0.8)',
+	display: {
+		foreground: 'rgba(255, 255, 255, 0.8)'
+	},
+	picker: {
+		foreground: 'rgb(0, 0, 0)',
+		background: '#f5f5f6'
+	},
+	weekday: {
+		foreground: '#38ada9'
+	},
+	button: {
+		danger: {
+			foreground: '#e65151'
+		}
+	},
+	date: {
+		active: {
+			default: {
+				foreground: 'rgb(0, 0, 0)'
+			},
+			picked: {
+				background: '#38ada9'
+			},
+			today: {
+				foreground: 'rgb(0, 0, 0)',
+				background: 'rgba(0, 0, 0, 0.2)'
+			}
+		}
+	},
+	month_year_preview: {
+		active: {
+			default: {
+				foreground: 'rgb(0, 0, 0)'
+			}
+		},
+		inactive: {
+			picked: {
+				background: 'rgba(0, 0, 0, 0.2)'
+			}
+		}
+	}
+};
+
 const firstDatePicker = MCDatepicker.create({
 	el: '#datepicker_one',
 	bodyType: 'inline',
@@ -50,7 +97,8 @@ const firstDatePicker = MCDatepicker.create({
 	maxDate: new Date(2023, 3, 22),
 	markDates: [new Date(2021, 2, 21), new Date(2021, 3, 1)],
 	disableYears: [2020],
-	disableMonths: [8]
+	disableMonths: [8],
+	theme: calendarTheme
 });
 
 firstDatePicker.markDatesCustom((date) => date.getDate() == 5);
