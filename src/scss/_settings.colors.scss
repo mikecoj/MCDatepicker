@@ -2,17 +2,42 @@
 /*                Color Variables             */
 /*============================================*/
 
-$main-bg-color: #f5f5f6;
-$main-theme-color: #38ada9;
-$picked-date-background: $main-theme-color;
-/* @dark-bg-color: #007d7a; */
-$dark-bg-color: rgba(0, 0, 0, 0.2);
-$month-year-color: #818181;
-$inactive-white-color: rgba(255, 255, 255, 0.8);
-$active-white-color: rgb(255, 255, 255);
-$inactive-black-color: rgba(0, 0, 0, 0.8);
-$active-black-color: rgb(0, 0, 0);
-$inactive-date-color: rgb(190, 190, 190);
-$inactive-picked-bg: #0e837d94;
-$danger-button-color: #e65151;
-// $inactive-picked-date-bg: #0799924b;
+$main-bg-color: #{var(--main-bg)};
+$main-theme-color: #{var(--theme-color)};
+$active-text-color: #{var(--active-text-color)};
+$inactive-text-color: #{var(--inactive-text-color)};
+
+$display-text-color: #{var(--display-foreground)};
+$display-bg-color: #{var(--display-background)};
+$display-bg-color-darker: rgba(0, 0, 0, 0.2);
+
+$picker-text-color: #{var(--picker-foreground)};
+$picker-bg-color: #{var(--picker-background)};
+
+$picker-header-active-color: #{var(--picker-header-active)};
+$picker-header-inactive-color: #{var(--picker-header-inactive)};
+
+$weekday-text-color: #{var(--weekday-foreground)};
+
+$date-active-text-color: #{var(--date-active-def-foreground)};
+$date-active-pick-text-color: #{var(--date-active-pick-foreground)};
+$date-active-pick-bg-color: #{var(--date-active-pick-background)};
+$date-active-today-text-color: #{var(--date-active-today-foreground)};
+$date-active-today-bg-color: #{var(--date-active-today-background)};
+//
+$date-inactive-text-color: #{var(--date-inactive-def-foreground)};
+$date-inactive-pick-text-color: #{var(--date-inactive-pick-foreground)};
+$date-inactive-pick-bg-color: #{var(--date-inactive-pick-background)};
+$date-inactive-today-text-color: #{var(--date-inactive-today-foreground)};
+$date-inactive-today-bg-color: #{var(--date-inactive-today-background)};
+
+$prev-cell-active-text-color: #{var(--prev-active-def-foreground)};
+$prev-cell-active-pick-text-color: #{var(--prev-active-pick-foreground)};
+$prev-cell-active-pick-bg-color: #{var(--prev-active-pick-background)};
+//
+$prev-cell-inactive-text-color: #{var(--prev-inactive-def-foreground)};
+$prev-cell-inactive-pick-text-color: #{var(--prev-inactive-pick-foreground)};
+$prev-cell-inactive-pick-bg-color: #{var(--prev-inactive-pick-background)};
+
+$btn-success-color: #{var(--btn-success-foreground)};
+$btn-danger-color: #{var(--btn-danger-foreground)};

@@ -22,7 +22,6 @@
 }
 @keyframes slide-down {
 	0% {
-		// transform: translate(-50%, #{min(-400px, -65vh)});
 		transform: translate(-50%, -400px);
 	}
 
@@ -33,11 +32,9 @@
 
 @keyframes zoom-in {
 	0% {
-		// opacity: 0;
 		transform: translate(-50%, -50%) scale(0.9);
 	}
 	100% {
-		// opacity: 0;
 		transform: translate(-50%, -50%) scale(1);
 	}
 }

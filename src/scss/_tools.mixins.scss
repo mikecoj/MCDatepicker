@@ -2,6 +2,47 @@
 /*                   Mixins                   */
 /*============================================*/
 
+@mixin includeColors {
+	--theme-color: #38ada9;
+	--main-bg: #f5f5f6;
+	--active-text-color: rgb(0, 0, 0);
+	--inactive-text-color: rgba(0, 0, 0, 0.8);
+	//
+	--display-foreground: rgba(255, 255, 255, 0.8);
+	--display-background: #38ada9;
+	//
+	--picker-foreground: rgb(0, 0, 0);
+	--picker-background: #f5f5f6;
+
+	--picker-header-active: #818181;
+	--picker-header-inactive: #bebebe;
+	//
+	--weekday-foreground: #38ada9;
+	//
+	--btn-success-foreground: #38ada9;
+	--btn-danger-foreground: #e65151;
+	//
+	--date-active-def-foreground: rgb(0, 0, 0);
+	--date-active-pick-foreground: #ffffff;
+	--date-active-pick-background: #38ada9;
+	--date-active-today-foreground: rgb(0, 0, 0);
+	--date-active-today-background: rgba(0, 0, 0, 0.2);
+	//
+	--date-inactive-def-foreground: #bebebe;
+	--date-inactive-pick-foreground: #38ada9;
+	--date-inactive-pick-background: #38ada9;
+	--date-inactive-today-foreground: #bebebe;
+	--date-inactive-today-background: #bebebe;
+	//
+	--prev-active-def-foreground: rgb(0, 0, 0);
+	--prev-active-pick-foreground: rgb(0, 0, 0);
+	--prev-active-pick-background: rgba(0, 0, 0, 0.8);
+	//
+	--prev-inactive-def-foreground: rgba(0, 0, 0, 0.2);
+	--prev-inactive-pick-foreground: rgba(0, 0, 0, 0.2);
+	--prev-inactive-pick-background: rgba(0, 0, 0, 0.2);
+}
+
 @mixin for-desktop {
 	@media (min-width: $bkp-mobile) {
 		@content;
