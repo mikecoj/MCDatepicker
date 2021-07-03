@@ -9,7 +9,7 @@ export const defaultTheme = {
 	theme_color: '#38ada9',
 	main_background: '#f5f5f6',
 	active_text_color: 'rgb(0, 0, 0)',
-	inactive_text_color: 'rgba(0, 0, 0, 0.8)',
+	inactive_text_color: 'rgba(0, 0, 0, 0.2)',
 	display: {
 		foreground: 'rgba(255, 255, 255, 0.8)',
 		background: '#38ada9'
@@ -20,7 +20,7 @@ export const defaultTheme = {
 	},
 	picker_header: {
 		active: '#818181',
-		inactive: '#bebebe'
+		inactive: 'rgba(0, 0, 0, 0.2)'
 	},
 	weekday: {
 		foreground: '#38ada9'
@@ -49,16 +49,19 @@ export const defaultTheme = {
 		},
 		inactive: {
 			default: {
-				foreground: '#bebebe'
+				foreground: 'rgba(0, 0, 0, 0.2)'
 			},
 			picked: {
 				foreground: '#38ada9',
 				background: '#38ada9'
 			},
 			today: {
-				foreground: '#bebebe',
-				background: '#bebebe'
+				foreground: 'rgba(0, 0, 0, 0.2)',
+				background: 'rgba(0, 0, 0, 0.2)'
 			}
+		},
+		marcked: {
+			foreground: '#38ada9'
 		}
 	},
 	month_year_preview: {
@@ -68,12 +71,12 @@ export const defaultTheme = {
 			},
 			picked: {
 				foreground: 'rgb(0, 0, 0)',
-				background: 'rgba(0, 0, 0,0.8)'
+				background: 'rgba(0, 0, 0,0.2)'
 			}
 		},
 		inactive: {
 			default: {
-				foreground: 'rgba(0,0,0,0.2)'
+				foreground: 'rgba(0, 0, 0, 0.2)'
 			},
 			picked: {
 				foreground: 'rgba(0, 0, 0, 0.2)',
