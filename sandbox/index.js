@@ -20,48 +20,35 @@ let setMonthValue = null;
 let setYearValue = null;
 
 const calendarTheme = {
-	theme_color: '#38ada9',
-	main_background: '#f5f5f6',
-	inactive_text_color: 'rgba(0, 0, 0, 0.8)',
-	display: {
-		foreground: 'rgba(255, 255, 255, 0.8)'
-	},
-	picker: {
-		foreground: 'rgb(0, 0, 0)',
-		background: '#f5f5f6'
+	theme_color: '#19212b', //#19212b
+	main_background: '#1f2936',
+	active_text_color: '#cfe6ff',
+	inactive_text_color: 'rgba(62,85,110,0.85)',
+	picker_header: {
+		active: '#8ea5bd'
 	},
 	weekday: {
-		foreground: '#38ada9'
+		foreground: '#53A6FA' //rgba(35,68,97,0.8)
 	},
-	button: {
-		danger: {
-			foreground: '#e65151'
-		}
+	display: {
+		foreground: '#8ea5bd'
 	},
 	date: {
 		active: {
-			default: {
-				foreground: 'rgb(0, 0, 0)'
-			},
 			picked: {
-				background: '#38ada9'
-			},
-			today: {
-				foreground: 'rgb(0, 0, 0)',
-				background: 'rgba(0, 0, 0, 0.2)'
-			}
-		}
-	},
-	month_year_preview: {
-		active: {
-			default: {
-				foreground: 'rgb(0, 0, 0)'
+				background: '#53a6fa'
 			}
 		},
-		inactive: {
-			picked: {
-				background: 'rgba(0, 0, 0, 0.2)'
-			}
+		marcked: {
+			foreground: '#53a6fa'
+		}
+	},
+	button: {
+		danger: {
+			foreground: '#af002a'
+		},
+		success: {
+			foreground: '#53a6e8'
 		}
 	}
 };
@@ -70,7 +57,7 @@ const firstDatePicker = MCDatepicker.create({
 	el: '#datepicker_one',
 	bodyType: 'inline',
 	autoClose: true,
-	closeOnBlur: true,
+	// closeOnBlur: true,
 	dateFormat: 'dddd, dd mmmm yyyy',
 	disableDates: [new Date(2021, 1, 12), new Date(2021, 4, 15)],
 	customWeekDays: ['Duminică', 'Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă'],
@@ -98,7 +85,7 @@ const firstDatePicker = MCDatepicker.create({
 	markDates: [new Date(2021, 2, 21), new Date(2021, 3, 1)],
 	disableYears: [2020],
 	disableMonths: [8],
-	theme: calendarTheme
+	// theme: calendarTheme
 });
 
 firstDatePicker.markDatesCustom((date) => date.getDate() == 5);
@@ -112,11 +99,14 @@ const secundDatePicker = MCDatepicker.create({
 	// dateFormat: 'yyyy',
 	// dateFormat: 'mm-yyyy',
 	bodyType: 'modal',
+	// theme: calendarTheme,
 	// closeOndblclick: false,
 	// showCalendarDisplay: false,
 	minDate: new Date(2020, 11, 5),
-	maxDate: new Date(2021, 0, 16)
+	maxDate: new Date(2021, 0, 16),
+	theme: calendarTheme
 });
+// console.log(JSON.stringify(secundDatePicker.options.theme, 0, 4));
 const thirdDatePicker = MCDatepicker.create({
 	el: '#datepicker_three',
 	dateFormat: 'mm-yyyy',
