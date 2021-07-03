@@ -13,7 +13,7 @@
 		overflow: hidden;
 		visibility: hidden;
 		opacity: 0;
-		background-color: #f5f5f6;
+		background-color: $picker-bg-color;
 
 		&--opened {
 			visibility: visible;
