@@ -292,3 +292,153 @@ export const CalendarStateManager = (calendar) => {
 export const uniqueId = (length = 16) => {
 	return parseInt(Math.ceil(Math.random() * Date.now()).toPrecision(length)).toString(16);
 };
+
+export const themeParser = (defaultTheme, customTheme) => {
+	return {
+		theme_color: customTheme?.theme_color || defaultTheme.theme_color,
+		main_background: customTheme?.main_background || defaultTheme.main_background,
+		active_text_color: customTheme?.active_text_color || defaultTheme.active_text_color,
+		inactive_text_color: customTheme?.inactive_text_color || defaultTheme.inactive_text_color,
+		display: {
+			foreground: customTheme?.display?.foreground || defaultTheme.display.foreground,
+			background:
+				customTheme?.display?.background ||
+				customTheme?.theme_color ||
+				defaultTheme.display.background
+		},
+		picker: {
+			foreground:
+				customTheme?.picker?.foreground ||
+				customTheme?.active_text_color ||
+				defaultTheme.picker.foreground,
+			background:
+				customTheme?.picker?.background ||
+				customTheme?.main_background ||
+				defaultTheme.picker.background
+		},
+		picker_header: {
+			active: customTheme?.picker_header?.active || defaultTheme.picker_header.active,
+			inactive:
+				customTheme?.picker_header?.inactive ||
+				customTheme?.inactive_text_color ||
+				defaultTheme.picker_header.inactive
+		},
+		weekday: {
+			foreground:
+				customTheme?.weekday?.foreground ||
+				customTheme?.theme_color ||
+				defaultTheme.weekday.foreground
+		},
+		button: {
+			success: {
+				foreground:
+					customTheme?.button?.success?.foreground ||
+					customTheme?.theme_color ||
+					defaultTheme.button.success.foreground
+			},
+			danger: {
+				foreground: customTheme?.button?.danger?.foreground || defaultTheme.button.danger.foreground
+			}
+		},
+		date: {
+			active: {
+				default: {
+					foreground:
+						customTheme?.date?.active?.default?.foreground ||
+						customTheme?.active_text_color ||
+						defaultTheme.date.active.default.foreground
+				},
+				picked: {
+					foreground:
+						customTheme?.date?.active?.picked?.foreground ||
+						defaultTheme.date.active.picked.foreground,
+					background:
+						customTheme?.date?.active?.picked?.background ||
+						customTheme?.theme_color ||
+						defaultTheme.date.active.picked.background
+				},
+				today: {
+					foreground:
+						customTheme?.date?.active?.today?.foreground ||
+						customTheme?.active_text_color ||
+						defaultTheme.date.active.today.foreground,
+					background:
+						customTheme?.date?.active?.today?.background ||
+						customTheme?.inactive_text_color ||
+						defaultTheme.date.active.today.background
+				}
+			},
+			inactive: {
+				default: {
+					foreground:
+						customTheme?.date?.inactive?.default?.foreground ||
+						customTheme?.inactive_text_color ||
+						defaultTheme.date.inactive.default.foreground
+				},
+				picked: {
+					foreground:
+						customTheme?.date?.inactive?.picked?.foreground ||
+						customTheme?.theme_color ||
+						defaultTheme.date.inactive.picked.foreground,
+					background:
+						customTheme?.date?.inactive?.picked?.background ||
+						customTheme?.theme_color ||
+						defaultTheme.date.inactive.picked.background
+				},
+				today: {
+					foreground:
+						customTheme?.date?.inactive?.today?.foreground ||
+						customTheme?.inactive_text_color ||
+						defaultTheme.date.inactive.today.foreground,
+					background:
+						customTheme?.date?.inactive?.today?.background ||
+						customTheme?.inactive_text_color ||
+						defaultTheme.date.inactive.today.background
+				}
+			},
+			marcked: {
+				foreground:
+					customTheme?.date?.marcked?.foreground ||
+					customTheme?.theme_color ||
+					defaultTheme.date.marcked.foreground
+			}
+		},
+		month_year_preview: {
+			active: {
+				default: {
+					foreground:
+						customTheme?.month_year_preview?.active?.default?.foreground ||
+						customTheme?.active_text_color ||
+						defaultTheme.month_year_preview.active.default.foreground
+				},
+				picked: {
+					foreground:
+						customTheme?.month_year_preview?.active?.picked?.foreground ||
+						customTheme?.active_text_color ||
+						defaultTheme.month_year_preview.active.picked.foreground,
+					background:
+						customTheme?.month_year_preview?.active?.picked?.background ||
+						defaultTheme.month_year_preview.active.picked.background
+				}
+			},
+			inactive: {
+				default: {
+					foreground:
+						customTheme?.month_year_preview?.inactive?.default?.foreground ||
+						customTheme?.inactive_text_color ||
+						defaultTheme.month_year_preview.inactive.default.foreground
+				},
+				picked: {
+					foreground:
+						customTheme?.month_year_preview?.inactive?.picked?.foreground ||
+						customTheme?.inactive_text_color ||
+						defaultTheme.month_year_preview.inactive.picked.foreground,
+					background:
+						customTheme?.month_year_preview?.inactive?.picked?.background ||
+						customTheme?.inactive_text_color ||
+						defaultTheme.month_year_preview.inactive.picked.background
+				}
+			}
+		}
+	};
+};
