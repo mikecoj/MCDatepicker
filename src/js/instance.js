@@ -1,7 +1,8 @@
 // import { validateRequired, eventSchema, eventColorTypeSchema } from './validators';
 import { Is } from './validators';
 import { dispatchSetDate } from './emiters';
-import { dateFormatParser, Store, uniqueId } from './utils';
+import { defaultTheme } from './defaults';
+import { dateFormatParser, Store, uniqueId, themeParser } from './utils';
 import { getActiveMonths, getLimitDates, getViewLayers } from './handlers';
 
 export default function createInstance(datepicker, calendarNodes, instanceOptions) {
@@ -12,6 +13,8 @@ export default function createInstance(datepicker, calendarNodes, instanceOption
 	const { prevLimitDate, nextLimitDate } = getLimitDates(instanceOptions);
 	const viewLayers = getViewLayers(instanceOptions);
 	const store = Store(calendarNodes, viewLayers[0]);
+	const parsedTheme = themeParser(defaultTheme, instanceOptions.theme);
+	instanceOptions.theme = parsedTheme;
 
 	return {
 		_id: uniqueId(),
@@ -131,5 +134,4 @@ export default function createInstance(datepicker, calendarNodes, instanceOption
 		// 	instance.options.events.push(...events);
 		// }
 	};
-	// return instance;
 }
