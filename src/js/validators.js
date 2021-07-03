@@ -119,20 +119,19 @@ const themeColorSchema = {
 		);
 	},
 	date: (obj) => {
-		const objKeys = ['active', 'inactive'];
+		const objKeys = ['active', 'inactive', 'marcked'];
 		const validObjectKeys = objectKeysValidator(objKeys, obj);
 
 		const chainValidate = Object.keys(obj).every((key) => {
 			const chainObject = obj[key];
 			const chainObjKeys = ['default', 'picked', 'today'];
 			const validChainObjectKeys = objectKeysValidator(chainObjKeys, chainObject);
-			return (
-				validChainObjectKeys &&
-				Object.keys(chainObject).every((key) => {
-					const colorTypeArray = key === 'default' ? ['foreground'] : ['foreground', 'background'];
-					return keyColorValidator(colorTypeArray, chainObject[key]);
-				})
-			);
+			if (key === 'marcked') return keyColorValidator(['foreground'], chainObject);
+			const hasValidColors = Object.keys(chainObject).every((key) => {
+				const colorTypeArray = key === 'default' ? ['foreground'] : ['foreground', 'background'];
+				return keyColorValidator(colorTypeArray, chainObject[key]);
+			});
+			return validChainObjectKeys && hasValidColors;
 		});
 		return validObjectKeys && chainValidate;
 	},
@@ -144,13 +143,11 @@ const themeColorSchema = {
 			const chainObject = obj[key];
 			const chainObjKeys = ['default', 'picked'];
 			const validChainObjectKeys = objectKeysValidator(chainObjKeys, chainObject);
-			return (
-				validChainObjectKeys &&
-				Object.keys(chainObject).every((key) => {
-					const colorTypeArray = key === 'default' ? ['foreground'] : ['foreground', 'background'];
-					return keyColorValidator(colorTypeArray, chainObject[key]);
-				})
-			);
+			const hasValidColors = Object.keys(chainObject).every((key) => {
+				const colorTypeArray = key === 'default' ? ['foreground'] : ['foreground', 'background'];
+				return keyColorValidator(colorTypeArray, chainObject[key]);
+			});
+			return validChainObjectKeys && hasValidColors;
 		});
 		return validObjectKeys && chainValidate;
 	}
