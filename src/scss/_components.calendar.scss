@@ -13,6 +13,7 @@
 	overflow: hidden;
 	user-select: none;
 	visibility: hidden;
+	background-color: $main-bg-color;
 
 	&:focus {
 		outline: none;
@@ -29,8 +30,8 @@
 		max-height: 325px;
 		background: none;
 		font-size: 1rem;
-		box-shadow: none;
-		border: 1px solid $date-inactive-text-color;
+		box-shadow: 0 0 1px $date-inactive-text-color;
+		// border: 1px solid $date-inactive-text-color;
 		border-radius: 10px;
 		z-index: 1002;
 
@@ -57,7 +58,7 @@
 			max-width: unset;
 			height: 400px;
 			border-radius: 10px;
-			background-color: unset;
+			// background-color: unset;
 			box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
 			opacity: 0;
 			transform: translate(-50%, -50%) scale(0.9);
