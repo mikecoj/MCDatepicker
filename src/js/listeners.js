@@ -463,10 +463,11 @@ export const applyListeners = (calendarNodes) => {
 	okButton.addEventListener('click', (e) => updatePickedDateValue(activeInstance, calendarStates));
 
 	clearButton.addEventListener('click', (e) => {
-		const { linkedElement } = activeInstance;
+		const { linkedElement, onClearCallbacks } = activeInstance;
 		dateCells.forEach((cell) => cell.classList.remove('mc-date--picked'));
 		activeInstance.pickedDate = null;
 		if (linkedElement) linkedElement.value = null;
+		onClearCallbacks.forEach((callback) => callback.apply(null));
 	});
 };
 
