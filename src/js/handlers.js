@@ -1,4 +1,4 @@
-import { viewLayers } from './defaults';
+import { viewLayers, defaultTheme } from './defaults';
 import { renderCalendar, renderMonthPreview, renderYearPreview } from './render';
 import { isActiveMonth, isActiveYear, isLessThanMinDate, isMoreThanMaxDate } from './checker';
 import {
@@ -170,7 +170,9 @@ export const updateCalendarPosition = (calendarNodes, instance) => {
 		calendar.style.top = `${top}px`;
 		calendar.style.left = `${left}px`;
 	} else {
-		if (calendar.hasAttribute('style')) calendar.removeAttribute('style');
+		calendar.style.removeProperty('top');
+		calendar.style.removeProperty('left');
+		// if (calendar.hasAttribute('style')) calendar.removeAttribute('style');
 	}
 };
 
@@ -316,10 +318,101 @@ export const updateMonthYearPreview = (calendarNodes, instance) => {
 	if (target == 'year') renderYearPreview(calendarNodes, instance, year);
 };
 
+const updateCalendarTheme = (calendar, theme) => {
+	calendar.style.setProperty('--mc-theme-color', theme.theme_color);
+	calendar.style.setProperty('--mc-main-bg', theme.main_background);
+	calendar.style.setProperty('--mc-active-text-color', theme.active_text_color);
+	calendar.style.setProperty('--mc-inactive-text-color', theme.inactive_text_color);
+
+	calendar.style.setProperty('--mc-display-foreground', theme.display.foreground);
+	calendar.style.setProperty('--mc-display-background', theme.display.background);
+
+	calendar.style.setProperty('--mc-picker-foreground', theme.picker.foreground);
+	calendar.style.setProperty('--mc-picker-background', theme.picker.background);
+
+	calendar.style.setProperty('--mc-picker-header-active', theme.picker_header.active);
+	calendar.style.setProperty('--mc-picker-header-inactive', theme.picker_header.inactive);
+
+	calendar.style.setProperty('--mc-weekday-foreground', theme.weekday.foreground);
+
+	calendar.style.setProperty('--mc-btn-success-foreground', theme.button.success.foreground);
+	calendar.style.setProperty('--mc-btn-danger-foreground', theme.button.danger.foreground);
+
+	calendar.style.setProperty(
+		'--mc-date-active-def-foreground',
+		theme.date.active.default.foreground
+	);
+	calendar.style.setProperty(
+		'--mc-date-active-pick-foreground',
+		theme.date.active.picked.foreground
+	);
+	calendar.style.setProperty(
+		'--mc-date-active-pick-background',
+		theme.date.active.picked.background
+	);
+	calendar.style.setProperty(
+		'--mc-date-active-today-foreground',
+		theme.date.active.today.foreground
+	);
+	calendar.style.setProperty(
+		'--mc-date-active-today-background',
+		theme.date.active.today.background
+	);
+
+	calendar.style.setProperty(
+		'--mc-date-inactive-def-foreground',
+		theme.date.inactive.default.foreground
+	);
+	calendar.style.setProperty(
+		'--mc-date-inactive-pick-foreground',
+		theme.date.inactive.picked.foreground
+	);
+	calendar.style.setProperty(
+		'--mc-date-inactive-pick-background',
+		theme.date.inactive.picked.background
+	);
+	calendar.style.setProperty(
+		'--mc-date-inactive-today-foreground',
+		theme.date.inactive.today.foreground
+	);
+	calendar.style.setProperty(
+		'--mc-date-inactive-today-background',
+		theme.date.inactive.today.background
+	);
+
+	calendar.style.setProperty('--mc-date-marcked-foreground', theme.date.marcked.foreground);
+
+	calendar.style.setProperty(
+		'--mc-prev-active-def-foreground',
+		theme.month_year_preview.active.default.foreground
+	);
+	calendar.style.setProperty(
+		'--mc-prev-active-pick-foreground',
+		theme.month_year_preview.active.picked.foreground
+	);
+	calendar.style.setProperty(
+		'--mc-prev-active-pick-background',
+		theme.month_year_preview.active.picked.background
+	);
+
+	calendar.style.setProperty(
+		'--mc-prev-inactive-def-foreground',
+		theme.month_year_preview.inactive.default.foreground
+	);
+	calendar.style.setProperty(
+		'--mc-prev-inactive-pick-foreground',
+		theme.month_year_preview.inactive.picked.foreground
+	);
+	calendar.style.setProperty(
+		'--mc-prev-inactive-pick-background',
+		theme.month_year_preview.inactive.picked.background
+	);
+};
+
 export const updateCalendarUI = (calendarNodes, instance) => {
 	const { calendar } = calendarNodes;
 	const { store, viewLayers, options, pickedDate } = instance;
-	const { bodyType } = options;
+	const { bodyType, theme } = options;
 	const activeDate = getTargetDate(instance);
 	const activeYear = activeDate.getFullYear();
 	const activeMonth = activeDate.getMonth();
@@ -334,6 +427,7 @@ export const updateCalendarUI = (calendarNodes, instance) => {
 	store.preview.year = activeYear;
 	store.header.setTarget = viewLayers[0];
 	store.preview.setTarget = viewLayers[0];
+	updateCalendarTheme(calendar, theme);
 	updateWeekdays(calendarNodes, options);
 	updateButtons(calendarNodes, options);
 	updateCalendarPosition(calendarNodes, instance);
