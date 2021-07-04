@@ -8,12 +8,12 @@
 	padding: 0 0.5em;
 
 	&--success {
-		color: $main-theme-color;
+		color: $btn-success-color;
 		margin-left: 0.5em;
 	}
 
 	&--danger {
-		color: $danger-button-color;
+		color: $btn-danger-color;
 		margin-right: 0.5em;
 	}
 

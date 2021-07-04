@@ -292,3 +292,194 @@ export const CalendarStateManager = (calendar) => {
 export const uniqueId = (length = 16) => {
 	return parseInt(Math.ceil(Math.random() * Date.now()).toPrecision(length)).toString(16);
 };
+
+export const themeParser = (defaultTheme, customTheme) => {
+	return {
+		theme_color: {
+			cssVar: '--mc-theme-color',
+			color: customTheme?.theme_color || defaultTheme.theme_color
+		},
+		main_background: {
+			cssVar: '--mc-main-bg',
+			color: customTheme?.main_background || defaultTheme.main_background
+		},
+		active_text_color: {
+			cssVar: '--mc-active-text-color',
+			color: customTheme?.active_text_color || defaultTheme.active_text_color
+		},
+		inactive_text_color: {
+			cssVar: '--mc-inactive-text-color',
+			color: customTheme?.inactive_text_color || defaultTheme.inactive_text_color
+		},
+		display_foreground: {
+			cssVar: '--mc-display-foreground',
+			color: customTheme?.display?.foreground || defaultTheme.display.foreground
+		},
+		display_background: {
+			cssVar: '--mc-display-background',
+			color:
+				customTheme?.display?.background ||
+				customTheme?.theme_color ||
+				defaultTheme.display.background
+		},
+		picker_foreground: {
+			cssVar: '--mc-picker-foreground',
+			color:
+				customTheme?.picker?.foreground ||
+				customTheme?.active_text_color ||
+				defaultTheme.picker.foreground
+		},
+		picker_background: {
+			cssVar: '--mc-picker-background',
+			color:
+				customTheme?.picker?.background ||
+				customTheme?.main_background ||
+				defaultTheme.picker.background
+		},
+		picker_header_active: {
+			cssVar: '--mc-picker-header-active',
+			color: customTheme?.picker_header?.active || defaultTheme.picker_header.active
+		},
+		picker_header_inactive: {
+			cssVar: '--mc-picker-header-inactive',
+			color:
+				customTheme?.picker_header?.inactive ||
+				customTheme?.inactive_text_color ||
+				defaultTheme.picker_header.inactive
+		},
+		weekday_foreground: {
+			cssVar: '--mc-weekday-foreground',
+			color:
+				customTheme?.weekday?.foreground ||
+				customTheme?.theme_color ||
+				defaultTheme.weekday.foreground
+		},
+		button_success_foreground: {
+			cssVar: '--mc-btn-success-foreground',
+			color:
+				customTheme?.button?.success?.foreground ||
+				customTheme?.theme_color ||
+				defaultTheme.button.success.foreground
+		},
+		button_danger_foreground: {
+			cssVar: '--mc-btn-danger-foreground',
+			color: customTheme?.button?.danger?.foreground || defaultTheme.button.danger.foreground
+		},
+		date_active_default_foreground: {
+			cssVar: '--mc-date-active-def-foreground',
+			color:
+				customTheme?.date?.active?.default?.foreground ||
+				customTheme?.active_text_color ||
+				defaultTheme.date.active.default.foreground
+		},
+		date_active_picked_foreground: {
+			cssVar: '--mc-date-active-pick-foreground',
+			color:
+				customTheme?.date?.active?.picked?.foreground || defaultTheme.date.active.picked.foreground
+		},
+		date_active_picked_background: {
+			cssVar: '--mc-date-active-pick-background',
+			color:
+				customTheme?.date?.active?.picked?.background ||
+				customTheme?.theme_color ||
+				defaultTheme.date.active.picked.background
+		},
+		date_active_today_foreground: {
+			cssVar: '--mc-date-active-today-foreground',
+			color:
+				customTheme?.date?.active?.today?.foreground ||
+				customTheme?.active_text_color ||
+				defaultTheme.date.active.today.foreground
+		},
+		date_active_today_background: {
+			cssVar: '--mc-date-active-today-background',
+			color:
+				customTheme?.date?.active?.today?.background ||
+				customTheme?.inactive_text_color ||
+				defaultTheme.date.active.today.background
+		},
+		date_inactive_default_foreground: {
+			cssVar: '--mc-date-inactive-def-foreground',
+			color:
+				customTheme?.date?.inactive?.default?.foreground ||
+				customTheme?.inactive_text_color ||
+				defaultTheme.date.inactive.default.foreground
+		},
+		date_inactive_picked_foreground: {
+			cssVar: '--mc-date-inactive-pick-foreground',
+			color:
+				customTheme?.date?.inactive?.picked?.foreground ||
+				customTheme?.theme_color ||
+				defaultTheme.date.inactive.picked.foreground
+		},
+		date_inactive_picked_background: {
+			cssVar: '--mc-date-inactive-pick-background',
+			color:
+				customTheme?.date?.inactive?.picked?.background ||
+				customTheme?.theme_color ||
+				defaultTheme.date.inactive.picked.background
+		},
+		date_inactive_today_foreground: {
+			cssVar: '--mc-date-inactive-today-foreground',
+			color:
+				customTheme?.date?.inactive?.today?.foreground ||
+				customTheme?.inactive_text_color ||
+				defaultTheme.date.inactive.today.foreground
+		},
+		date_inactive_today_background: {
+			cssVar: '--mc-date-inactive-today-background',
+			color:
+				customTheme?.date?.inactive?.today?.background ||
+				customTheme?.inactive_text_color ||
+				defaultTheme.date.inactive.today.background
+		},
+		date_marcked_foreground: {
+			cssVar: '--mc-date-marcked-foreground',
+			color:
+				customTheme?.date?.marcked?.foreground ||
+				customTheme?.theme_color ||
+				defaultTheme.date.marcked.foreground
+		},
+		month_year_preview_active_default_foreground: {
+			cssVar: '--mc-prev-active-def-foreground',
+			color:
+				customTheme?.month_year_preview?.active?.default?.foreground ||
+				customTheme?.active_text_color ||
+				defaultTheme.month_year_preview.active.default.foreground
+		},
+		month_year_preview_active_picked_foreground: {
+			cssVar: '--mc-prev-active-pick-foreground',
+			color:
+				customTheme?.month_year_preview?.active?.picked?.foreground ||
+				customTheme?.active_text_color ||
+				defaultTheme.month_year_preview.active.picked.foreground
+		},
+		month_year_preview_active_picked_background: {
+			cssVar: '--mc-prev-active-pick-background',
+			color:
+				customTheme?.month_year_preview?.active?.picked?.background ||
+				defaultTheme.month_year_preview.active.picked.background
+		},
+		month_year_preview_inactive_default_foreground: {
+			cssVar: '--mc-prev-inactive-def-foreground',
+			color:
+				customTheme?.month_year_preview?.inactive?.default?.foreground ||
+				customTheme?.inactive_text_color ||
+				defaultTheme.month_year_preview.inactive.default.foreground
+		},
+		month_year_preview_inactive_picked_foreground: {
+			cssVar: '--mc-prev-inactive-pick-foreground',
+			color:
+				customTheme?.month_year_preview?.inactive?.picked?.foreground ||
+				customTheme?.inactive_text_color ||
+				defaultTheme.month_year_preview.inactive.picked.foreground
+		},
+		month_year_preview_inactive_picked_background: {
+			cssVar: '--mc-prev-inactive-pick-background',
+			color:
+				customTheme?.month_year_preview?.inactive?.picked?.background ||
+				customTheme?.inactive_text_color ||
+				defaultTheme.month_year_preview.inactive.picked.background
+		}
+	};
+};

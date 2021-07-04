@@ -11,40 +11,37 @@
 
 	&--active {
 		cursor: pointer;
+		color: $date-active-text-color;
 
 		&#{$root}--today {
-			background-color: $dark-bg-color;
+			color: $date-active-today-text-color;
+			background-color: $date-active-today-bg-color;
 		}
 		&#{$root}--picked {
-			color: #fff;
-			background-color: $main-theme-color;
+			color: $date-active-pick-text-color;
+			background-color: $date-active-pick-bg-color;
 		}
 	}
 
 	&--inactive {
-		color: $inactive-date-color;
+		color: $date-inactive-text-color;
 		cursor: default;
 
-		%colorShadow {
-			color: $inactive-white-color;
-			box-shadow: none;
-		}
 		&#{$root}--today {
-			@extend %colorShadow;
-			// border: 1px solid $inactive-date-color;
-			box-shadow: 0 0 0 1px $inactive-date-color;
+			box-shadow: 0 0 0 1px $date-inactive-today-bg-color;
+			color: $date-inactive-today-text-color;
+			box-shadow: none;
 		}
 
 		&#{$root}--picked {
-			@extend %colorShadow;
-			// border: 1px solid $inactive-picked-bg;
-			box-shadow: 0 0 0 1px $inactive-picked-bg;
-			color: $inactive-picked-bg;
+			box-shadow: 0 0 0 1px $date-inactive-pick-bg-color;
+			color: $date-inactive-pick-text-color;
+			box-shadow: none;
 		}
 	}
 
 	&--marked {
-		color: $main-theme-color;
+		color: $date-marked-text-color;
 		font-weight: 500;
 	}
 }

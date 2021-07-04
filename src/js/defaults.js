@@ -5,6 +5,87 @@ export const defaultEventColorType = [
 	{ type: 'slight', color: '#00DDFF' }
 ];
 
+export const defaultTheme = {
+	theme_color: '#38ada9',
+	main_background: '#f5f5f6',
+	active_text_color: 'rgb(0, 0, 0)',
+	inactive_text_color: 'rgba(0, 0, 0, 0.2)',
+	display: {
+		foreground: 'rgba(255, 255, 255, 0.8)',
+		background: '#38ada9'
+	},
+	picker: {
+		foreground: 'rgb(0, 0, 0)',
+		background: '#f5f5f6'
+	},
+	picker_header: {
+		active: '#818181',
+		inactive: 'rgba(0, 0, 0, 0.2)'
+	},
+	weekday: {
+		foreground: '#38ada9'
+	},
+	button: {
+		success: {
+			foreground: '#38ada9'
+		},
+		danger: {
+			foreground: '#e65151'
+		}
+	},
+	date: {
+		active: {
+			default: {
+				foreground: 'rgb(0, 0, 0)'
+			},
+			picked: {
+				foreground: '#ffffff',
+				background: '#38ada9'
+			},
+			today: {
+				foreground: 'rgb(0, 0, 0)',
+				background: 'rgba(0, 0, 0, 0.2)'
+			}
+		},
+		inactive: {
+			default: {
+				foreground: 'rgba(0, 0, 0, 0.2)'
+			},
+			picked: {
+				foreground: '#38ada9',
+				background: '#38ada9'
+			},
+			today: {
+				foreground: 'rgba(0, 0, 0, 0.2)',
+				background: 'rgba(0, 0, 0, 0.2)'
+			}
+		},
+		marcked: {
+			foreground: '#38ada9'
+		}
+	},
+	month_year_preview: {
+		active: {
+			default: {
+				foreground: 'rgb(0, 0, 0)'
+			},
+			picked: {
+				foreground: 'rgb(0, 0, 0)',
+				background: 'rgba(0, 0, 0,0.2)'
+			}
+		},
+		inactive: {
+			default: {
+				foreground: 'rgba(0, 0, 0, 0.2)'
+			},
+			picked: {
+				foreground: 'rgba(0, 0, 0, 0.2)',
+				background: 'rgba(0, 0, 0, 0.2)'
+			}
+		}
+	}
+};
+
 export const viewLayers = {
 	DMY: ['calendar', 'month', 'year'],
 	DY: ['calendar', 'month', 'year'],
@@ -66,7 +147,8 @@ const defaultOptions = {
 	allowedYears: [], // ex: [2022, 2023]
 	disableMonths: [], /// ex: [3,11] accept numbers 0-11;
 	disableYears: [], // ex: [2010, 2011]
-	markDates: [] // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
+	markDates: [], // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
+	theme: defaultTheme
 	// TODO: Integrate Daterange Feature
 	// daterange: false, // currently not supported
 	// TODO: Integrate Events Feature

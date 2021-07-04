@@ -30,6 +30,11 @@ export const Is = (variable) => {
 	return { object, array, date, number, string, boolean, func };
 };
 
+const isValidColor = (color) => {
+	const validator = /(?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6})\b|(?:rgb|hsl)a?\([^\)]*\)/gi;
+	return Is(color).string() && validator.test(color);
+};
+
 export const dateFormatValidator = (format) => {
 	const validator = /^(?:(d{1,4}|m{1,4}|y{4}|y{2})?\b(?:(?:,\s)|[.-\s\/]{1})?(d{1,4}|m{1,4}|y{4}|y{2})?\b(?:(?:,\s)|[.-\s\/]{1})?(d{1,4}|m{1,4}|y{4}|y{2})\b(?:(?:,\s)|[.-\s\/]{1})?(d{1,4}|m{1,4}|y{2}|y{4})?\b)$/gi;
 
@@ -51,6 +56,21 @@ export const dateFormatValidator = (format) => {
 	return { isValid, replaceMatch };
 };
 
+const objectKeysValidator = (keys, object) => {
+	return (
+		Is(object).object() &&
+		Is(keys).array() &&
+		Object.keys(object).every((key) => keys.includes(key))
+	);
+	// Is(object).object() && Is(keys).array() && keys.every((key) => object.hasOwnProperty(key))
+	// Object.keys(object).every((key) => keys.includes(key))
+};
+
+const keyColorValidator = (keys, object) => {
+	const hasKeys = objectKeysValidator(keys, object);
+	return hasKeys && Object.keys(object).every((key) => isValidColor(object[key]));
+};
+
 export const validateRequired = (object, schema) => {
 	// check if all object properied match the schema and return a new Error for the property that doesn't match the schema
 	const errors = Object.keys(schema)
@@ -58,6 +78,15 @@ export const validateRequired = (object, schema) => {
 		.map((key) => new Error(`Data does not match the schema for property: "${key}"`));
 	if (errors.length === 0) return true;
 	errors.forEach((error) => console.error(error));
+	return false;
+};
+
+const validateOptional = (object, schema) => {
+	const schemaErrors = Object.keys(object)
+		.filter((key) => schema.hasOwnProperty(key) && !schema[key](object[key]))
+		.map((key) => new Error(`Data does not match the schema for property: "${key}"`));
+	if (schemaErrors.length === 0) return true;
+	schemaErrors.forEach((error) => console.error(error));
 	return false;
 };
 
@@ -70,6 +99,58 @@ export const eventSchema = {
 export const eventColorTypeSchema = {
 	type: (value) => Is(value).string(),
 	color: (value) => /^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/.test(value)
+};
+
+const themeColorSchema = {
+	theme_color: (value) => isValidColor(value),
+	main_background: (value) => isValidColor(value),
+	active_text_color: (value) => isValidColor(value),
+	inactive_text_color: (value) => isValidColor(value),
+	display: (obj) => keyColorValidator(['foreground', 'background'], obj),
+	picker: (obj) => keyColorValidator(['foreground', 'background'], obj),
+	picker_header: (obj) => keyColorValidator(['active', 'inactive'], obj),
+	weekday: (obj) => keyColorValidator(['foreground'], obj),
+	button: (obj) => {
+		const objKeys = ['success', 'danger'];
+		const validObjectKeys = objectKeysValidator(objKeys, obj);
+		return (
+			validObjectKeys &&
+			Object.keys(obj).every((key) => keyColorValidator(['foreground'], obj[key]))
+		);
+	},
+	date: (obj) => {
+		const objKeys = ['active', 'inactive', 'marcked'];
+		const validObjectKeys = objectKeysValidator(objKeys, obj);
+
+		const chainValidate = Object.keys(obj).every((key) => {
+			const chainObject = obj[key];
+			const chainObjKeys = ['default', 'picked', 'today'];
+			const validChainObjectKeys = objectKeysValidator(chainObjKeys, chainObject);
+			if (key === 'marcked') return keyColorValidator(['foreground'], chainObject);
+			const hasValidColors = Object.keys(chainObject).every((key) => {
+				const colorTypeArray = key === 'default' ? ['foreground'] : ['foreground', 'background'];
+				return keyColorValidator(colorTypeArray, chainObject[key]);
+			});
+			return validChainObjectKeys && hasValidColors;
+		});
+		return validObjectKeys && chainValidate;
+	},
+	month_year_preview: (obj) => {
+		const objKeys = ['active', 'inactive'];
+		const validObjectKeys = objectKeysValidator(objKeys, obj);
+
+		const chainValidate = Object.keys(obj).every((key) => {
+			const chainObject = obj[key];
+			const chainObjKeys = ['default', 'picked'];
+			const validChainObjectKeys = objectKeysValidator(chainObjKeys, chainObject);
+			const hasValidColors = Object.keys(chainObject).every((key) => {
+				const colorTypeArray = key === 'default' ? ['foreground'] : ['foreground', 'background'];
+				return keyColorValidator(colorTypeArray, chainObject[key]);
+			});
+			return validChainObjectKeys && hasValidColors;
+		});
+		return validObjectKeys && chainValidate;
+	}
 };
 
 const optionsSchema = {
@@ -116,6 +197,8 @@ const optionsSchema = {
 	markDates: (value) => Is(value).array() && value.every((elem) => Is(elem).date()), // ex: [new Date(2019,11, 25), new Date(2019, 11, 26)]
 	markDatesCustom: (value) => Is(value).func(), // ex: (day) => (date.getDay() === 10)
 	daterange: (value) => Is(value).boolean(),
+	theme: (themeObject) =>
+		Is(themeObject).object() && validateOptional(themeObject, themeColorSchema),
 	events: (value) => {
 		return (
 			Is(value).array() &&

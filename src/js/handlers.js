@@ -1,4 +1,4 @@
-import { viewLayers } from './defaults';
+import { viewLayers, defaultTheme } from './defaults';
 import { renderCalendar, renderMonthPreview, renderYearPreview } from './render';
 import { isActiveMonth, isActiveYear, isLessThanMinDate, isMoreThanMaxDate } from './checker';
 import {
@@ -172,7 +172,9 @@ export const updateCalendarPosition = (calendarNodes, instance) => {
 		calendar.style.top = `${top}px`;
 		calendar.style.left = `${left}px`;
 	} else {
-		if (calendar.hasAttribute('style')) calendar.removeAttribute('style');
+		calendar.style.removeProperty('top');
+		calendar.style.removeProperty('left');
+		// if (calendar.hasAttribute('style')) calendar.removeAttribute('style');
 	}
 };
 
@@ -360,10 +362,14 @@ export const updateYearSelect = (activeInstance, calendarNodes, arrivalMethod = 
 	if (arrivalMethod == 'keyboard') monthYearPreview.querySelector('[tabindex="0"]').focus();
 };
 
+const updateCalendarTheme = (calendar, theme) => {
+	Object.values(theme).forEach((value) => calendar.style.setProperty(value.cssVar, value.color));
+};
+
 export const updateCalendarUI = (calendarNodes, instance) => {
 	const { calendar } = calendarNodes;
 	const { store, viewLayers, options, pickedDate } = instance;
-	const { bodyType } = options;
+	const { bodyType, theme } = options;
 	const activeDate = getTargetDate(instance);
 	const activeYear = activeDate.getFullYear();
 	const activeMonth = activeDate.getMonth();
@@ -378,6 +384,7 @@ export const updateCalendarUI = (calendarNodes, instance) => {
 	store.preview.year = activeYear;
 	store.header.setTarget = viewLayers[0];
 	store.preview.setTarget = viewLayers[0];
+	updateCalendarTheme(calendar, theme);
 	updateWeekdays(calendarNodes, options);
 	updateButtons(calendarNodes, options);
 	updateCalendarPosition(calendarNodes, instance);

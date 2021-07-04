@@ -13,8 +13,7 @@
 		overflow: hidden;
 		visibility: hidden;
 		opacity: 0;
-		background-color: #f5f5f6;
-		// transition: all 150ms linear;
+		background-color: $picker-bg-color;
 
 		&--opened {
 			visibility: visible;
@@ -22,6 +21,7 @@
 		}
 	}
 	&__cell {
+		$root: &;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -30,13 +30,20 @@
 		text-align: center;
 		border-radius: 10px;
 		cursor: pointer;
+		color: $prev-cell-active-text-color;
 
 		&--picked {
-			background-color: $dark-bg-color;
+			color: $prev-cell-active-pick-text-color;
+			background-color: $prev-cell-active-pick-bg-color;
 		}
 		&--inactive {
-			color: $inactive-date-color;
+			color: $prev-cell-inactive-text-color;
 			cursor: default;
+			&#{$root}--picked {
+				color: $prev-cell-inactive-pick-text-color;
+				box-shadow: 0 0 0 1px $prev-cell-inactive-pick-bg-color;
+				background-color: transparent;
+			}
 		}
 	}
 }

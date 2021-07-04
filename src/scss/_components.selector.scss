@@ -35,7 +35,7 @@
 		align-items: center;
 		position: absolute;
 		text-decoration: none;
-		color: $month-year-color;
+		color: $picker-header-active-color;
 		padding: 0 1em;
 		@include for-desktop {
 			#{$modal} & {
@@ -50,7 +50,7 @@
 		}
 
 		&--inactive {
-			color: $inactive-date-color;
+			color: $picker-header-inactive-color;
 			cursor: default;
 			&:active {
 				transform: none !important;
@@ -64,7 +64,6 @@
 		&--prev {
 			&:active {
 				transform: translateX(-0.5em);
-				// @include slide(true);
 			}
 			#{$inline} #{$root}__month &,
 			& {
@@ -74,7 +73,6 @@
 		&--next {
 			&:active {
 				transform: translateX(0.5em);
-				// @include slide(false);
 			}
 			#{$inline} #{$root}__month &,
 			& {
@@ -96,9 +94,7 @@
 	&__data {
 		display: flex;
 		align-items: center;
-		// font-size: clamp(1rem, 8vw, 1.25rem);
 		@include font-size-clamp-polyfill(1rem, 8, 1.25rem);
-		// height: clamp(1.75rem, calc(8vw + 0.25rem), 2rem);
 		height: calc(8vw + 0.25rem);
 		min-height: 1.75rem;
 		max-height: 2rem;
@@ -118,7 +114,6 @@
 		&--month {
 			&,
 			span {
-				// width: clamp(5rem, 40vw, 6.25rem);
 				width: 40vw;
 				min-width: 5rem;
 				max-width: 6.25rem;
@@ -134,7 +129,6 @@
 		&--year {
 			&,
 			span {
-				// width: clamp(3rem, 22vw, 3.5rem);
 				width: 22vw;
 				min-width: 3rem;
 				max-width: 3.5rem;
