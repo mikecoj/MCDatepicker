@@ -1,5 +1,5 @@
 import { spanTemplate } from './template';
-import { Animation, getAnimations, waitFor } from './utils';
+import { Animation } from './utils';
 import {
 	CALENDAR_HIDE,
 	CALENDAR_SHOW,
@@ -15,8 +15,6 @@ import {
 	CANCEL
 } from './events';
 import {
-	dispatchCalendarShow,
-	dispatchCalendarHide,
 	dispatchDatePick,
 	dispatchChangeMonth,
 	dispatchChangeYear,
@@ -32,6 +30,8 @@ import {
 	updateDisplay,
 	updatePickedDateValue,
 	updateLinkedInputValue,
+	updateMonthSelect,
+	updateYearSelect,
 	getTargetDate,
 	getNewMonth,
 	getNewYear
@@ -152,12 +152,8 @@ export const applyListeners = (calendarNodes) => {
 		currentYearSelect.setAttribute('aria-expanded', false);
 
 		// Return focus to correct location
-		if (target == 'month') {
-			currentMonthSelect.focus();
-		}
-		else if (target == 'year') {
-			currentYearSelect.focus();
-		}
+		if (target == 'month') currentMonthSelect.focus();
+		if (target == 'year') currentYearSelect.focus();
 
 		if (autoClose && store.preview.target === viewLayers[0]) {
 			updatePickedDateValue(activeInstance, calendarStates);
@@ -168,7 +164,7 @@ export const applyListeners = (calendarNodes) => {
 		const { instance, date } = e.detail;
 		instance.pickedDate = date;
 		updateLinkedInputValue(instance);
-		if (JSON.stringify(activeInstance) !== JSON.stringify(instance)) return;
+		if (activeInstance._id !== instance._id) return;
 		const { store } = activeInstance;
 		store.display.setDate = date;
 		store.calendar.setDate = store.calendar.date;
@@ -323,100 +319,57 @@ export const applyListeners = (calendarNodes) => {
 		});
 	});
 
-	currentMonthSelect.onclick = () => {
-		openMonthSelect();
-	};
-	currentMonthSelect.onkeydown = (e) => {
-		if (e.key == 'Enter') {
-			openMonthSelect('keyboard');
-		}
-		else if (e.key == 'Tab' && !e.shiftKey) {
+	currentMonthSelect.addEventListener('click', () =>
+		updateMonthSelect(activeInstance, calendarNodes)
+	);
+
+	currentYearSelect.addEventListener('keydown', (e) => {
+		if (e.key == 'Enter') updateMonthSelect(activeInstance, calendarNodes, 'keyboard');
+		if (e.key == 'Tab' && !e.shiftKey) {
 			// Correct focus order
 			e.preventDefault();
 			currentYearSelect.focus();
 		}
-	};
-	function openMonthSelect(arrivalMethod = 'click') {
-		const { store, viewLayers } = activeInstance;
-		if (viewLayers[0] === 'month') return;
-		const isOpened = monthYearPreview.classList.contains('mc-month-year__preview--opened');
-		const isMonthTarget = store.preview.target === 'month' ? true : false;
-		if (isOpened && isMonthTarget) {
-			store.preview.setTarget = viewLayers[0];
-			return;
-		}
-		store.header.setTarget = 'month';
-		store.preview.setTarget = 'month';
-		if (arrivalMethod == 'keyboard') monthYearPreview.querySelector('[tabindex="0"]').focus();
-	}
+	});
 
-	currentYearSelect.onclick = () => {
-		openYearSelect();
-	};
-	currentYearSelect.onkeydown = (e) => {
-		if (e.key == 'Enter') {
-			openYearSelect('keyboard');
-		}
-		else if (e.key == 'Tab' && e.shiftKey) {
+	currentYearSelect.addEventListener('click', () =>
+		updateYearSelect(activeInstance, calendarNodes)
+	);
+
+	currentYearSelect.addEventListener('keydown', (e) => {
+		if (e.key == 'Enter') updateYearSelect(activeInstance, calendarNodes, 'keyboard');
+		if (e.key == 'Tab') {
 			// Correct focus order
 			e.preventDefault();
-			currentMonthSelect.focus();
-		}
-		else if (e.key == 'Tab') {
-			// Correct focus order
-			e.preventDefault();
+			if (e.shiftKey) return currentMonthSelect.focus();
 			monthNavNext.focus();
 		}
-	};
-	function openYearSelect(arrivalMethod = 'click') {
-		const { store, viewLayers } = activeInstance;
-		if (viewLayers[0] === 'year') return;
-		const isOpened = monthYearPreview.classList.contains('mc-month-year__preview--opened');
-		const currentTarget = store.preview.target;
-		const isYearTarget = currentTarget === 'year' ? true : false;
-		if (isOpened && isYearTarget) {
-			store.header.year = store.preview.year;
-			store.preview.setTarget = viewLayers[0];
-			store.header.setTarget = viewLayers[0];
-			return;
-		}
-		store.header.year = store.preview.year - 4;
-		store.header.setTarget = 'year';
-		store.preview.setTarget = 'year';
-		if (arrivalMethod == 'keyboard') monthYearPreview.querySelector('[tabindex="0"]').focus();
-	}
+	});
 
 	// Dispatch custom events
 	previewCells.forEach((cell) => {
-		cell.onclick = (e) => {
-			e.detail === 1 && dispatchPreviewCellPick(e.currentTarget);
-		};
-		cell.ondblclick = (e) => {
-			e.detail === 2 && dispatchPreviewCellPick(e.currentTarget, true);
-		};
-		cell.onkeydown = (e) => {
-			if (e.key == 'Enter') {
-				dispatchPreviewCellPick(e.currentTarget);
-			}
-		};
+		cell.addEventListener(
+			'click',
+			(e) => e.detail === 1 && dispatchPreviewCellPick(e.currentTarget)
+		);
+		cell.addEventListener(
+			'dblclick',
+			(e) => e.detail === 2 && dispatchPreviewCellPick(e.currentTarget, true)
+		);
+		cell.addEventListener(
+			'keydown',
+			(e) => e.key === 'Enter' && dispatchPreviewCellPick(e.currentTarget)
+		);
 	});
 
 	// add click event that dispatch a custom DATE_PICK event, to every calendar cell
 	dateCells.forEach((cell) => {
-		cell.onclick = (e) => {
-			e.detail === 1 && dispatchDatePick(e.target);
-		};
-		cell.ondblclick = (e) => {
-			e.detail === 2 && dispatchDatePick(e.target, true);
-		};
-		cell.onkeydown = (e) => {
-			if (e.key == 'Enter') {
-				dispatchDatePick(e.target);
-			}
-			else if (e.key == 'End') {
-				clearButton.focus();
-			}
-		};
+		cell.addEventListener('click', (e) => e.detail === 1 && dispatchDatePick(e.target));
+		cell.addEventListener('dblclick', (e) => e.detail === 2 && dispatchDatePick(e.target, true));
+		cell.addEventListener('keydown', (e) => {
+			e.key === 'Enter' && dispatchDatePick(e.target);
+			e.key === 'End' && clearButton.focus();
+		});
 	});
 
 	monthNavPrev.addEventListener('click', (e) => {
@@ -430,15 +383,12 @@ export const applyListeners = (calendarNodes) => {
 	});
 	monthNavNext.addEventListener('keydown', (e) => {
 		// correct focus order
-		if (e.key == 'Tab' && e.shiftKey) {
+		if (e.key == 'Tab') {
 			e.preventDefault();
-			currentYearSelect.focus();
-		}
-		else if (e.key == 'Tab') {
-			e.preventDefault();
+			if (e.shiftKey) return currentYearSelect.focus();
 			calendarHeader.nextElementSibling.querySelector('[tabindex="0"]').focus();
 		}
-	})
+	});
 
 	yearNavPrev.addEventListener('click', (e) => {
 		if (e.currentTarget.classList.contains('mc-select__nav--inactive')) return;
@@ -450,15 +400,9 @@ export const applyListeners = (calendarNodes) => {
 		dispatchChangeYear(currentYearSelect, 'next');
 	});
 
-	cancelButton.addEventListener('click', (e) => {
-		dispatchCancel(calendar);
-	});
+	cancelButton.addEventListener('click', (e) => dispatchCancel(calendar));
 
-	calendarPicker.addEventListener('keyup', (e) => {
-		if (e.key == 'Escape') {
-			dispatchCancel(calendar);
-		}
-	});
+	calendarPicker.addEventListener('keyup', (e) => e.key == 'Escape' && dispatchCancel(calendar));
 
 	okButton.addEventListener('click', (e) => updatePickedDateValue(activeInstance, calendarStates));
 

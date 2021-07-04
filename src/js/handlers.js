@@ -245,7 +245,7 @@ export const updateWeekdays = (calendarNodes, options) => {
 	weekdays.forEach((wDay, index) => {
 		const nextElement = (firstWeekday + index) % customWeekDays.length;
 		wDay.innerText = customWeekDays[nextElement].substr(0, 2);
-		wDay.setAttribute('aria-label', customWeekDays[nextElement])
+		wDay.setAttribute('aria-label', customWeekDays[nextElement]);
 	});
 };
 
@@ -288,7 +288,12 @@ export const updateCalendarTable = (calendarNodes, instance) => {
 };
 
 export const updateCalendarHeader = (calendarNodes, instance) => {
-	const { currentMonthSelect, currentYearSelect, calendarHeader, accessibilityMonthYear } = calendarNodes;
+	const {
+		currentMonthSelect,
+		currentYearSelect,
+		calendarHeader,
+		accessibilityMonthYear
+	} = calendarNodes;
 	const { store, options } = instance;
 	const { customMonths } = options;
 	const { target, month, year } = store.header;
@@ -320,6 +325,39 @@ export const updateMonthYearPreview = (calendarNodes, instance) => {
 	monthYearPreview.classList.add('mc-month-year__preview--opened');
 	if (target == 'month') renderMonthPreview(calendarNodes, instance);
 	if (target == 'year') renderYearPreview(calendarNodes, instance, year);
+};
+
+export const updateMonthSelect = (activeInstance, calendarNodes, arrivalMethod = 'click') => {
+	const { store, viewLayers } = activeInstance;
+	if (viewLayers[0] === 'month') return;
+	const { monthYearPreview } = calendarNodes;
+	const isOpened = monthYearPreview.classList.contains('mc-month-year__preview--opened');
+	const isMonthTarget = store.preview.target === 'month' ? true : false;
+	if (isOpened && isMonthTarget) {
+		store.preview.setTarget = viewLayers[0];
+		return;
+	}
+	store.header.setTarget = 'month';
+	store.preview.setTarget = 'month';
+	if (arrivalMethod == 'keyboard') monthYearPreview.querySelector('[tabindex="0"]').focus();
+};
+export const updateYearSelect = (activeInstance, calendarNodes, arrivalMethod = 'click') => {
+	const { store, viewLayers } = activeInstance;
+	if (viewLayers[0] === 'year') return;
+	const { monthYearPreview } = calendarNodes;
+	const isOpened = monthYearPreview.classList.contains('mc-month-year__preview--opened');
+	const currentTarget = store.preview.target;
+	const isYearTarget = currentTarget === 'year' ? true : false;
+	if (isOpened && isYearTarget) {
+		store.header.year = store.preview.year;
+		store.preview.setTarget = viewLayers[0];
+		store.header.setTarget = viewLayers[0];
+		return;
+	}
+	store.header.year = store.preview.year - 4;
+	store.header.setTarget = 'year';
+	store.preview.setTarget = 'year';
+	if (arrivalMethod == 'keyboard') monthYearPreview.querySelector('[tabindex="0"]').focus();
 };
 
 export const updateCalendarUI = (calendarNodes, instance) => {
