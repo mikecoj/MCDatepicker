@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.0
+
+---
+
+- added `context` option
+- added `theme` option
+
+## 0.5.1
+
+---
+
+-fixed JSON circular structure of the instance
+
 ## 0.5.0
 
 ---
