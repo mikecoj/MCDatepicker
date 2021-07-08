@@ -1,11 +1,18 @@
 # Changelog
 
+## 0.6.1
+
+---
+
+- fixed `null` context
+
 ## 0.6.0
 
 ---
 
 - added `context` option
 - added `theme` option
+- added `onClear()` method
 
 ## 0.5.1
 

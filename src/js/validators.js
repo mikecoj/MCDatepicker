@@ -155,7 +155,8 @@ const themeColorSchema = {
 
 const optionsSchema = {
 	el: (value) => /^[#][-\w]+$/.test(value),
-	context: (value) => value.nodeType == Node.ELEMENT_NODE || value.nodeType == Node.DOCUMENT_FRAGMENT_NODE,
+	context: (value) =>
+		value.nodeType == Node.ELEMENT_NODE || value.nodeType == Node.DOCUMENT_FRAGMENT_NODE,
 	dateFormat: (value) => dateFormatValidator(value).isValid(),
 	bodyType: (value) => {
 		const types = ['modal', 'inline', 'permanent'];
@@ -244,5 +245,6 @@ export const validateOptions = (customOptions, defaultOptions) => {
 	// log all errors if the array is not empty
 	if (errors.length > 0) return errors.forEach((error) => console.error(error));
 	// replace the default properties with the custom ones
+	defaultOptions.context = document.body;
 	return { ...defaultOptions, ...customOptions };
 };

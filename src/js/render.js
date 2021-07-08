@@ -135,7 +135,7 @@ export const renderCalendar = (instance, date) => {
 			classArray.push('mc-date--active');
 			dayObject.tabindex = 0;
 		}
-		if (isPicked(pickedDate, dayObject)){
+		if (isPicked(pickedDate, dayObject)) {
 			classArray.push('mc-date--picked');
 			dayObject.ariaLabel = `Picked: ${dayObject.ariaLabel}`;
 		}
@@ -169,7 +169,7 @@ export function writeTemplate(instanceOptions) {
 	// write the template to the div content
 	calendarDiv.innerHTML = template;
 	// add the new div to the document
-	instanceOptions.context.appendChild(calendarDiv);
+	document.body.appendChild(calendarDiv);
 	// get calendar Nodes
 	const calendarNodes = getDOMNodes(calendarDiv);
 	// apply listeners to calendar
