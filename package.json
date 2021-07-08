@@ -1,6 +1,6 @@
 {
 	"name": "mc-datepicker",
-	"version": "0.6.0",
+	"version": "0.6.1",
 	"description": "Framework-agnostic, highly-customizable Vanilla JavaScript datepicker with zero dependencies.",
 	"main": "./src/js/mc-calendar.js",
 	"scripts": {
