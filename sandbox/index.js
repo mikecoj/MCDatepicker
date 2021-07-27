@@ -58,6 +58,7 @@ const firstDatePicker = MCDatepicker.create({
 	bodyType: 'inline',
 	autoClose: true,
 	// closeOnBlur: true,
+	hideInactiveDays: true,
 	dateFormat: 'dddd, dd mmmm yyyy',
 	disableDates: [new Date(2021, 1, 12), new Date(2021, 4, 15)],
 	customWeekDays: ['Duminică', 'Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă'],
@@ -84,7 +85,7 @@ const firstDatePicker = MCDatepicker.create({
 	maxDate: new Date(2023, 3, 22),
 	markDates: [new Date(2021, 2, 21), new Date(2021, 3, 1)],
 	disableYears: [2020],
-	disableMonths: [8],
+	disableMonths: [8]
 	// theme: calendarTheme
 });
 
@@ -99,6 +100,7 @@ const secundDatePicker = MCDatepicker.create({
 	// dateFormat: 'yyyy',
 	// dateFormat: 'mm-yyyy',
 	bodyType: 'modal',
+	selectInactiveDays: true,
 	// theme: calendarTheme,
 	// closeOndblclick: false,
 	// showCalendarDisplay: false,
@@ -197,12 +199,12 @@ setYearBtn.onclick = () => {
 };
 
 // Test Shadow Dom usage
-document.addEventListener("DOMContentLoaded", setupShadowDOM);
+document.addEventListener('DOMContentLoaded', setupShadowDOM);
 
 function setupShadowDOM() {
 	const el = document.querySelector('#shadow-dom');
 	if (document.head.attachShadow) {
-		el.attachShadow({mode: 'open'});
+		el.attachShadow({ mode: 'open' });
 		const shadowRoot = el.shadowRoot;
 
 		// Add input to shadow dom
@@ -222,6 +224,6 @@ function setupShadowPicker(shadowRoot) {
 	window.shadowDatePicker = MCDatepicker.create({
 		el: '#shadow-picker-el',
 		context: shadowRoot,
-		bodyType: 'inline',
+		bodyType: 'inline'
 	});
 }
