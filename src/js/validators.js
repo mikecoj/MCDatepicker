@@ -165,6 +165,8 @@ const optionsSchema = {
 	autoClose: (value) => Is(value).boolean(),
 	closeOndblclick: (value) => Is(value).boolean(),
 	closeOnBlur: (value) => Is(value).boolean(),
+	hideInactiveDays: (value) => Is(value).boolean(),
+	selectInactiveDays: (value) => Is(value).boolean(),
 	showCalendarDisplay: (value) => Is(value).boolean(),
 	customWeekDays: (value) => {
 		// ['S', 'M', 'T', 'W', 'T', 'F', 'S']
