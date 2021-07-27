@@ -8,9 +8,10 @@
 	border-radius: 5px;
 	font-weight: 300;
 	width: calc(100% / 7);
+	cursor: default;
 
 	&--active {
-		cursor: pointer;
+		// cursor: pointer;
 		color: $date-active-text-color;
 
 		&#{$root}--today {
@@ -23,9 +24,17 @@
 		}
 	}
 
+	&--invisible {
+		visibility: hidden;
+	}
+
+	&--selectable {
+		cursor: pointer;
+	}
+
 	&--inactive {
 		color: $date-inactive-text-color;
-		cursor: default;
+		// cursor: default;
 
 		&#{$root}--today {
 			box-shadow: 0 0 0 1px $date-inactive-today-bg-color;
@@ -36,7 +45,7 @@
 		&#{$root}--picked {
 			box-shadow: 0 0 0 1px $date-inactive-pick-bg-color;
 			color: $date-inactive-pick-text-color;
-			box-shadow: none;
+			// box-shadow: none;
 		}
 	}
 
