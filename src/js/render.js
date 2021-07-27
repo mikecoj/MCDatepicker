@@ -130,9 +130,12 @@ export const renderCalendar = (instance, date) => {
 			isDisabledDate(options, dayObject)
 		) {
 			classArray.push('mc-date--inactive');
+			if (options.hideInactiveDays) classArray.push('mc-date--invisible');
+			if (options.selectInactiveDays) classArray.push('mc-date--selectable');
 			dayObject.tabindex = -1;
 		} else {
 			classArray.push('mc-date--active');
+			classArray.push('mc-date--selectable');
 			dayObject.tabindex = 0;
 		}
 		if (isPicked(pickedDate, dayObject)) {
