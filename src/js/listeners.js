@@ -92,7 +92,8 @@ export const applyListeners = (calendarNodes) => {
 		const { options } = activeInstance;
 		const { autoClose, closeOndblclick } = options;
 
-		if (e.target.classList.contains('mc-date--inactive')) return;
+		// if (e.target.classList.contains('mc-date--inactive')) return;
+		if (!e.target.classList.contains('mc-date--selectable')) return;
 
 		if (e.detail.dblclick) {
 			if (!closeOndblclick) return;
