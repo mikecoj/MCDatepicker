@@ -164,7 +164,7 @@ export const applyListeners = (calendarNodes) => {
 		const { instance, date } = e.detail;
 		instance.pickedDate = date;
 		updateLinkedInputValue(instance);
-		if (activeInstance._id !== instance._id) return;
+		if (activeInstance?._id !== instance._id) return;
 		const { store } = activeInstance;
 		store.display.setDate = date;
 		store.calendar.setDate = store.calendar.date;
