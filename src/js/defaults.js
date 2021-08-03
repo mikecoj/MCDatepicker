@@ -128,6 +128,8 @@ const defaultOptions = {
 	autoClose: false,
 	closeOndblclick: true,
 	closeOnBlur: false,
+	hideInactiveDays: false,
+	selectInactiveDays: false,
 	showCalendarDisplay: true,
 	customWeekDays: weekDays,
 	customMonths: months,
