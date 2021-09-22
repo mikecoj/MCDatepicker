@@ -74,7 +74,7 @@ export const applyListeners = (calendarNodes) => {
 
 	calendar.addEventListener(CALENDAR_HIDE, () => {
 		// calendar.removeEventListener(CALENDAR_SHOW, showFunction);
-		const { store, options, onCloseCallbacks } = activeInstance;
+		const { options, onCloseCallbacks } = activeInstance;
 		// hide the calendar
 		calendar.classList.remove('mc-calendar--opened');
 		// delete the style attribute for inline calendar
@@ -145,6 +145,9 @@ export const applyListeners = (calendarNodes) => {
 		if (viewLayers[0] !== 'calendar') store.display.setDate = nextCalendarDate;
 		if (viewLayers[0] === 'calendar') store.calendar.setDate = nextCalendarDate;
 
+		if (autoClose && store.preview.target === viewLayers[0]) {
+			updatePickedDateValue(activeInstance, calendarStates);
+		}
 		store.preview.setTarget = viewLayers[0];
 		store.header.setTarget = viewLayers[0];
 
@@ -154,10 +157,6 @@ export const applyListeners = (calendarNodes) => {
 		// Return focus to correct location
 		if (target == 'month') currentMonthSelect.focus();
 		if (target == 'year') currentYearSelect.focus();
-
-		if (autoClose && store.preview.target === viewLayers[0]) {
-			updatePickedDateValue(activeInstance, calendarStates);
-		}
 	});
 
 	calendar.addEventListener(SET_DATE, (e) => {
