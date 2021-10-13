@@ -67,7 +67,7 @@ export const applyListeners = (calendarNodes) => {
 		// show the calendar
 		calendar.classList.add('mc-calendar--opened');
 
-		calendar.focus();
+		// calendar.focus();
 		// run all custom onOpen callbacks added by the user
 		activeInstance.onOpenCallbacks.forEach((callback) => callback.apply(null));
 	});
@@ -183,11 +183,12 @@ export const applyListeners = (calendarNodes) => {
 		updateCalendarTable(calendarNodes, activeInstance)
 	);
 
-	calendar.addEventListener('blur', (e) => {
+	document.addEventListener('click', (e) => {
 		e.preventDefault();
-		const isTargeted = calendar.contains(e.relatedTarget);
-		if (isTargeted || !activeInstance) return;
-		calendarStates.blur();
+		const targetElement = e.target;
+		const isTargetCalendar = calendar.contains(targetElement);
+		const isTargetInput = activeInstance?.linkedElement === targetElement;
+		if (!isTargetCalendar && !isTargetInput) calendarStates.blur();
 	});
 
 	calendar.addEventListener(CANCEL, (e) => {
