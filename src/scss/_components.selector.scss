@@ -102,6 +102,16 @@
 		position: relative;
 		cursor: pointer;
 
+		&::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			opacity: 0;
+		}
+
 		span {
 			line-height: 1.2;
 			text-align: center;

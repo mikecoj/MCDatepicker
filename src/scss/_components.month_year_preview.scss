@@ -22,6 +22,7 @@
 	}
 	&__cell {
 		$root: &;
+		position: relative;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -31,6 +32,17 @@
 		border-radius: 10px;
 		cursor: pointer;
 		color: $prev-cell-active-text-color;
+
+		&::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			opacity: 0;
+			border-radius: 10px;
+		}
 
 		&--picked {
 			color: $prev-cell-active-pick-text-color;
