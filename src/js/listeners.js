@@ -89,6 +89,7 @@ export const applyListeners = (calendarNodes) => {
 		onCloseCallbacks.forEach((callback) => callback.apply(null));
 	});
 	calendar.addEventListener(DATE_PICK, (e) => {
+		if (!activeInstance) return;
 		const { options } = activeInstance;
 		const { autoClose, closeOndblclick } = options;
 
@@ -111,6 +112,7 @@ export const applyListeners = (calendarNodes) => {
 	});
 
 	calendar.addEventListener(PREVIEW_PICK, (e) => {
+		if (!activeInstance) return;
 		const { data, dblclick } = e.detail;
 		const { store, options, viewLayers } = activeInstance;
 		const { customMonths, autoClose, closeOndblclick } = options;
@@ -146,7 +148,7 @@ export const applyListeners = (calendarNodes) => {
 		if (viewLayers[0] === 'calendar') store.calendar.setDate = nextCalendarDate;
 
 		if (autoClose && store.preview.target === viewLayers[0]) {
-			updatePickedDateValue(activeInstance, calendarStates);
+			return updatePickedDateValue(activeInstance, calendarStates);
 		}
 		store.preview.setTarget = viewLayers[0];
 		store.header.setTarget = viewLayers[0];
@@ -179,38 +181,42 @@ export const applyListeners = (calendarNodes) => {
 		}
 	});
 
-	calendar.addEventListener(CALENDAR_UPDATE, (e) =>
-		updateCalendarTable(calendarNodes, activeInstance)
+	calendar.addEventListener(
+		CALENDAR_UPDATE,
+		(e) => activeInstance && updateCalendarTable(calendarNodes, activeInstance)
 	);
 
 	document.addEventListener('click', (e) => {
 		const targetElement = e.target;
 		const isTargetCalendar = calendar.contains(targetElement);
 		const isTargetInput = activeInstance?.linkedElement === targetElement;
-		if (!isTargetCalendar && !isTargetInput) calendarStates.blur();
+		if (!isTargetCalendar && !isTargetInput && activeInstance) calendarStates.blur();
 	});
 
 	calendar.addEventListener(CANCEL, (e) => {
+		if (!activeInstance) return;
 		const { onCancelCallbacks } = activeInstance;
 		onCancelCallbacks.forEach((callback) => callback.apply(null));
 		calendarStates.close();
 	});
 
 	calendarDisplay.addEventListener(DISPLAY_UPDATE, (e) => {
-		updateDisplay(calendarNodes, activeInstance);
+		activeInstance && updateDisplay(calendarNodes, activeInstance);
 	});
 
-	calendarHeader.addEventListener(HEADER_UPDATE, (e) =>
-		updateCalendarHeader(calendarNodes, activeInstance)
+	calendarHeader.addEventListener(
+		HEADER_UPDATE,
+		(e) => activeInstance && updateCalendarHeader(calendarNodes, activeInstance)
 	);
 
-	monthYearPreview.addEventListener(PREVIEW_UPDATE, (e) =>
-		updateMonthYearPreview(calendarNodes, activeInstance)
+	monthYearPreview.addEventListener(
+		PREVIEW_UPDATE,
+		(e) => activeInstance && updateMonthYearPreview(calendarNodes, activeInstance)
 	);
 
 	currentMonthSelect.addEventListener(CHANGE_MONTH, function (e) {
 		// check if the button is clickable
-		if (!clickable) return;
+		if (!clickable || !activeInstance) return;
 		clickable = !clickable;
 		const slider = Animation();
 		const {
@@ -260,7 +266,7 @@ export const applyListeners = (calendarNodes) => {
 	});
 
 	currentYearSelect.addEventListener(CHANGE_YEAR, function (e) {
-		if (!clickable) return;
+		if (!clickable || !activeInstance) return;
 		clickable = !clickable;
 		const { direction } = e.detail;
 		const {
@@ -318,8 +324,9 @@ export const applyListeners = (calendarNodes) => {
 		});
 	});
 
-	currentMonthSelect.addEventListener('click', () =>
-		updateMonthSelect(activeInstance, calendarNodes)
+	currentMonthSelect.addEventListener(
+		'click',
+		() => activeInstance && updateMonthSelect(activeInstance, calendarNodes)
 	);
 
 	currentYearSelect.addEventListener('keydown', (e) => {
@@ -331,8 +338,9 @@ export const applyListeners = (calendarNodes) => {
 		}
 	});
 
-	currentYearSelect.addEventListener('click', () =>
-		updateYearSelect(activeInstance, calendarNodes)
+	currentYearSelect.addEventListener(
+		'click',
+		() => activeInstance && updateYearSelect(activeInstance, calendarNodes)
 	);
 
 	currentYearSelect.addEventListener('keydown', (e) => {
@@ -403,9 +411,13 @@ export const applyListeners = (calendarNodes) => {
 
 	calendarPicker.addEventListener('keyup', (e) => e.key == 'Escape' && dispatchCancel(calendar));
 
-	okButton.addEventListener('click', (e) => updatePickedDateValue(activeInstance, calendarStates));
+	okButton.addEventListener(
+		'click',
+		(e) => activeInstance && updatePickedDateValue(activeInstance, calendarStates)
+	);
 
 	clearButton.addEventListener('click', (e) => {
+		if (!activeInstance) return;
 		const { linkedElement, onClearCallbacks } = activeInstance;
 		dateCells.forEach((cell) => cell.classList.remove('mc-date--picked'));
 		activeInstance.pickedDate = null;
