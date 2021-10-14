@@ -184,7 +184,6 @@ export const applyListeners = (calendarNodes) => {
 	);
 
 	document.addEventListener('click', (e) => {
-		e.preventDefault();
 		const targetElement = e.target;
 		const isTargetCalendar = calendar.contains(targetElement);
 		const isTargetInput = activeInstance?.linkedElement === targetElement;
