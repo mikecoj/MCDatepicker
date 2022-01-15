@@ -1,5 +1,5 @@
 import template from './template';
-import { valueOfDate } from './utils';
+import { valueOfDate, createNewDate } from './utils';
 import { getDOMNodes } from './handlers';
 import { applyListeners } from './listeners';
 import {
@@ -55,8 +55,8 @@ export const renderMonthPreview = (calendarNodes, instance) => {
 	currentMonthSelect.setAttribute('aria-expanded', true);
 	customMonths.map((month, index) => {
 		let monthClasslist = ['mc-month-year__cell'];
-		const firstMonthDate = new Date(Number(selectedYear), index);
-		const lastMonthDate = new Date(Number(selectedYear), index + 1, 0);
+		const firstMonthDate = createNewDate(Number(selectedYear), index);
+		const lastMonthDate = createNewDate(Number(selectedYear), index + 1, 0);
 		const lessThanMinDate =
 			prevLimitDate && valueOfDate(lastMonthDate) < valueOfDate(prevLimitDate);
 		const moreThanMaxDate =
@@ -111,10 +111,9 @@ export const renderYearPreview = (calendarNodes, instance, year) => {
 export const renderCalendar = (instance, date) => {
 	const { options, pickedDate } = instance;
 	// get the first day of the month
-	const firstMonthDate = new Date(date.getFullYear(), date.getMonth(), 1);
+	const firstMonthDate = createNewDate(date.getFullYear(), date.getMonth(), 1);
 	// get the month
 	const activeMonth = firstMonthDate.getMonth();
-
 	//  create date custom object
 	const renderDay = (dayObject) => {
 		let classArray = ['mc-date'];

@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.6.5
+
+---
+
+- fixed focus of the datepicker linked input
+
+## 0.6.3
+
+---
+
+- fixed `autoclose` on month/year preview selection
+
+## 0.6.2
+
+---
+
+- fixed `null` reference on `setFullDate`
+
 ## 0.6.1
 
 ---

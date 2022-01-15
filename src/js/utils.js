@@ -65,6 +65,15 @@ export const Animation = () => {
 	return { slide, onFinish };
 };
 
+export const createNewDate = (year, month, day) => {
+	const date = new Date();
+	date.setHours(0, 0, 0, 0);
+	Is(year).number() && date.setFullYear(year);
+	Is(month).number() && date.setMonth(month);
+	Is(day).number() && date.setDate(day);
+	return date;
+};
+
 export const dateFormatParser = (
 	date = new Date(),
 	{ customWeekDays, customMonths },
@@ -74,7 +83,7 @@ export const dateFormatParser = (
 		const wDay = date.getDay();
 		const mDate = date.getDate();
 		const month = date.getMonth();
-		const year = date.getFullYear();
+		const year = String(date.getFullYear()).padStart(4, '0');
 		const flags = {
 			d: String(mDate),
 			dd: String(mDate).padStart(2, '0'),
@@ -84,8 +93,8 @@ export const dateFormatParser = (
 			mm: String(month + 1).padStart(2, '0'),
 			mmm: customMonths[month].substr(0, 3),
 			mmmm: customMonths[month],
-			yy: String(year).substr(2),
-			yyyy: String(year)
+			yy: year,
+			yyyy: year
 		};
 		return dateFormatValidator(format.toLocaleLowerCase()).replaceMatch(flags);
 	}
