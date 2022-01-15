@@ -13,7 +13,8 @@
 	overflow: hidden;
 	user-select: none;
 	visibility: hidden;
-	background-color: $main-bg-color;
+	// background-color: $main-bg-color;
+	// background-color: $picker-bg-color;
 
 	&:focus {
 		outline: none;
@@ -46,7 +47,7 @@
 		max-width: 425px;
 		border-radius: 0 0 30px 30px;
 		box-shadow: 0 10px 10px 5px rgba(0, 0, 0, 0.25);
-		background-color: $main-theme-color;
+		// background-color: $main-theme-color;
 		z-index: 1002;
 		transform: translate(-50%, -65vh);
 		transform: translate(-50%, -65vh);
