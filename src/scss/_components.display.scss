@@ -6,22 +6,27 @@
 	$root: &;
 	display: none;
 	color: $display-text-color;
+	background-color: $display-bg-color;
 
 	#{$modal} & {
 		display: flex;
 		flex-direction: column;
 		max-height: 0;
 		transition: max-height 0.2s linear;
+		padding: 0 0 2em;
+		margin: 0 0 -2em;
 		@include for-desktop {
 			width: 200px;
 			height: 100%;
 			max-height: unset;
 			background-color: $display-bg-color;
+			padding: 0 1em 0 0;
+			margin: 0 -1em 0 0;
 		}
 	}
 
 	#{$modal}#{$opened} & {
-		max-height: 175px;
+		max-height: 210px;
 		animation: stretch 0.4s;
 
 		@include for-desktop {
