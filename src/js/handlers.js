@@ -7,7 +7,8 @@ import {
 	HandleArrowClass,
 	dateFormatParser,
 	valueOfDate,
-	getNewIndex
+	getNewIndex,
+	createNewDate
 } from './utils';
 
 export const getDOMNodes = (calendar) => {
@@ -135,8 +136,8 @@ export const getLimitDates = (options) => {
 	const maxMonth = activeMonths[activeMonths.length - 1];
 	const minYear = allowedYears.length ? Math.min(...allowedYears) : null;
 	const maxYear = allowedYears.length ? Math.max(...allowedYears) : null;
-	const minAllowedDate = minYear ? new Date(minYear, minMonth.index, 1) : null;
-	const maxAllowedDate = maxYear ? new Date(maxYear, maxMonth.index + 1, 0) : null;
+	const minAllowedDate = minYear ? createNewDate(minYear, minMonth.index, 1) : null;
+	const maxAllowedDate = maxYear ? createNewDate(maxYear, maxMonth.index + 1, 0) : null;
 	if (minDate && minAllowedDate) prevLimitDate = new Date(Math.max(minDate, minAllowedDate));
 	if (maxDate && maxAllowedDate) nextLimitDate = new Date(Math.min(maxDate, maxAllowedDate));
 	if (!prevLimitDate) prevLimitDate = minDate ? minDate : minAllowedDate;
@@ -174,7 +175,6 @@ export const updateCalendarPosition = (calendarNodes, instance) => {
 	} else {
 		calendar.style.removeProperty('top');
 		calendar.style.removeProperty('left');
-		// if (calendar.hasAttribute('style')) calendar.removeAttribute('style');
 	}
 };
 
@@ -214,8 +214,8 @@ export const updateNavs = (calendarNodes, instance) => {
 	viewTarget === 'calendar' && nextMonth.overlap !== 0 && !nextYear && yearNavNextState.inactive();
 
 	if (prevLimitDate) {
-		const currentMonthFirstDay = new Date(currentYear, currentMonth, 1);
-		const prevYearLastDay = new Date(prevYear, currentMonth + 1, 0);
+		const currentMonthFirstDay = createNewDate(currentYear, currentMonth, 1);
+		const prevYearLastDay = createNewDate(prevYear, currentMonth + 1, 0);
 		const inactivePrevMonth = isLessThanMinDate(currentMonthFirstDay, prevLimitDate);
 		const inactivePrevYear = isLessThanMinDate(prevYearLastDay, prevLimitDate);
 		if (jumpToMinMax && inactivePrevMonth) yearNavPrevState.inactive();
@@ -223,8 +223,8 @@ export const updateNavs = (calendarNodes, instance) => {
 		if (inactivePrevMonth) monthNavPrevState.inactive();
 	}
 	if (nextLimitDate) {
-		const currentMonthLastDay = new Date(currentYear, currentMonth + 1, 0);
-		const nextYearFirstDay = new Date(nextYear, currentMonth, 1);
+		const currentMonthLastDay = createNewDate(currentYear, currentMonth + 1, 0);
+		const nextYearFirstDay = createNewDate(nextYear, currentMonth, 1);
 		const inactiveNextMonth = isMoreThanMaxDate(currentMonthLastDay, nextLimitDate);
 		const inactiveNextYear = isMoreThanMaxDate(nextYearFirstDay, nextLimitDate);
 		if (jumpToMinMax && inactiveNextMonth) yearNavNextState.inactive();
@@ -283,7 +283,7 @@ export const updateCalendarTable = (calendarNodes, instance) => {
 	dateCells.forEach((cell, index) => {
 		cell.innerText = datesArray[index].dateNumb;
 		cell.classList = datesArray[index].classList;
-		cell.setAttribute('data-val-date', datesArray[index].date);
+		cell.setAttribute('data-val-date', datesArray[index].date.valueOf());
 		cell.setAttribute('tabindex', datesArray[index].tabindex);
 		cell.setAttribute('aria-label', datesArray[index].ariaLabel);
 	});

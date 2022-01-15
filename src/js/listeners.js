@@ -1,5 +1,5 @@
 import { spanTemplate } from './template';
-import { Animation } from './utils';
+import { Animation, createNewDate } from './utils';
 import {
 	CALENDAR_HIDE,
 	CALENDAR_SHOW,
@@ -66,23 +66,16 @@ export const applyListeners = (calendarNodes) => {
 		updateCalendarUI(calendarNodes, activeInstance);
 		// show the calendar
 		calendar.classList.add('mc-calendar--opened');
-
-		// calendar.focus();
 		// run all custom onOpen callbacks added by the user
 		activeInstance.onOpenCallbacks.forEach((callback) => callback.apply(null));
 	});
 
 	calendar.addEventListener(CALENDAR_HIDE, () => {
-		// calendar.removeEventListener(CALENDAR_SHOW, showFunction);
 		const { options, onCloseCallbacks } = activeInstance;
 		// hide the calendar
 		calendar.classList.remove('mc-calendar--opened');
 		// delete the style attribute for inline calendar
 		if (options.bodyType == 'inline') calendar.removeAttribute('style');
-		// wait for animation to end and remove the --opened class
-		// getAnimations(calendar).then(() => {
-		// 	store.preview.setTarget = 'calendar';
-		// });
 		// reset the active instance
 		activeInstance = null;
 		// run all custom onClose callbacks added by the user
@@ -92,15 +85,12 @@ export const applyListeners = (calendarNodes) => {
 		if (!activeInstance) return;
 		const { options } = activeInstance;
 		const { autoClose, closeOndblclick } = options;
-
-		// if (e.target.classList.contains('mc-date--inactive')) return;
 		if (!e.target.classList.contains('mc-date--selectable')) return;
 
 		if (e.detail.dblclick) {
 			if (!closeOndblclick) return;
 			return updatePickedDateValue(activeInstance, calendarStates);
 		}
-
 		// update the instance picked date
 		activeInstance.pickedDate = e.detail.date;
 		// update display store data
@@ -137,7 +127,10 @@ export const applyListeners = (calendarNodes) => {
 		if (target === 'year') targetYear = Number(data);
 
 		const targetMonthIndex = customMonths.findIndex((month) => month.includes(targetMonth));
-		const nextCalendarDate = getTargetDate(activeInstance, new Date(targetYear, targetMonthIndex));
+		const nextCalendarDate = getTargetDate(
+			activeInstance,
+			createNewDate(targetYear, targetMonthIndex, 1)
+		);
 
 		store.header.month = nextCalendarDate.getMonth();
 		store.preview.year = nextCalendarDate.getFullYear();
@@ -156,7 +149,6 @@ export const applyListeners = (calendarNodes) => {
 
 		currentMonthSelect.setAttribute('aria-expanded', false);
 		currentYearSelect.setAttribute('aria-expanded', false);
-
 		// Return focus to correct location
 		if (target == 'month') currentMonthSelect.focus();
 		if (target == 'year') currentYearSelect.focus();
@@ -236,7 +228,7 @@ export const applyListeners = (calendarNodes) => {
 		// get the next ot prev month and the overlap value
 		const { newMonth, overlap } = getNewMonth(activeInstance, selectedMonth, direction);
 		const newYear = overlap !== 0 ? getNewYear(options, selectedYear, direction) : selectedYear;
-		const newCalendarDate = new Date(newYear, newMonth.index, 1);
+		const newCalendarDate = createNewDate(newYear, newMonth.index, 1);
 		// add a new span tah with the new month to the months div
 		if (overlap !== 0) {
 			// add a new span with the new year to the years div
@@ -289,7 +281,7 @@ export const applyListeners = (calendarNodes) => {
 
 		let newMonth = null;
 		let newCalendarDate =
-			newYear && getTargetDate(activeInstance, new Date(newYear, currentMonthIndex, 1));
+			newYear && getTargetDate(activeInstance, createNewDate(newYear, currentMonthIndex, 1));
 		if (!newYear) newCalendarDate = next ? nextLimitDate : prevLimitDate;
 		if (newCalendarDate.getMonth() !== currentMonthIndex)
 			newMonth = customMonths[newCalendarDate.getMonth()];
