@@ -5,29 +5,20 @@ export const Is = (variable) => {
 		.call(variable)
 		.match(/\s([a-zA-Z]+)/)[1]
 		.toLowerCase();
-	const object = () => {
-		return type === 'object' ? true : false;
-	};
-	const array = () => {
-		return type === 'array' ? true : false;
-	};
-	const date = () => {
-		return type === 'date' ? true : false;
-	};
+
 	const number = () => {
 		const isNaN = Number.isNaN(variable);
-		return type === 'number' && !isNaN ? true : false;
+		return type === 'number' && !isNaN;
 	};
-	const string = () => {
-		return type === 'string' ? true : false;
-	};
-	const boolean = () => {
-		return type === 'boolean' ? true : false;
-	};
-	const func = () => {
-		return type === 'function' ? true : false;
-	};
-	return { object, array, date, number, string, boolean, func };
+
+	const object = () => type === 'object';
+	const array = () => type === 'array';
+	const date = () => type === 'date';
+	const string = () => type === 'string';
+	const boolean = () => type === 'boolean';
+	const func = () => type === 'function';
+	const defined = () => variable !== void 0;
+	return { object, array, date, number, string, boolean, func, defined };
 };
 
 const isValidColor = (color) => {
