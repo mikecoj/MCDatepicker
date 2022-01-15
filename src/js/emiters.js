@@ -50,7 +50,7 @@ export const dispatchDatePick = (elem, dblclick = false) => {
 			bubbles: true,
 			detail: {
 				dblclick,
-				date: new Date(elem.getAttribute('data-val-date'))
+				date: new Date(Number(elem.getAttribute('data-val-date')))
 			}
 		})
 	);
