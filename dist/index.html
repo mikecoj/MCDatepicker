@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Calendar</title>
+	<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous"> -->
+<link href="bundle.css" rel="stylesheet"></head>
+
+<body>
+
+	<header class="main__header">
+		<div class="container">
+			<h1>MCDatepicker</h1>
+		</div>
+	</header>
+	<main class="main__body">
+		<div class="container row">
+			<div class="form-field card">
+				<label class="form-field__label">Datepicker One</label>
+				<input id="datepicker_one" type="text" class="form-field__input">
+			</div>
+			<div class="form-field card">
+				<label class="form-field__label">Datepicker Two</label>
+				<input id="datepicker_two" type="text" class="form-field__input" readonly>
+			</div>
+			<div class="form-field card">
+				<label class=" form-field__label">Datepicker Three</label>
+				<input id="datepicker_three" type="text" class="form-field__input" readonly>
+			</div>
+			<div class="form-field card">
+				<label class=" form-field__label">Datepicker With Button</label>
+				<div class="input__wrapper">
+					<input id="datepicker_four" type="text" class="form-field__input form-field__input--coupled"
+						readonly>
+					<button id="datepicker_btn" class="btn btn--small">
+						<svg class="calendarIcon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+							focusable="false" data-prefix="far" data-icon="calendar-alt"
+							class="svg-inline--fa fa-calendar-alt fa-w-14" role="img" viewBox="0 0 448 512">
+							<path fill="currentColor"
+								d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z" />
+						</svg>
+					</button>
+				</div>
+			</div>
+			<div class="form-field card">
+				<label class=" form-field__label">Set Full Date for Datepicker Two</label>
+				<div class="input__wrapper">
+					<input id="set_date_input_two" type="text" class="form-field__input form-field__input--coupled">
+					<button id="set_date_btn" class="btn btn--small">Set Date</button>
+				</div>
+			</div>
+			<div class="form-field card">
+				<label class=" form-field__label">Set Date for Datepicker Two</label>
+				<div class="input__wrapper">
+					<input id="set_day_input_two" type="text" class="form-field__input form-field__input--coupled">
+					<button id="set_day_btn" class="btn btn--small">Set Day</button>
+				</div>
+			</div>
+			<div class="form-field card">
+				<label class=" form-field__label">Set Month for Datepicker Two</label>
+				<div class="input__wrapper">
+					<input id="set_month_input_two" type="text" class="form-field__input form-field__input--coupled">
+					<button id="set_month_btn" class="btn btn--small">Set Month</button>
+				</div>
+			</div>
+			<div class="form-field card">
+				<label class=" form-field__label">Set Year for Datepicker Two</label>
+				<div class="input__wrapper">
+					<input id="set_year_input_two" type="text" class="form-field__input form-field__input--coupled">
+					<button id="set_year_btn" class="btn btn--small">Set Year</button>
+				</div>
+			</div>
+		</div>
+		<div id="shadow-dom"></div>
+	</main>
+<script src="main.js"></script></body>
+
+</html>
