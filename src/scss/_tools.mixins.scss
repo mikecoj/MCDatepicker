@@ -51,9 +51,9 @@
 }
 
 @mixin font-size-clamp-polyfill($min, $middle, $max) {
-	$display-min: $max * 100 / $middle;
+	$display-min: calc($mac * 100 / $middle);
 
-	$display-max: $min * 100 / $middle;
+	$display-max: calc($min * 100 / $middle);
 
 	@supports not (font-size: clamp(#{$min}, #{$middle}vw, #{$max})) {
 		font-size: #{$middle}vw;
