@@ -123,6 +123,7 @@ export const months = [
 const defaultOptions = {
 	el: null,
 	context: null,
+	rootElement: null,
 	dateFormat: 'DD-MMM-YYYY',
 	bodyType: 'modal', // ['modal', 'inline', 'permanent']
 	autoClose: false,
