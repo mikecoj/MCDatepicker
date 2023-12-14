@@ -171,7 +171,11 @@ export function writeTemplate(instanceOptions) {
 	// write the template to the div content
 	calendarDiv.innerHTML = template;
 	// add the new div to the document
-	document.body.appendChild(calendarDiv);
+	if(instanceOptions.rootElement) {
+        instanceOptions.rootElement.appendChild(calendarDiv);
+    } else {
+        document.body.appendChild(calendarDiv);
+    }
 	// get calendar Nodes
 	const calendarNodes = getDOMNodes(calendarDiv);
 	// apply listeners to calendar

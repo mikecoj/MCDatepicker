@@ -148,6 +148,8 @@ const optionsSchema = {
 	el: (value) => /^[#][-\w]+$/.test(value),
 	context: (value) =>
 		value.nodeType == Node.ELEMENT_NODE || value.nodeType == Node.DOCUMENT_FRAGMENT_NODE,
+	rootElement: (value) =>
+		value.nodeType == Node.ELEMENT_NODE || value.nodeType == Node.DOCUMENT_FRAGMENT_NODE,
 	dateFormat: (value) => dateFormatValidator(value).isValid(),
 	bodyType: (value) => {
 		const types = ['modal', 'inline', 'permanent'];
