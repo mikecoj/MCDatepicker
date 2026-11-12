@@ -37,6 +37,8 @@ import {
 	getNewYear
 } from './handlers';
 
+const canSelectDate = (instance) => instance && !instance.linkedElement?.matches(':disabled');
+
 export const applyListeners = (calendarNodes) => {
 	let activeInstance = null;
 	let clickable = true;
@@ -82,7 +84,7 @@ export const applyListeners = (calendarNodes) => {
 		onCloseCallbacks.forEach((callback) => callback.apply(null));
 	});
 	calendar.addEventListener(DATE_PICK, (e) => {
-		if (!activeInstance) return;
+		if (!canSelectDate(activeInstance)) return;
 		const { options } = activeInstance;
 		const { autoClose, closeOndblclick } = options;
 		if (!e.target.classList.contains('mc-date--selectable')) return;
@@ -103,7 +105,7 @@ export const applyListeners = (calendarNodes) => {
 	});
 
 	calendar.addEventListener(PREVIEW_PICK, (e) => {
-		if (!activeInstance) return;
+		if (!canSelectDate(activeInstance)) return;
 		const { data, dblclick } = e.detail;
 		const { store, options, viewLayers } = activeInstance;
 		const { customMonths, autoClose, closeOndblclick } = options;
@@ -406,11 +408,11 @@ export const applyListeners = (calendarNodes) => {
 
 	okButton.addEventListener(
 		'click',
-		(e) => activeInstance && updatePickedDateValue(activeInstance, calendarStates)
+		() => canSelectDate(activeInstance) && updatePickedDateValue(activeInstance, calendarStates)
 	);
 
 	clearButton.addEventListener('click', (e) => {
-		if (!activeInstance) return;
+		if (!canSelectDate(activeInstance)) return;
 		const { linkedElement, onClearCallbacks } = activeInstance;
 		dateCells.forEach((cell) => cell.classList.remove('mc-date--picked'));
 		activeInstance.pickedDate = null;
